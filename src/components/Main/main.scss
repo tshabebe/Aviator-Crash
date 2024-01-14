@@ -102,21 +102,18 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
 
             &:hover {
               .history-icon {
-                background: url(../../assets/images/history-i-hover.svg)
-                  no-repeat center center/contain;
+                background: url(../../assets/images/history-i-hover.svg) no-repeat center center/contain;
               }
 
               .dd-icon {
-                background: url(../../assets/images/dd-hover.svg) no-repeat
-                  center center/contain;
+                background: url(../../assets/images/dd-hover.svg) no-repeat center center/contain;
               }
             }
 
             .history-icon {
               width: 14px;
               height: 13px;
-              background: url(../../assets/images/history-i.svg) no-repeat
-                center center/contain;
+              background: url(../../assets/images/history-i.svg) no-repeat center center/contain;
               margin-right: 5px;
             }
 
@@ -124,8 +121,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
               width: 10px;
               height: 10px;
               transition: transform 0.5s;
-              background: url(../../assets/images/dd.svg) no-repeat center
-                center/contain;
+              background: url(../../assets/images/dd.svg) no-repeat center center/contain;
 
               &.up {
                 transform: rotate(180deg);
@@ -546,13 +542,13 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
   cursor: pointer;
   border-radius: 10px;
   border: none;
+
   &.add {
-    background: #427f00 url("../../assets/images/plus-1.svg") no-repeat center
-      center;
+    background: #427f00 url("../../assets/images/plus-1.svg") no-repeat center center;
   }
+
   &.minus {
-    background: #427f00 url("../../assets/images/remove.svg") no-repeat center
-      center;
+    background: #427f00 url("../../assets/images/remove.svg") no-repeat center center;
   }
 }
 
@@ -722,7 +718,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
   }
 
   @media (max-width: 1314px) {
-    font-size: 60px;
+    font-size: 80px;
 
     &.wait {
       top: 22%;
@@ -732,6 +728,19 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
       font-size: 25px;
       margin-top: 15px;
     }
+  }
+
+  @media (max-width: 768px) {
+    font-size: 68px;
+
+    // &.wait {
+    //   top: 22%;
+    // }
+
+    // .flew-away {
+    //   font-size: 25px;
+    //   margin-top: 15px;
+    // }
   }
 
   &.red {
@@ -933,12 +942,10 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
       font-size: 20px;
       border-radius: 20px;
       border: none;
-      background: linear-gradient(
-        83deg,
-        rgb(52, 31, 147) 0%,
-        rgb(98, 19, 156) 100%,
-        rgb(27, 0, 55) 100%
-      );
+      background: linear-gradient(83deg,
+          rgb(52, 31, 147) 0%,
+          rgb(98, 19, 156) 100%,
+          rgb(27, 0, 55) 100%);
 
       @media (max-width: 556px) {
         padding: 10px;
@@ -964,6 +971,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
     height: 100%;
   }
 }
+
 .modal-dialog {
   transition: transform 0.3s ease-out;
   position: relative;
@@ -971,6 +979,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
   margin: 0.5rem;
   pointer-events: none;
 }
+
 .modal-content {
   position: relative;
   display: flex;
@@ -982,6 +991,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
   border: 0;
   border-radius: 8px;
 }
+
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -995,6 +1005,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
   border-top-right-radius: 8px;
   font-weight: 400 !important;
 }
+
 .close {
   float: right;
   font-size: 1.5rem;

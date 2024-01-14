@@ -12,14 +12,15 @@ export default function WebGLStarter() {
   const {
     GameState,
     currentNum,
+    lastSecondNum,
     time,
     unityState,
     myUnityContext,
     setCurrentTarget,
   } = React.useContext(Context);
-  const [target, setTarget] = React.useState(1);
   const [waiting, setWaiting] = React.useState(0);
   const [flag, setFlag] = React.useState(1);
+  const [target, setTarget] = React.useState(1);
 
   React.useEffect(() => {
     let myInterval;
@@ -41,8 +42,8 @@ export default function WebGLStarter() {
         } else if (currentNum > 10 && e === 3) {
           setFlag(4);
         }
-        setTarget(currentNum);
         setCurrentTarget(currentNum);
+        setTarget(currentNum);
       };
       myInterval = setInterval(() => {
         getCurrentTime(currentFlag);
@@ -54,8 +55,8 @@ export default function WebGLStarter() {
     } else if (GameState === "BET") {
       setFlag(1);
       let startWaiting = Date.now() - time;
-      setTarget(1);
       setCurrentTarget(1);
+      setTarget(1);
 
       myInterval = setInterval(() => {
         setWaiting(Date.now() - startWaiting);
@@ -74,7 +75,7 @@ export default function WebGLStarter() {
     );
     currentFlag = flag;
   }, [flag, myUnityContext]);
-
+  
   return (
     <div className="crash-container">
       <div className="canvas">
@@ -104,7 +105,7 @@ export default function WebGLStarter() {
               <div className="flew-away">FLEW AWAY!</div>
             )}
             <div>
-              {target - 0.01 >= 1 ? Number(target - 0.01).toFixed(2) : "1.00"}{" "}
+              {`${target === 1 ? '1.00' : lastSecondNum?.toFixed(2)}`}
               <span className="font-[900]">x</span>
             </div>
           </div>

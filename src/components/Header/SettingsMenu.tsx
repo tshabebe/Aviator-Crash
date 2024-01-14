@@ -8,7 +8,6 @@ import {
   HiOutlineShieldCheck,
   HiOutlineDocumentText,
   HiOutlineComputerDesktop,
-  HiOutlineHome,
 } from "react-icons/hi2";
 import { CiMoneyBill } from "react-icons/ci";
 import { ImCopy } from "react-icons/im";
@@ -53,7 +52,7 @@ const Menu = ({ setHowto }) => {
   const [changeSeed, setChangeSeed] = useState<boolean>(false);
   const [changeAvatar, setChangeAvatar] = useState<boolean>(false);
 
-  const [key, setKey] = useState<string>(generateRandomString(20));
+  const [key, ] = useState<string>(generateRandomString(20));
   const [customKey, setCustomKey] = useState<string>(generateRandomString(20));
   const [imgNums, setImgNums] = useState<number[]>([]);
 
@@ -113,6 +112,7 @@ const Menu = ({ setHowto }) => {
         },
       });
     },
+    // eslint-disable-next-line
     [state]
   );
 
@@ -123,7 +123,7 @@ const Menu = ({ setHowto }) => {
       if (checked === true) {
         try {
           mainEle.play();
-        } catch (error) {}
+        } catch (error) { }
       } else {
         mainEle.pause();
       }
@@ -144,6 +144,7 @@ const Menu = ({ setHowto }) => {
         },
       });
     },
+    // eslint-disable-next-line
     [state]
   );
 
@@ -161,7 +162,6 @@ const Menu = ({ setHowto }) => {
   };
 
   const handleImgClick = async (avatar: string) => {
-    console.log("avatar", avatar);
     const response: any = await axios.post(
       `${process.env.REACT_APP_DEVELOPMENT === "true"
         ? config.development_api
@@ -202,9 +202,7 @@ const Menu = ({ setHowto }) => {
         ) {
           let mainEle: any = document.getElementById("mainAudio");
           mainEle.volume = 0.2;
-          try {
-            mainEle.play();
-          } catch (error) {}
+          mainEle.play();
           localStorage.setItem("aviator-audio", "true");
         }
       } catch (error) {
@@ -212,6 +210,7 @@ const Menu = ({ setHowto }) => {
         handleToggleMusic(true);
       }
     });
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -258,8 +257,8 @@ const Menu = ({ setHowto }) => {
                     <img
                       className="avatar"
                       src={`${state.userInfo?.avatar
-                          ? state.userInfo?.avatar
-                          : "./avatars/av-5.png"
+                        ? state.userInfo?.avatar
+                        : "./avatars/av-5.png"
                         }`}
                       alt="avatar"
                     />

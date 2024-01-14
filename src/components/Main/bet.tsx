@@ -222,9 +222,16 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     setMyBetAmount(betAmount);
   }, [betAmount]);
 
+  React.useEffect(() => {
+    if ((GameState === "BET") && (auto === true)) {
+      updateUserBetState({ [`${index}betted`]: true });
+    }
+  // eslint-disable-next-line
+  }, [GameState])
+
   return (
     <div className="bet-control">
-      <div className="controls">
+      <div className={`controls ${betted && (GameState === "PLAYING") ? 'border-orange' : ''} ${((!betted && auto) || betState || (betted && ((GameState === "BET") || GameState === "READY"))) ? 'border-red' : ''}`}>
         {index === "f"
           ? !add && (
             <div
@@ -252,24 +259,6 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
             >
               Auto
             </button>
-            {/* {betted || betState ? (
-              
-            ) : (
-              <>
-                <button
-                  className={gameType === "manual" ? "active" : "inactive"}
-                  onClick={() => changeBetType("manual")}
-                >
-                  Bet
-                </button>
-                <button
-                  className={gameType === "auto" ? "active" : "inactive"}
-                  onClick={() => changeBetType("auto")}
-                >
-                  Auto
-                </button>
-              </>
-            )} */}
           </div>
         </div>
         <div className="first-row">
@@ -372,29 +361,48 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
           </div>
           <div className="buttons-block">
             {betted ? (
-              GameState === "PLAYING" ? (
-                <button
-                  className="btn-waiting"
-                  onClick={() => {
-                    callCashOut(state.userInfo, state.userInfo.userId, currentTarget, index);
-                  }}
-                >
-                  <span>
-                    <label>CASHOUT</label>
-                    <label className="amount">
-                      <span>
-                        {Number(betAmount * currentTarget).toFixed(2)}
-                      </span>
-                      <span className="currency">{`${state?.userInfo?.currency
-                        ? state?.userInfo?.currency
-                        : "INR"
-                        }`}</span>
-                    </label>
-                  </span>
-                </button>
-              ) : (
-                <button className="btn-danger">WAITING</button>
-              )
+              <button
+                className="btn-waiting"
+                onClick={() => {
+                  callCashOut(state.userInfo, state.userInfo.userId, currentTarget, index);
+                }}
+              >
+                <span>
+                  <label>CASHOUT</label>
+                  <label className="amount">
+                    <span>
+                      {Number(betAmount * currentTarget).toFixed(2)}
+                    </span>
+                    <span className="currency">{`${state?.userInfo?.currency
+                      ? state?.userInfo?.currency
+                      : "INR"
+                      }`}</span>
+                  </label>
+                </span>
+              </button>
+              // GameState === "PLAYING" ? (
+              //   <button
+              //     className="btn-waiting"
+              //     onClick={() => {
+              //       callCashOut(state.userInfo, state.userInfo.userId, currentTarget, index);
+              //     }}
+              //   >
+              //     <span>
+              //       <label>CASHOUT</label>
+              //       <label className="amount">
+              //         <span>
+              //           {Number(betAmount * currentTarget).toFixed(2)}
+              //         </span>
+              //         <span className="currency">{`${state?.userInfo?.currency
+              //           ? state?.userInfo?.currency
+              //           : "INR"
+              //           }`}</span>
+              //       </label>
+              //     </span>
+              //   </button>
+              // ) : (
+              //   <button className="btn-danger">WAITING</button>
+              // )
             ) : betState ? (
               <>
                 <div className="btn-tooltip">Waiting for next round</div>
@@ -438,7 +446,20 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
             <div className="second-row">
               <div className="auto-bet-wrapper">
                 <div className="auto-bet">
-                  {auto ? (
+                  <div className="cashout-block">
+                    <div className="cashout-switcher">
+                      <label className="label">Auto Bet</label>
+                      <div
+                        onClick={() => {
+                          onAutoBetClick(!auto);
+                        }}
+                        className={`input-switch ${auto ? "" : "off"}`}
+                      >
+                        <span className="oval"></span>
+                      </div>
+                    </div>
+                  </div>
+                  {/* {auto ? (
                     <button
                       onClick={() => onAutoBetClick(false)}
                       className="auto-play-btn btn-danger"
@@ -446,15 +467,8 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                       {autoCound}
                     </button>
                   ) : (
-                    <button
-                      onClick={() => {
-                        setShowModal(true);
-                      }}
-                      className="auto-play-btn btn-primary"
-                    >
-                      AUTO PLAY
-                    </button>
-                  )}
+                    
+                  )} */}
                 </div>
               </div>
               <div className="cashout-block">

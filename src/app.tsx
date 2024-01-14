@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useLocation } from "react-router";
+// import { useIdleTimer } from 'react-idle-timer'
+
 import Header from "./components/Header";
 import BetsUsers from "./components/BetUsers";
 import Main from "./components/Main";
@@ -24,6 +26,24 @@ function App() {
     unityState,
     GameState,
   } = React.useContext(Context);
+
+  // const [idleState, setIdleState] = useState<boolean>(false)
+
+  // const onIdle = () => {
+  //   setIdleState(true)
+  // }
+
+  // const onActive = () => {
+  //   setIdleState(false)
+  // }
+
+  // useIdleTimer({
+  //   onIdle,
+  //   onActive,
+  //   timeout: 3600_000,
+  //   throttle: 500
+  // })
+
   const return_url = new URLSearchParams(useLocation().search).get(
     "return_url"
   );
@@ -39,9 +59,18 @@ function App() {
       state.userInfo.isSoundEnable === true
     ) {
       if (takeOffAudioRef.current) {
-        try {
-          takeOffAudioRef.current.play();
-        } catch (error) { }
+        var playPromise = takeOffAudioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.then(_ => {
+            // Automatic playback started!
+            // Show playing UI.
+          })
+            .catch(error => {
+              console.log("Auto-play was prevented");
+              // Auto-play was prevented
+              // Show paused UI.
+            });
+        }
       }
 
     }
@@ -55,9 +84,18 @@ function App() {
       state.userInfo.isSoundEnable === true
     ) {
       if (flewAwayAudioRef.current) {
-        try {
-          flewAwayAudioRef.current.play();
-        } catch (error) { }
+        var playPromise = flewAwayAudioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.then(_ => {
+            // Automatic playback started!
+            // Show playing UI.
+          })
+            .catch(error => {
+              console.log("Auto-play was prevented");
+              // Auto-play was prevented
+              // Show paused UI.
+            });
+        }
       }
     }
     // eslint-disable-next-line
@@ -94,7 +132,7 @@ function App() {
             {errorBackend === true ? (
               <div className="waiting-font">{return_url}</div>
             ) : (
-              <div className="waiting-font">WAITING FOR LOADING IN BACKEND</div>
+              <div className="waiting-font">LOADING</div>
             )}
           </div>
         </div>
@@ -124,6 +162,54 @@ function App() {
         </div>
         {msgTab && <PerfectLiveChat />}
       </div>
+
+      {/* <div class="wrapper">
+    <div class="disconn-icon"></div>
+    <div class="alert">
+        <div class="text ng-star-inserted">
+            You have been disconnected. Check connection and refresh your browser, or go back to landing page
+        </div>
+    </div>
+</div>
+
+
+
+.wrapper {
+    height: 100%;
+    max-height: 500px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    .alert {
+        background-color: #1b1c1d;
+        max-width: 600px;
+        width: 100%;
+        min-height: 204px;
+        border-radius: 10px;
+        border: 1px solid #2a2b2e;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 50px;
+
+        .text {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+    }
+}
+
+.disconn-icon {
+    background: url(error-page.4aa561fd98783d15.svg) no-repeat center;
+    width: 120px;
+    height: 120px;
+    background-size: contain;
+    margin-bottom: 40px;
+} */}
     </div>
   );
 }

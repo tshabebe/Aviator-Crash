@@ -146,6 +146,8 @@ interface ContextType extends GameBetLimit, UserStatusType, GameStatusType {
   updateUserBetState(attrs: Partial<UserStatusType>);
   setMsgData(attrs: MsgUserType[]);
   handleGetSeed();
+  handlePlaceBet();
+  handleCancelBet();
   toggleMsgTab();
 }
 
@@ -235,7 +237,8 @@ const socket = io(
 );
 
 export const callCashOut = (userInfo: any, userId: string, at: number, index: "f" | "s") => {
-  let data = { userInfo, userId, type: index, endTarget: at };
+  let endTarget: Number = Number(at.toFixed(2))
+  let data = { userInfo, userId, type: index, endTarget };
   socket.emit("cashOut", data);
 };
 
@@ -609,73 +612,68 @@ export const Provider = ({ children }: any) => {
     };
   }, [socket, msgReceived, msgData]);
 
-  React.useEffect(() => {
+  const handleCancelBet = async () => {
+    console.log("handle cancel bet");
+  }
+
+  const handlePlaceBet = async () => {
     let attrs = state;
     let betStatus = userBetState;
-    if (gameState.GameState === "BET") {
-      if (betStatus.fbetState) {
-        let fbetid = `Crash-${Date.now()}-${Math.floor(Math.random() * 999999)}`;
-        attrs.userInfo.f.betid = fbetid;
-        attrs.userInfo.f.betted = true;
-      }
-      if (betStatus.sbetState) {
-        let sbetid = `Crash-${Date.now()}-${Math.floor(Math.random() * 999999)}`;
-        attrs.userInfo.s.betid = sbetid;
-        attrs.userInfo.s.betted = true;
-      }
-      if (betStatus.fbetState) {
-        if (state.userInfo.f.auto) {
-          if (state.fautoCound > 0) attrs.fautoCound -= 1;
-          else {
-            attrs.userInfo.f.auto = false;
-            betStatus.fbetState = false;
-            return;
-          }
-        }
-        let data = {
-          type: "f",
-          userInfo: attrs.userInfo,
-        };
-        if (attrs.userInfo.balance - state.userInfo.f.betAmount < 0) {
-          toast.error("Your balance is not enough");
-          betStatus.fbetState = false;
-          betStatus.fbetted = false;
-          return;
-        }
-        attrs.userInfo.balance -= state.userInfo.f.betAmount;
-        socket.emit("playBet", data);
-        betStatus.fbetState = false;
-        betStatus.fbetted = true;
-        update(attrs);
-        setUserBetState(betStatus);
-      }
-      if (betStatus.sbetState) {
-        if (state.userInfo.s.auto) {
-          if (state.sautoCound > 0) attrs.sautoCound -= 1;
-          else {
-            attrs.userInfo.s.auto = false;
-            betStatus.sbetState = false;
-            return;
-          }
-        }
-        let data = {
-          type: "s",
-          userInfo: attrs.userInfo,
-        };
-        if (attrs.userInfo.balance - state.userInfo.s.betAmount < 0) {
-          toast.error("Your balance is not enough");
-          betStatus.sbetState = false;
-          betStatus.sbetted = false;
-          return;
-        }
-        attrs.userInfo.balance -= state.userInfo.s.betAmount;
-        socket.emit("playBet", data);
-        betStatus.sbetState = false;
-        betStatus.sbetted = true;
-        update(attrs);
-        setUserBetState(betStatus);
-      }
+    let fBetFlag = betStatus.fbetState && !attrs.userInfo.f.betted;
+    let sBetFlag = betStatus.sbetState && !attrs.userInfo.s.betted;
+
+    console.log(`Game State is BET and first Bet Flag is ${fBetFlag} and second Bet Flag is ${sBetFlag}`)
+
+    if (fBetFlag) {
+      let fbetid = `Crash-${Date.now()}-${Math.floor(Math.random() * 999999)}`;
+      attrs.userInfo.f.betid = fbetid;
+      attrs.userInfo.f.betted = true;
     }
+    if (sBetFlag) {
+      let sbetid = `Crash-${Date.now()}-${Math.floor(Math.random() * 999999)}`;
+      attrs.userInfo.s.betid = sbetid;
+      attrs.userInfo.s.betted = true;
+    }
+    if (fBetFlag) {
+      let data = {
+        type: "f",
+        userInfo: attrs.userInfo,
+      };
+      if (attrs.userInfo.balance - state.userInfo.f.betAmount < 0) {
+        toast.error("Your balance is not enough");
+        betStatus.fbetState = false;
+        betStatus.fbetted = false;
+        return;
+      }
+      attrs.userInfo.balance -= state.userInfo.f.betAmount;
+      socket.emit("playBet", data);
+      betStatus.fbetState = false;
+      betStatus.fbetted = true;
+      update(attrs);
+      setUserBetState(betStatus);
+    }
+    if (sBetFlag) {
+      let data = {
+        type: "s",
+        userInfo: attrs.userInfo,
+      };
+      if (attrs.userInfo.balance - state.userInfo.s.betAmount < 0) {
+        toast.error("Your balance is not enough");
+        betStatus.sbetState = false;
+        betStatus.sbetted = false;
+        return;
+      }
+      attrs.userInfo.balance -= state.userInfo.s.betAmount;
+      socket.emit("playBet", data);
+      betStatus.sbetState = false;
+      betStatus.sbetted = true;
+      update(attrs);
+      setUserBetState(betStatus);
+    }
+  }
+
+  React.useEffect(() => {
+    if (gameState.GameState === "BET") handlePlaceBet();
   }, [state, gameState.GameState, userBetState.fbetState, userBetState.sbetState]);
 
   const getMyBets = async () => {
@@ -697,18 +695,18 @@ export const Provider = ({ children }: any) => {
     }
   };
 
-  useEffect(() => {
-    if (gameState.GameState === "BET") {
-      getMyBets();
-    } else if (gameState.GameState === "GAMEEND") {
-      // update-cashout
-      console.log("lastSecondNum => ", gameState.lastSecondNum)
-      let attrs = state;
-      attrs.userInfo.f.betted = false;
-      attrs.userInfo.s.betted = false;
-      update(attrs);
-    }
-  }, [gameState.GameState]);
+  // useEffect(() => {
+  //   if (gameState.GameState === "BET") {
+  //     getMyBets();
+  //   } else if (gameState.GameState === "GAMEEND") {
+  //     // update-cashout
+  //     console.log("lastSecondNum => ", gameState.lastSecondNum)
+  //     let attrs = state;
+  //     attrs.userInfo.f.betted = false;
+  //     attrs.userInfo.s.betted = false;
+  //     update(attrs);
+  //   }
+  // }, [gameState.GameState]);
 
   useEffect(() => {
     if (UserID) getMyBets();
@@ -784,6 +782,8 @@ export const Provider = ({ children }: any) => {
         getMyBets,
         updateUserBetState,
         handleGetSeed,
+        handlePlaceBet,
+        handleCancelBet,
         toggleMsgTab,
       }}
     >
