@@ -33,23 +33,23 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
   const auto = index === "f" ? state.userInfo.f.auto : state.userInfo.s.auto;
   const betted = index === "f" ? fbetted : sbetted;
-  const deState = index === "f" ? state.fdeState : state.sdeState;
-  const inState = index === "f" ? state.finState : state.sinState;
+  // const deState = index === "f" ? state.fdeState : state.sdeState;
+  // const inState = index === "f" ? state.finState : state.sinState;
   const betState = index === "f" ? fbetState : sbetState;
-  const decrease = index === "f" ? state.fdecrease : state.sdecrease;
-  const increase = index === "f" ? state.fincrease : state.sincrease;
-  const autoCound = index === "f" ? state.fautoCound : state.sautoCound;
+  // const decrease = index === "f" ? state.fdecrease : state.sdecrease;
+  // const increase = index === "f" ? state.fincrease : state.sincrease;
+  // const autoCound = index === "f" ? state.fautoCound : state.sautoCound;
   const betAmount =
     index === "f" ? state.userInfo.f.betAmount : state.userInfo.s.betAmount;
   const autoCashoutState =
     index === "f" ? state.fautoCashoutState : state.sautoCashoutState;
-  const single = index === "f" ? state.fsingle : state.ssingle;
-  const singleAmount =
-    index === "f" ? state.fsingleAmount : state.ssingleAmount;
+  // const single = index === "f" ? state.fsingle : state.ssingle;
+  // const singleAmount =
+  //   index === "f" ? state.fsingleAmount : state.ssingleAmount;
 
   const [gameType, setGameType] = React.useState<GameType>("manual");
   const [betOpt, setBetOpt] = React.useState<BetOptType>("20.00");
-  const [showModal, setShowModal] = React.useState(false);
+  // const [showModal, setShowModal] = React.useState(false);
   const [myBetAmount, setMyBetAmount] = React.useState<number | string>(20);
   // const { index } = props;
 
@@ -157,17 +157,17 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     update(attrs);
   };
 
-  const reset = () => {
-    update({
-      [`${index}autoCound`]: 0,
-      [`${index}decrease`]: 0,
-      [`${index}increase`]: 0,
-      [`${index}singleAmount`]: 0,
-      [`${index}deState`]: false,
-      [`${index}inState`]: false,
-      [`${index}single`]: false,
-    });
-  };
+  // const reset = () => {
+  //   update({
+  //     [`${index}autoCound`]: 0,
+  //     [`${index}decrease`]: 0,
+  //     [`${index}increase`]: 0,
+  //     [`${index}singleAmount`]: 0,
+  //     [`${index}deState`]: false,
+  //     [`${index}inState`]: false,
+  //     [`${index}single`]: false,
+  //   });
+  // };
 
   const onAutoBetClick = (_betState: boolean) => {
     let attrs = state;
@@ -181,26 +181,26 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     }
   };
 
-  const onStartBtnClick = () => {
-    if (autoCound > 0) {
-      if (deState || inState || single) {
-        if (singleAmount > 0 || decrease > 0 || increase > 0) {
-          if (inState || deState || single) {
-            onAutoBetClick(true);
-            setShowModal(false);
-          } else {
-            toast.error("Please, specify decrease or exceed stop point");
-          }
-        } else {
-          toast.error("Can't see 0.00 as stop point");
-        }
-      } else {
-        toast.error("Please, specify decrease or exceed stop point");
-      }
-    } else {
-      toast.error("Please, set number of rounds");
-    }
-  };
+  // const onStartBtnClick = () => {
+  //   if (autoCound > 0) {
+  //     if (deState || inState || single) {
+  //       if (singleAmount > 0 || decrease > 0 || increase > 0) {
+  //         if (inState || deState || single) {
+  //           onAutoBetClick(true);
+  //           // setShowModal(false);
+  //         } else {
+  //           toast.error("Please, specify decrease or exceed stop point");
+  //         }
+  //       } else {
+  //         toast.error("Can't see 0.00 as stop point");
+  //       }
+  //     } else {
+  //       toast.error("Please, specify decrease or exceed stop point");
+  //     }
+  //   } else {
+  //     toast.error("Please, set number of rounds");
+  //   }
+  // };
 
   useEffect(() => {
     if (GameState === "PLAYING" && betted && autoCashoutState && cashOut < currentSecondNum) {
@@ -226,7 +226,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     if ((GameState === "BET") && (auto === true)) {
       updateUserBetState({ [`${index}betted`]: true });
     }
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [GameState])
 
   return (
@@ -361,48 +361,48 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
           </div>
           <div className="buttons-block">
             {betted ? (
-              <button
-                className="btn-waiting"
-                onClick={() => {
-                  callCashOut(state.userInfo, state.userInfo.userId, currentTarget, index);
-                }}
-              >
-                <span>
-                  <label>CASHOUT</label>
-                  <label className="amount">
-                    <span>
-                      {Number(betAmount * currentTarget).toFixed(2)}
-                    </span>
-                    <span className="currency">{`${state?.userInfo?.currency
-                      ? state?.userInfo?.currency
-                      : "INR"
-                      }`}</span>
-                  </label>
-                </span>
-              </button>
-              // GameState === "PLAYING" ? (
-              //   <button
-              //     className="btn-waiting"
-              //     onClick={() => {
-              //       callCashOut(state.userInfo, state.userInfo.userId, currentTarget, index);
-              //     }}
-              //   >
-              //     <span>
-              //       <label>CASHOUT</label>
-              //       <label className="amount">
-              //         <span>
-              //           {Number(betAmount * currentTarget).toFixed(2)}
-              //         </span>
-              //         <span className="currency">{`${state?.userInfo?.currency
-              //           ? state?.userInfo?.currency
-              //           : "INR"
-              //           }`}</span>
-              //       </label>
-              //     </span>
-              //   </button>
-              // ) : (
-              //   <button className="btn-danger">WAITING</button>
-              // )
+              GameState === "PLAYING" ? (
+                <button
+                  className="btn-waiting"
+                  onClick={() => {
+                    callCashOut(state.userInfo, state.userInfo.userId, currentTarget, index);
+                  }}
+                >
+                  <span>
+                    <label>CASHOUT</label>
+                    <label className="amount">
+                      <span>
+                        {Number(betAmount * currentTarget).toFixed(2)}
+                      </span>
+                      <span className="currency">{`${state?.userInfo?.currency
+                        ? state?.userInfo?.currency
+                        : "INR"
+                        }`}</span>
+                    </label>
+                  </span>
+                </button>
+              ) : (
+                <>
+                  <div className="btn-tooltip">Waiting for next round</div>
+                  <button
+                    className="btn-danger h-[70%]"
+                    onClick={() => {
+                      onBetClick(false);
+                      update({
+                        ...state,
+                        [`${index}autoCound`]: 0,
+                        userInfo: {
+                          ...state.userInfo,
+                          [index]: { ...state.userInfo[index], auto: false },
+                        },
+                      });
+                    }}
+                  >
+                    <label>CANCEL</label>
+                  </button>
+                </>
+                // <button className="btn-danger">WAITING</button>
+              )
             ) : betState ? (
               <>
                 <div className="btn-tooltip">Waiting for next round</div>
@@ -543,7 +543,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
           </>
         )}
       </div>
-      {showModal && (
+      {/* {showModal && (
         <div className="modal">
           <div onClick={() => setShowModal(false)} className="back"></div>
           <div className="modal-dialog">
@@ -811,7 +811,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
