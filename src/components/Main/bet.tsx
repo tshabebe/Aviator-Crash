@@ -26,6 +26,8 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     minBet,
     maxBet,
     currentTarget,
+    loading,
+    setLoading,
     update,
     updateUserBetState,
   } = context;
@@ -51,6 +53,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   const [betOpt, setBetOpt] = React.useState<BetOptType>("20.00");
   // const [showModal, setShowModal] = React.useState(false);
   const [myBetAmount, setMyBetAmount] = React.useState<number | string>(20);
+  const [targetAmount, setTargetAmount] = React.useState<number>(0);
   // const { index } = props;
 
   const minus = (type: FieldNameType) => {
@@ -151,11 +154,6 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   const onBetClick = (s: boolean) => {
     updateUserBetState({ [`${index}betState`]: s });
   };
-  const setCount = (amount: number) => {
-    let attrs = state;
-    attrs[`${index}autoCound`] = amount;
-    update(attrs);
-  };
 
   // const reset = () => {
   //   update({
@@ -176,9 +174,6 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
     updateUserBetState({ [`${index}betState`]: _betState });
 
-    if (!state) {
-      setCount(0);
-    }
   };
 
   // const onStartBtnClick = () => {
@@ -205,6 +200,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   useEffect(() => {
     if (GameState === "PLAYING" && betted && autoCashoutState && cashOut < currentSecondNum) {
       updateUserBetState({ [`${index}betted`]: false });
+      let tempLoading = { ...loading };
+      tempLoading[`${index}Loading`] = true;
+      setLoading(tempLoading);
       callCashOut(state.userInfo, state.userInfo.userId, cashOut, index);
     }
     // eslint-disable-next-line
@@ -231,7 +229,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
   return (
     <div className="bet-control">
-      <div className={`controls ${betted && (GameState === "PLAYING") ? 'border-orange' : ''} ${((!betted && auto) || betState || (betted && ((GameState === "BET") || GameState === "READY"))) ? 'border-red' : ''}`}>
+      <div className={`controls ${loading[`${index}Loading`] && 'disabled'} ${betted && (GameState === "PLAYING") ? 'border-orange' : ''} ${((!betted && auto) || betState || (betted && ((GameState === "BET") || GameState === "READY"))) ? 'border-red' : ''}`}>
         {index === "f"
           ? !add && (
             <div
@@ -365,6 +363,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                 <button
                   className="btn-waiting"
                   onClick={() => {
+                    let tempLoading = { ...loading };
+                    tempLoading[`${index}Loading`] = true;
+                    setLoading(tempLoading);
                     callCashOut(state.userInfo, state.userInfo.userId, currentTarget, index);
                   }}
                 >
