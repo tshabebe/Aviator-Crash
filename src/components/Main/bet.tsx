@@ -1,8 +1,5 @@
 import React, { useEffect } from "react";
-// import { useCrashContext } from "../context";
-import toast from "react-hot-toast";
-import Context, { callCashOut } from "../../context";
-// import toaster from "../Toast";
+import Context, { callCashOut, callCancelBet } from "../../context";
 
 interface BetProps {
   index: "f" | "s";
@@ -35,26 +32,16 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
   const auto = index === "f" ? state.userInfo.f.auto : state.userInfo.s.auto;
   const betted = index === "f" ? fbetted : sbetted;
-  // const deState = index === "f" ? state.fdeState : state.sdeState;
-  // const inState = index === "f" ? state.finState : state.sinState;
   const betState = index === "f" ? fbetState : sbetState;
-  // const decrease = index === "f" ? state.fdecrease : state.sdecrease;
-  // const increase = index === "f" ? state.fincrease : state.sincrease;
-  // const autoCound = index === "f" ? state.fautoCound : state.sautoCound;
   const betAmount =
     index === "f" ? state.userInfo.f.betAmount : state.userInfo.s.betAmount;
   const autoCashoutState =
     index === "f" ? state.fautoCashoutState : state.sautoCashoutState;
-  // const single = index === "f" ? state.fsingle : state.ssingle;
-  // const singleAmount =
-  //   index === "f" ? state.fsingleAmount : state.ssingleAmount;
 
   const [gameType, setGameType] = React.useState<GameType>("manual");
   const [betOpt, setBetOpt] = React.useState<BetOptType>("20.00");
-  // const [showModal, setShowModal] = React.useState(false);
   const [myBetAmount, setMyBetAmount] = React.useState<number | string>(20);
-  const [targetAmount, setTargetAmount] = React.useState<number>(0);
-  // const { index } = props;
+  const [targetAmount, setTargetAmount] = React.useState<number | string>(0);
 
   const minus = (type: FieldNameType) => {
     let value = state;
@@ -155,18 +142,6 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     updateUserBetState({ [`${index}betState`]: s });
   };
 
-  // const reset = () => {
-  //   update({
-  //     [`${index}autoCound`]: 0,
-  //     [`${index}decrease`]: 0,
-  //     [`${index}increase`]: 0,
-  //     [`${index}singleAmount`]: 0,
-  //     [`${index}deState`]: false,
-  //     [`${index}inState`]: false,
-  //     [`${index}single`]: false,
-  //   });
-  // };
-
   const onAutoBetClick = (_betState: boolean) => {
     let attrs = state;
     attrs.userInfo[index].auto = _betState;
@@ -175,27 +150,6 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     updateUserBetState({ [`${index}betState`]: _betState });
 
   };
-
-  // const onStartBtnClick = () => {
-  //   if (autoCound > 0) {
-  //     if (deState || inState || single) {
-  //       if (singleAmount > 0 || decrease > 0 || increase > 0) {
-  //         if (inState || deState || single) {
-  //           onAutoBetClick(true);
-  //           // setShowModal(false);
-  //         } else {
-  //           toast.error("Please, specify decrease or exceed stop point");
-  //         }
-  //       } else {
-  //         toast.error("Can't see 0.00 as stop point");
-  //       }
-  //     } else {
-  //       toast.error("Please, specify decrease or exceed stop point");
-  //     }
-  //   } else {
-  //     toast.error("Please, set number of rounds");
-  //   }
-  // };
 
   useEffect(() => {
     if (GameState === "PLAYING" && betted && autoCashoutState && cashOut < currentSecondNum) {
@@ -221,8 +175,11 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   }, [betAmount]);
 
   React.useEffect(() => {
-    if ((GameState === "BET") && (auto === true)) {
-      updateUserBetState({ [`${index}betted`]: true });
+    if (GameState === "BET") {
+      setTargetAmount(0)
+      if (auto === true) {
+        updateUserBetState({ [`${index}betted`]: true });
+      }
     }
     // eslint-disable-next-line
   }, [GameState])
@@ -366,14 +323,15 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                     let tempLoading = { ...loading };
                     tempLoading[`${index}Loading`] = true;
                     setLoading(tempLoading);
-                    callCashOut(state.userInfo, state.userInfo.userId, currentTarget, index);
+                    setTargetAmount(Number(betAmount * Number(currentTarget.toFixed(2))).toFixed(2))
+                    callCashOut(state.userInfo, state.userInfo.userId, Number(currentTarget.toFixed(2)), index);
                   }}
                 >
                   <span>
                     <label>CASHOUT</label>
                     <label className="amount">
                       <span>
-                        {Number(betAmount * currentTarget).toFixed(2)}
+                        {targetAmount ? targetAmount : Number(betAmount * Number(currentTarget.toFixed(2))).toFixed(2)}
                       </span>
                       <span className="currency">{`${state?.userInfo?.currency
                         ? state?.userInfo?.currency
@@ -389,12 +347,17 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                     className="btn-danger h-[70%]"
                     onClick={() => {
                       onBetClick(false);
+                      let userInfo = { ...state.userInfo }
+                      let tempLoading = { ...loading };
+                      tempLoading[`${index}Loading`] = true;
+                      setLoading(tempLoading);
+                      callCancelBet(userInfo.userId, userInfo[index].betid, userInfo[index].betAmount, userInfo.currency, userInfo.Session_Token, index);
                       update({
                         ...state,
                         [`${index}autoCound`]: 0,
                         userInfo: {
-                          ...state.userInfo,
-                          [index]: { ...state.userInfo[index], auto: false },
+                          ...userInfo,
+                          [index]: { ...userInfo[index], auto: false },
                         },
                       });
                     }}
@@ -460,16 +423,6 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                       </div>
                     </div>
                   </div>
-                  {/* {auto ? (
-                    <button
-                      onClick={() => onAutoBetClick(false)}
-                      className="auto-play-btn btn-danger"
-                    >
-                      {autoCound}
-                    </button>
-                  ) : (
-                    
-                  )} */}
                 </div>
               </div>
               <div className="cashout-block">
@@ -544,275 +497,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
           </>
         )}
       </div>
-      {/* {showModal && (
-        <div className="modal">
-          <div onClick={() => setShowModal(false)} className="back"></div>
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <span>Auto play options</span>
-                <button className="close" onClick={() => setShowModal(false)}>
-                  <span>×</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <div className="content-part content-part-1">
-                  <span>Number of Rounds:</span>
-                  <div className="rounds-wrap">
-                    <button
-                      className={`btn-secondary ${autoCound === 10 ? "onClick" : ""
-                        }`}
-                      onClick={() => setCount(10)}
-                    >
-                      10
-                    </button>
-                    <button
-                      className={`btn-secondary ${autoCound === 20 ? "onClick" : ""
-                        }`}
-                      onClick={() => setCount(20)}
-                    >
-                      20
-                    </button>
-                    <button
-                      className={`btn-secondary ${autoCound === 50 ? "onClick" : ""
-                        }`}
-                      onClick={() => setCount(50)}
-                    >
-                      50
-                    </button>
-                    <button
-                      className={`btn-secondary ${autoCound === 100 ? "onClick" : ""
-                        }`}
-                      onClick={() => setCount(100)}
-                    >
-                      100
-                    </button>
-                  </div>
-                </div>
-                <div className="content-part">
-                  <div
-                    className={`input-switch ${deState ? "" : "off"}`}
-                    onClick={() => {
-                      update({
-                        [`${index}deState`]: !deState,
-                        [`${index}decrease`]: 0,
-                      });
-                    }}
-                  >
-                    <span className="oval"></span>
-                  </div>
-                  <span className="title">Stop if cash decreases by</span>
-                  <div className="spinner">
-                    {deState ? (
-                      <div className="m-spinner">
-                        <div className="buttons">
-                          <button
-                            onClick={() => minus("decrease")}
-                            className="minus"
-                          ></button>
-                        </div>
-                        <div className="input">
-                          <input
-                            type="number"
-                            onChange={(e) =>
-                              update({
-                                [`${index}decrease`]: Number(e.target.value),
-                              })
-                            }
-                            value={decrease}
-                            onBlur={(e) =>
-                              onChangeBlur(
-                                Number(e.target.value) || 0,
-                                "decrease"
-                              )
-                            }
-                          />
-                        </div>
-                        <div className="buttons">
-                          <button
-                            onClick={() => plus("decrease")}
-                            className="plus"
-                          ></button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="m-spinner disabled">
-                        <div className="buttons">
-                          <button disabled className="minus"></button>
-                        </div>
-                        <div className="input">
-                          <input
-                            type="number"
-                            readOnly
-                            value={Number(decrease).toFixed(2)}
-                          />
-                        </div>
-                        <div className="buttons">
-                          <button disabled className="plus"></button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <span>{`${state?.userInfo?.currency
-                    ? state?.userInfo?.currency
-                    : "INR"
-                    }`}</span>
-                </div>
-                <div className="content-part">
-                  <div
-                    className={`input-switch ${inState ? "" : "off"}`}
-                    onClick={() => {
-                      update({
-                        [`${index}inState`]: !inState,
-                        [`${index}increase`]: 0,
-                      });
-                    }}
-                  >
-                    <span className="oval"></span>
-                  </div>
-                  <span className="title">Stop if cash increases by</span>
-                  <div className="spinner">
-                    {inState ? (
-                      <div className="m-spinner">
-                        <div className="buttons">
-                          <button
-                            onClick={() => minus("increase")}
-                            className="minus"
-                          ></button>
-                        </div>
-                        <div className="input">
-                          <input
-                            type="number"
-                            onChange={(e) =>
-                              update({
-                                [`${index}increase`]: Number(e.target.value),
-                              })
-                            }
-                            value={increase}
-                            onBlur={(e) =>
-                              onChangeBlur(Number(e.target.value), "increase")
-                            }
-                          />
-                        </div>
-                        <div className="buttons">
-                          <button
-                            onClick={() => plus("increase")}
-                            className="plus"
-                          ></button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="m-spinner disabled">
-                        <div className="buttons">
-                          <button disabled className="minus"></button>
-                        </div>
-                        <div className="input">
-                          <input
-                            type="number"
-                            readOnly
-                            value={Number(increase).toFixed(2)}
-                          />
-                        </div>
-                        <div className="buttons">
-                          <button disabled className="plus"></button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <span>{`${state?.userInfo?.currency
-                    ? state?.userInfo?.currency
-                    : "INR"
-                    }`}</span>
-                </div>
-                <div className="content-part">
-                  <div
-                    className={`input-switch ${single ? "" : "off"}`}
-                    onClick={() => {
-                      update({
-                        [`${index}single`]: !single,
-                        [`${index}singleAmount`]: 0,
-                      });
-                    }}
-                  >
-                    <span className="oval"></span>
-                  </div>
-                  <span className="title">Stop if single win exceeds</span>
-                  <div className="spinner">
-                    {!!single ? (
-                      <div className="m-spinner">
-                        <div className="buttons">
-                          <button
-                            onClick={() => minus("singleAmount")}
-                            className="minus"
-                          ></button>
-                        </div>
-                        <div className="input">
-                          <input
-                            type="number"
-                            onChange={(e) =>
-                              update({
-                                [`${index}singleAmount`]: Number(
-                                  e.target.value
-                                ),
-                              })
-                            }
-                            value={singleAmount}
-                            onBlur={(e) =>
-                              onChangeBlur(
-                                Number(e.target.value),
-                                "singleAmount"
-                              )
-                            }
-                          />
-                        </div>
-                        <div className="buttons">
-                          <button
-                            onClick={() => plus("singleAmount")}
-                            className="plus"
-                          ></button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="m-spinner disabled">
-                        <div className="buttons ">
-                          <button disabled className="minus"></button>
-                        </div>
-                        <div className="input">
-                          <input
-                            type="number"
-                            readOnly
-                            value={singleAmount.toFixed(2)}
-                          />
-                        </div>
-                        <div className="buttons">
-                          <button disabled className="plus"></button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <span>{`${state?.userInfo?.currency
-                    ? state?.userInfo?.currency
-                    : "INR"
-                    }`}</span>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <div className="btns-wrapper">
-                  <button className="reset-btn btn-waiting" onClick={reset}>
-                    Reset
-                  </button>
-                  <button
-                    className="start-btn btn-success"
-                    onClick={onStartBtnClick}
-                  >
-                    Start
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )} */}
+
     </div>
   );
 };

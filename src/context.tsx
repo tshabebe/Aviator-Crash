@@ -34,6 +34,7 @@ export interface UserType {
   userName: string;
   ipAddress: string;
   platform: string;
+  token: string;
   Session_Token: string;
   isSoundEnable: boolean;
   isMusicEnable: boolean;
@@ -190,6 +191,7 @@ const init_state = {
     userName: "",
     ipAddress: "",
     platform: "desktop",
+    token: '',
     Session_Token: '',
     currency: "INR",
     isSoundEnable: true,
@@ -247,6 +249,11 @@ export const callCashOut = (userInfo: any, userId: string, at: number, index: "f
   let endTarget: Number = Number(at.toFixed(2))
   let data = { userInfo, userId, type: index, endTarget };
   socket.emit("cashOut", data);
+};
+
+export const callCancelBet = (userId: string, betid: string, betAmount: any, currency: string, Session_Token: string, type: string) => {
+  let data = { userId, betid, betAmount, currency, Session_Token, type };
+  socket.emit("cancelBet", data);
 };
 
 let fIncreaseAmount = 0;
@@ -397,17 +404,18 @@ export const Provider = ({ children }: any) => {
         setBettedUsers(bettedUsers);
       });
 
-      socket.on("myBetState", (userInfo: { user: UserType; type: string, loading: LoadingType }) => {
-        var { user, type, loading } = userInfo;
+      socket.on("myBetState", (userInfo: { user: UserType; type: string }) => {
+        var { user } = userInfo;
         var attrs = { ...userBetState };
         attrs.fbetState = false;
         attrs.fbetted = user.f.betted;
         attrs.sbetState = false;
         attrs.sbetted = user.s.betted;
         setUserBetState(attrs);
-        let tempLoading = { ...loading };
-        tempLoading[`${type}Loading`] = false;
-        setLoading(tempLoading)
+        setLoading({
+          fLoading: false,
+          sLoading: false,
+        })
       });
 
       socket.on("history", (history: any) => {
@@ -502,6 +510,10 @@ export const Provider = ({ children }: any) => {
             }
           }
         }
+        setLoading({
+          fLoading: false,
+          sLoading: false,
+        })
         update(attrs);
         setUserBetState(betStatus);
       });
@@ -513,6 +525,14 @@ export const Provider = ({ children }: any) => {
       socket.on("recharge", () => {
         setRechargeState(true);
       });
+
+      socket.on('cancelled', (type: string) => {
+        updateUserBetState({ [`${type}betState`]: false });
+        setLoading({
+          fLoading: false,
+          sLoading: false,
+        })
+      })
 
       socket.on("error", (data) => {
         setUserBetState({
@@ -640,7 +660,7 @@ export const Provider = ({ children }: any) => {
     let sBetFlag = betStatus.sbetState && !attrs.userInfo.s.betted;
     let fBetBalance = attrs.userInfo.balance - state.userInfo.f.betAmount < 0;
     let sBetBalance = attrs.userInfo.balance - state.userInfo.s.betAmount < 0;
-    if (fBetBalance) {
+    if (fBetFlag) {
       sBetBalance = attrs.userInfo.balance - state.userInfo.f.betAmount - state.userInfo.s.betAmount < 0;
     }
 
@@ -674,7 +694,6 @@ export const Provider = ({ children }: any) => {
           sLoading: sBetFlag && !sBetBalance,
         }
         setLoading(tempLoading)
-        data['loading'] = tempLoading
         socket.emit("playBet", data);
         betStatus.fbetState = false;
         betStatus.fbetted = true;
@@ -702,7 +721,6 @@ export const Provider = ({ children }: any) => {
           sLoading: true,
         }
         setLoading(tempLoading)
-        data['loading'] = tempLoading
         socket.emit("playBet", data);
         betStatus.sbetState = false;
         betStatus.sbetted = true;
