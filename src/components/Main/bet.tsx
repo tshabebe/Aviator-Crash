@@ -113,6 +113,11 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   const changeBetType = (e: GameType) => {
     updateUserBetState({ [`${index}betState`]: false });
     setGameType(e);
+    if (e === "manual") {
+      let userInfo = { ...state.userInfo }
+      userInfo[index].auto = false;
+      update({ userInfo })
+    }
   };
 
   const onChangeBlur = (

@@ -1,6 +1,7 @@
 import React from "react";
-import Context, { BetResults, BettedUserType, UserType } from "../../context";
+import Context from "../../context";
 import { displayName } from "../utils";
+import { BetResults, BettedUserType, UserType } from "../../utils/interfaces";
 
 interface AllDataProps {
   pre: boolean;

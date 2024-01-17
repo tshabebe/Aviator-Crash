@@ -115,7 +115,7 @@ export default function PerfectLiveChat() {
           <div className="header">
             <div className="online-wrapper position-absolute d-flex align-items-center">
               <div className="green-circle"></div>
-              <span>11</span>
+              <span>1</span>
             </div>
             <div className="buttons">
               <button
