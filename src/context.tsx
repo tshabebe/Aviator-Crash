@@ -155,7 +155,6 @@ interface ContextType extends GameBetLimit, UserStatusType, GameStatusType {
   setMsgData(attrs: MsgUserType[]);
   handleGetSeed();
   handlePlaceBet();
-  handleCancelBet();
   toggleMsgTab();
 }
 
@@ -579,7 +578,7 @@ export const Provider = ({ children }: any) => {
       socket.off("success");
     };
     // eslint-disable-next-line
-  }, [socket, secure, token, userBetState, loading, state.userInfo]);
+  }, [socket, secure, token, userBetState, loading]);
 
   React.useEffect(() => {
     if (token && UserID && currency && returnurl) {
@@ -649,10 +648,6 @@ export const Provider = ({ children }: any) => {
       socket.off("newMsg");
     };
   }, [socket, msgReceived, msgData]);
-
-  const handleCancelBet = async () => {
-    console.log("handle cancel bet");
-  }
 
   const handlePlaceBet = async () => {
     let attrs = state;
@@ -754,22 +749,11 @@ export const Provider = ({ children }: any) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (gameState.GameState === "BET") {
-  //     getMyBets();
-  //   } else if (gameState.GameState === "GAMEEND") {
-  //     // update-cashout
-  //     console.log("lastSecondNum => ", gameState.lastSecondNum)
-  //     let attrs = state;
-  //     attrs.userInfo.f.betted = false;
-  //     attrs.userInfo.s.betted = false;
-  //     update(attrs);
-  //   }
-  // }, [gameState.GameState]);
-
   useEffect(() => {
-    if (UserID) getMyBets();
-  }, [UserID])
+    if (gameState.GameState === "BET" || UserID) {
+      getMyBets();
+    }
+  }, [UserID, gameState.GameState]);
 
   const updateMyIpAddress = async () => {
     const res = await axios.get("https://api.ipify.org/?format=json");
@@ -844,7 +828,6 @@ export const Provider = ({ children }: any) => {
         updateUserBetState,
         handleGetSeed,
         handlePlaceBet,
-        handleCancelBet,
         toggleMsgTab,
       }}
     >
