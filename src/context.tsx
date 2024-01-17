@@ -525,7 +525,7 @@ export const Provider = ({ children }: any) => {
         setRechargeState(true);
       });
 
-      socket.on('cancelled', (data: { status: boolean, type: string }) => {
+      socket.on("cancelled", (data: { status: boolean, type: string }) => {
         const { type } = data;
         updateUserBetState({ [`${type}betState`]: false, [`${type}betted`]: false });
         let tempLoading = { ...loading }

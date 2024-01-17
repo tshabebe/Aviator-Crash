@@ -168,6 +168,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     autoCashoutState,
     state.userInfo.f.target,
     state.userInfo.s.target,
+    loading,
   ]);
 
   useEffect(() => {
