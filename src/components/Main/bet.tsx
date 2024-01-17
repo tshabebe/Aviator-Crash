@@ -114,9 +114,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     updateUserBetState({ [`${index}betState`]: false });
     setGameType(e);
     if (e === "manual") {
-      let userInfo = { ...state.userInfo }
-      userInfo[index].auto = false;
-      update({ userInfo })
+      update({
+        [`${index}autoCashoutState`]: false,
+      });
     }
   };
 
@@ -210,13 +210,17 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
           <div className="navigation-switcher">
             <button
               className={gameType === "manual" ? "active" : "inactive"}
-              onClick={() => changeBetType("manual")}
+              onClick={() => {
+                if (!betState && !betted) changeBetType("manual")
+              }}
             >
               Bet
             </button>
             <button
               className={gameType === "auto" ? "active" : "inactive"}
-              onClick={() => changeBetType("auto")}
+              onClick={() => {
+                if (!betted && !betted) changeBetType("auto")
+              }}
             >
               Auto
             </button>
@@ -448,8 +452,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                           [`${index}autoCashoutState`]: !autoCashoutState,
                         });
                       }}
-                      className={`input-switch ${autoCashoutState ? "" : "off"
-                        }`}
+                      className={`input-switch ${autoCashoutState ? "" : "off"}`}
                     >
                       <span className="oval"></span>
                     </div>
