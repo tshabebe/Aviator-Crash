@@ -405,17 +405,17 @@ export const Provider = ({ children }: any) => {
       });
 
       socket.on("myBetState", (userInfo: { user: UserType; type: string }) => {
-        var { user } = userInfo;
+        var { user, type } = userInfo;
         var attrs = { ...userBetState };
         attrs.fbetState = false;
         attrs.fbetted = user.f.betted;
         attrs.sbetState = false;
         attrs.sbetted = user.s.betted;
         setUserBetState(attrs);
-        setLoading({
-          fLoading: false,
-          sLoading: false,
-        })
+
+        let tempLoading = { ...loading };
+        tempLoading[`${type}Loading`] = false
+        setLoading(tempLoading)
       });
 
       socket.on("history", (history: any) => {
@@ -526,12 +526,12 @@ export const Provider = ({ children }: any) => {
         setRechargeState(true);
       });
 
-      socket.on('cancelled', (type: string) => {
-        updateUserBetState({ [`${type}betState`]: false });
-        setLoading({
-          fLoading: false,
-          sLoading: false,
-        })
+      socket.on('cancelled', (data: { status: boolean, type: string }) => {
+        const { type } = data;
+        updateUserBetState({ [`${type}betState`]: false, [`${type}betted`]: false });
+        let tempLoading = { ...loading }
+        tempLoading[`${type}Loading`] = false;
+        setLoading(tempLoading)
       })
 
       socket.on("error", (data) => {
@@ -574,11 +574,12 @@ export const Provider = ({ children }: any) => {
       socket.off("finishGame");
       socket.off("getBetLimits");
       socket.off("recharge");
+      socket.off("cancelled")
       socket.off("error");
       socket.off("success");
     };
     // eslint-disable-next-line
-  }, [socket, secure, token]);
+  }, [socket, secure, token, userBetState, loading, state.userInfo]);
 
   React.useEffect(() => {
     if (token && UserID && currency && returnurl) {
