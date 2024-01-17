@@ -1,6 +1,8 @@
 {
-  "name": "my-app",
+  "name": "aviator-front",
   "version": "0.1.0",
+  "author": "Jay West (vecnazmaga@gmail.com)",
+  "description": "The aviator server",
   "private": true,
   "dependencies": {
     "@emoji-mart/data": "^1.1.2",

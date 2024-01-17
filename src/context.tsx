@@ -415,6 +415,7 @@ export const Provider = ({ children }: any) => {
         let tempLoading = { ...loading };
         tempLoading[`${type}Loading`] = false
         setLoading(tempLoading)
+        getMyBets();
       });
 
       socket.on("history", (history: any) => {
@@ -750,9 +751,10 @@ export const Provider = ({ children }: any) => {
   };
 
   useEffect(() => {
-    if (gameState.GameState === "BET" || UserID) {
+    if (UserID) {
       getMyBets();
     }
+  // eslint-disable-next-line
   }, [UserID, gameState.GameState]);
 
   const updateMyIpAddress = async () => {
