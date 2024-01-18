@@ -40,7 +40,6 @@ export default function PerfectLiveChat() {
 
   const handleInputText = (e) => {
     if (e.keyCode === 13) {
-      handleSendMsg();
       setMsgContent("");
     }
   };
@@ -51,7 +50,8 @@ export default function PerfectLiveChat() {
 
   const handleSendMsg = () => {
     if (msgContent !== "") {
-      socket.emit("sendMsg", { msgType: "normal", msgContent });
+      socket.emit("sendMsg", { msgType: "normal", msgContent, userInfo: state.userInfo });
+      setMsgContent("");
     } else {
       console.log("message empty");
     }
@@ -61,7 +61,8 @@ export default function PerfectLiveChat() {
   const handleChooseGif = (item) => {
     let gif: any = { ...item };
     if (item) {
-      socket.emit("sendMsg", { msgType: "gif", msgContent: gif.url });
+      socket.emit("sendMsg", { msgType: "gif", msgContent: gif.url, userInfo: state.userInfo });
+      setMsgContent("");
     } else {
       console.log("message empty");
     }
@@ -69,6 +70,7 @@ export default function PerfectLiveChat() {
   };
 
   const handleEmojiSelect = (emoji) => {
+    console.log(emoji)
     setMsgContent(`${msgContent}${emoji.native}`);
   };
 
