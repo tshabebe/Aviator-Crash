@@ -159,6 +159,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
   useEffect(() => {
     if (GameState === "PLAYING" && betted && autoCashoutState && cashOut < currentSecondNum) {
+      console.log(index);
       updateUserBetState({ [`${index}betted`]: false });
       let tempLoading = { ...loading };
       tempLoading[`${index}Loading`] = true;
@@ -476,7 +477,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                         }`}
                     >
                       <div className="input">
-                        {autoCashoutState && !betState ? (
+                        {autoCashoutState ? (
                           <input
                             type="number"
                             onChange={(e) => {

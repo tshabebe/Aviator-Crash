@@ -185,6 +185,10 @@ export const Provider = ({ children }: any) => {
       console.log(`Socket connection is ${socket.connected}`)
     );
 
+    socket.on("gameState", (gameState: GameStatusType) => {
+      setGameState(gameState);
+    });
+
     if (secure) {
 
       socket.on("bettedUserInfo", (bettedUsers: BettedUserType[]) => {
@@ -208,10 +212,6 @@ export const Provider = ({ children }: any) => {
 
       socket.on("history", (history: any) => {
         setHistory(history);
-      });
-
-      socket.on("gameState", (gameState: GameStatusType) => {
-        setGameState(gameState);
       });
 
       socket.on("serverSeed", (seed: string) => {

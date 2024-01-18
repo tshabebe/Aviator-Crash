@@ -494,6 +494,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
             flex-direction: column;
 
             .btn-tooltip {
+              line-height: 1.5;
               font-size: 14px;
               color: #ffffffb3;
               text-align: center;
