@@ -257,22 +257,25 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                   ) : (
                     <input
                       type="number"
-                      value={myBetAmount === "" ? "" : Number(myBetAmount).toFixed(2)}
+                      value={myBetAmount}
                       onChange={(e) => {
-                        let betAmount: number | string = 0;
-                        Number(e.target.value) > maxBet
-                          ? betAmount = maxBet
-                          : Number(e.target.value) < 0
-                            ? betAmount = 0
-                            : betAmount = Number(e.target.value);
-                        if (betAmount === 0) betAmount = "";
-                        update({
-                          ...state,
-                          userInfo: {
-                            ...state.userInfo,
-                            [`${index}`]: { betAmount },
-                          },
-                        })
+                        // Number(e.target.value) > maxBet
+                        //   ? betAmount = maxBet
+                        //   : Number(e.target.value) < 0
+                        //     ? betAmount = 0
+                        //     : betAmount = Number(e.target.value);
+                        const betAmount: number | string = e.target.value;
+
+                        // Allow only numbers and up to 2 digits after the decimal point
+                        if (parseFloat(betAmount) >= minBet && parseFloat(betAmount) <= maxBet && /^\d*\.?\d{0,2}$/.test(betAmount)) {
+                          update({
+                            ...state,
+                            userInfo: {
+                              ...state.userInfo,
+                              [`${index}`]: { betAmount },
+                            },
+                          })
+                        }
                       }}
                     ></input>
                   )}
@@ -445,7 +448,8 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
               <div className="cashout-block">
                 <div className="cashout-switcher">
                   <label className="label">Auto Cash Out</label>
-                  {betted || betState ? (
+                  {/* {betted || betState ? ( */}
+                  {betted ? (
                     <div
                       className={`input-switch ${autoCashoutState ? "" : "off"
                         }`}
