@@ -5,9 +5,9 @@ import "./toast.scss";
 const toaster = (
   type: string,
   msg: string,
-  currency: string,
-  point: number,
-  cashoutAmount: number
+  currency?: string,
+  point?: number,
+  cashoutAmount?: number
 ) => {
   switch (type) {
     case "success":

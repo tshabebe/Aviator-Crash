@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import Context, { callCashOut, callCancelBet } from "../../context";
+import toaster from "../Toast";
 
 interface BetProps {
   index: "f" | "s";
@@ -203,7 +204,13 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
           : add && (
             <div
               className="sec-hand-btn minus"
-              onClick={() => setAdd(false)}
+              onClick={() => {
+                if (betState || betted) {
+                  toaster("error", "you can't remove after you bet.");
+                } else {
+                  setAdd(false)
+                }
+              }}
             ></div>
           )}
         <div className="navigation">
