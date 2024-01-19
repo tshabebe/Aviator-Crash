@@ -490,8 +490,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                 <div className="cashout-snipper-wrapper">
                   <div className="cashout-snipper">
                     <div
-                      className={`snipper small ${autoCashoutState && !betState ? "" : "disabled"
-                        }`}
+                      className={`snipper small ${autoCashoutState ? "" : "disabled"}`}
                     >
                       <div className="input">
                         {autoCashoutState ? (
