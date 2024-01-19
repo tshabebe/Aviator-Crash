@@ -158,12 +158,12 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   };
 
   useEffect(() => {
-    if (GameState === "PLAYING" && betted && autoCashoutState && cashOut < currentSecondNum) {
-      console.log(index);
+    if (index === "f" && GameState === "PLAYING" && betted && autoCashoutState && cashOut < currentSecondNum) {
       updateUserBetState({ [`${index}betted`]: false });
-      let tempLoading = { ...loading };
-      tempLoading[`${index}Loading`] = true;
-      setLoading(tempLoading);
+      setLoading({
+        fLoading: true,
+        sLoading: false,
+      });
       callCashOut(state.userInfo, state.userInfo.userId, cashOut, index);
     }
     // eslint-disable-next-line
@@ -171,9 +171,26 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     GameState,
     currentSecondNum,
     fbetted,
-    sbetted,
     autoCashoutState,
     state.userInfo.f.target,
+    loading,
+  ]);
+
+  useEffect(() => {
+    if (index === "s" && GameState === "PLAYING" && betted && autoCashoutState && cashOut + 0.01 < currentSecondNum) {
+      updateUserBetState({ [`${index}betted`]: false });
+      setLoading({
+        fLoading: false,
+        sLoading: true,
+      });
+      callCashOut(state.userInfo, state.userInfo.userId, cashOut, index);
+    }
+    // eslint-disable-next-line
+  }, [
+    GameState,
+    currentSecondNum,
+    sbetted,
+    autoCashoutState,
     state.userInfo.s.target,
     loading,
   ]);
