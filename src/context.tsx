@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createContext } from "react";
 import { useLocation } from "react-router";
 import { io } from "socket.io-client";
 import axios from "axios";
@@ -24,7 +24,7 @@ import {
   init_state,
 } from "./utils/interfaces"
 
-const Context = React.createContext<ContextType>(null!);
+const Context = createContext<ContextType>(null!);
 
 const socket = io(
   process.env.REACT_APP_DEVELOPMENT === "true"
@@ -148,7 +148,7 @@ export const Provider = ({ children }: any) => {
     ]);
   };
 
-  React.useEffect(
+  useEffect(
     function () {
       setPlatformLoading(false);
       unityContext.on("GameController", function (message) {
@@ -180,7 +180,7 @@ export const Provider = ({ children }: any) => {
     // [secure]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     socket.on("connect", () =>
       console.log(`Socket connection is ${socket.connected}`)
     );
@@ -368,7 +368,7 @@ export const Provider = ({ children }: any) => {
     // eslint-disable-next-line
   }, [socket, secure, token, userBetState, loading]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (token && UserID && currency && returnurl) {
       socket.emit("sessionCheck", { token, UserID, currency, returnurl });
       socket.on("sessionSecure", (data) => {
@@ -405,7 +405,7 @@ export const Provider = ({ children }: any) => {
     // eslint-disable-next-line
   }, [socket])
 
-  React.useEffect(() => {
+  useEffect(() => {
     socket.on("newMsg", ({
       _id,
       userId,
@@ -514,9 +514,18 @@ export const Provider = ({ children }: any) => {
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (gameState.GameState === "BET") handlePlaceBet();
   }, [state, gameState.GameState, userBetState.fbetState, userBetState.sbetState]);
+
+  useEffect(() => {
+    if (gameState.GameState === "READY") {
+      setLoading({
+        fLoading: false,
+        sLoading: false
+      })
+    }
+  }, [gameState.GameState]);
 
   const getMyBets = async () => {
     try {
