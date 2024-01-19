@@ -355,7 +355,6 @@ export const Provider = ({ children }: any) => {
       socket.off("myBetState");
       socket.off("sessionSecure");
       socket.off("myInfo");
-      socket.off("newMsg");
       socket.off("history");
       socket.off("gameState");
       socket.off("previousHand");

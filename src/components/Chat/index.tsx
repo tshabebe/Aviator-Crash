@@ -38,24 +38,21 @@ export default function PerfectLiveChat() {
     scrollToLastFruit();
   }, [msgTab, msgReceived]);
 
-  const handleInputText = (e) => {
-    if (e.keyCode === 13) {
-      setMsgContent("");
-    }
-  };
-
-  const handleTextChange = (text) => {
-    setMsgContent(text);
-  };
-
   const handleSendMsg = () => {
-    if (msgContent !== "") {
+    if (msgContent.trim() !== '') {
       socket.emit("sendMsg", { msgType: "normal", msgContent, userInfo: state.userInfo });
       setMsgContent("");
     } else {
       console.log("message empty");
     }
     setEmojiPicker(false);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault(); // Prevent new line in the textarea
+      handleSendMsg();
+    }
   };
 
   const handleChooseGif = (item) => {
@@ -156,7 +153,7 @@ export default function PerfectLiveChat() {
                           <span
                             className="name-wrapper"
                             onClick={() =>
-                              handleTextChange(`${msgContent}@${userName} `)
+                              setMsgContent(`${msgContent}@${userName} `)
                             }
                           >
                             <span className="name canSelect">{userName}</span>
@@ -243,8 +240,8 @@ export default function PerfectLiveChat() {
               placeholder="Reply"
               maxLength={160}
               value={msgContent}
-              onKeyUp={(e) => handleInputText(e)}
-              onChange={(e) => handleTextChange(e.target.value)}
+              onChange={(e) => setMsgContent(e.target.value)}
+              onKeyDown={handleKeyDown}
             ></textarea>
             <div className="tools">
               <div
