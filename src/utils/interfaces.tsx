@@ -137,8 +137,10 @@ export interface ContextType extends GameBetLimit, UserStatusType, GameStatusTyp
     msgReceived: boolean;
     myUnityContext: UnityContext;
     currentTarget: number;
-    loading: LoadingType;
-    setLoading(attrs: LoadingType);
+    fLoading: Boolean;
+    setFLoading(attrs: Boolean);
+    sLoading: Boolean;
+    setSLoading(attrs: Boolean);
     setCurrentTarget(attrs: Partial<number>);
     setMsgReceived(attrs: Partial<boolean>);
     update(attrs: Partial<ContextDataType>);

@@ -12,7 +12,6 @@ export default function WebGLStarter() {
   const {
     GameState,
     currentNum,
-    lastSecondNum,
     time,
     unityState,
     myUnityContext,
@@ -75,7 +74,7 @@ export default function WebGLStarter() {
     );
     currentFlag = flag;
   }, [flag, myUnityContext]);
-  
+
   return (
     <div className="crash-container">
       <div className="canvas">
@@ -105,7 +104,7 @@ export default function WebGLStarter() {
               <div className="flew-away">FLEW AWAY!</div>
             )}
             <div>
-              {`${target === 1 ? '1.00' : lastSecondNum?.toFixed(2)}`}
+              {`${target === 1 ? '1.00' : target?.toFixed(2)}`}
               <span className="font-[900]">x</span>
             </div>
           </div>

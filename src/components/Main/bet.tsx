@@ -24,8 +24,10 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     minBet,
     maxBet,
     currentTarget,
-    loading,
-    setLoading,
+    fLoading,
+    setFLoading,
+    sLoading,
+    setSLoading,
     update,
     updateUserBetState,
   } = context;
@@ -160,10 +162,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   useEffect(() => {
     if (index === "f" && GameState === "PLAYING" && betted && autoCashoutState && cashOut < currentSecondNum) {
       updateUserBetState({ [`${index}betted`]: false });
-      setLoading({
-        fLoading: true,
-        sLoading: false,
-      });
+      setFLoading(true);
       callCashOut(state.userInfo, state.userInfo.userId, cashOut, index);
     }
     // eslint-disable-next-line
@@ -173,16 +172,13 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     fbetted,
     autoCashoutState,
     state.userInfo.f.target,
-    loading,
+    fLoading
   ]);
 
   useEffect(() => {
     if (index === "s" && GameState === "PLAYING" && betted && autoCashoutState && cashOut + 0.01 < currentSecondNum) {
       updateUserBetState({ [`${index}betted`]: false });
-      setLoading({
-        fLoading: false,
-        sLoading: true,
-      });
+      setSLoading(true);
       callCashOut(state.userInfo, state.userInfo.userId, cashOut, index);
     }
     // eslint-disable-next-line
@@ -192,7 +188,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     sbetted,
     autoCashoutState,
     state.userInfo.s.target,
-    loading,
+    sLoading,
   ]);
 
   useEffect(() => {
@@ -211,7 +207,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
   return (
     <div className="bet-control">
-      <div className={`controls ${loading[`${index}Loading`] && 'disabled'} ${betted && (GameState === "PLAYING") ? 'border-orange' : ''} ${((!betted && auto) || betState || (betted && ((GameState === "BET") || GameState === "READY"))) ? 'border-red' : ''}`}>
+      <div className={`controls ${(index === 'f' ? fLoading : sLoading) ? 'disabled' : ''} ${betted && (GameState === "PLAYING") ? 'border-orange' : ''} ${((!betted && auto) || betState || (betted && ((GameState === "BET") || GameState === "READY"))) ? 'border-red' : ''}`}>
         {index === "f"
           ? !add && (
             <div
@@ -358,9 +354,11 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                 <button
                   className="btn-waiting"
                   onClick={() => {
-                    let tempLoading = { ...loading };
-                    tempLoading[`${index}Loading`] = true;
-                    setLoading(tempLoading);
+                    if (index === 'f') {
+                      setFLoading(true);
+                    } else {
+                      setSLoading(true);
+                    }
                     setTargetAmount(Number(betAmount * Number(currentTarget.toFixed(2))).toFixed(2))
                     callCashOut(state.userInfo, state.userInfo.userId, Number(currentTarget.toFixed(2)), index);
                   }}
@@ -386,9 +384,11 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                     onClick={() => {
                       onBetClick(false);
                       let userInfo = { ...state.userInfo }
-                      let tempLoading = { ...loading };
-                      tempLoading[`${index}Loading`] = true;
-                      setLoading(tempLoading);
+                      if (index === 'f') {
+                        setFLoading(true);
+                      } else {
+                        setSLoading(true);
+                      }
                       callCancelBet(userInfo.userId, userInfo[index].betid, userInfo[index].betAmount, userInfo.currency, userInfo.Session_Token, index);
                       update({
                         ...state,
@@ -535,7 +535,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
         )}
       </div>
 
-    </div>
+    </div >
   );
 };
 
