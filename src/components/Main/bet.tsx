@@ -107,9 +107,11 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
         );
       }
     } else {
+
       value.userInfo[index].betAmount = Number(Number(amount).toFixed(2));
       setBetOpt(btnNum);
     }
+    setMyBetAmount(value.userInfo[index].betAmount)
     update(value);
   };
 
