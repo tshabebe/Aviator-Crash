@@ -191,9 +191,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     sLoading,
   ]);
 
-  useEffect(() => {
-    setMyBetAmount(betAmount);
-  }, [betAmount]);
+  // useEffect(() => {
+  //   setMyBetAmount(betAmount);
+  // }, [betAmount]);
 
   React.useEffect(() => {
     if (GameState === "BET") {
@@ -282,6 +282,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
                         // Allow only numbers and up to 2 digits after the decimal point
                         if (parseFloat(betAmount) >= minBet && parseFloat(betAmount) <= maxBet && /^\d*\.?\d{0,2}$/.test(betAmount)) {
+                          setMyBetAmount(betAmount)
                           update({
                             ...state,
                             userInfo: {
