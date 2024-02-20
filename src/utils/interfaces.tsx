@@ -135,6 +135,7 @@ export interface ContextType extends GameBetLimit, UserStatusType, GameStatusTyp
     previousHand: UserType[];
     history: number[];
     rechargeState: boolean;
+    secure: boolean;
     msgReceived: boolean;
     myUnityContext: UnityContext;
     currentTarget: number;

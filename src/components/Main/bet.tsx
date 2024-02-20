@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import Context, { callCashOut, callCancelBet } from "../../context";
 import toaster from "../Toast";
+import toast from "react-hot-toast";
 
 interface BetProps {
   index: "f" | "s";
@@ -20,6 +21,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     fbetState,
     sbetState,
     GameState,
+    secure,
     currentSecondNum,
     minBet,
     maxBet,
@@ -149,7 +151,11 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   };
 
   const onBetClick = (s: boolean) => {
-    updateUserBetState({ [`${index}betState`]: s });
+    if (secure) {
+      updateUserBetState({ [`${index}betState`]: s });
+    } else {
+      toast.error("Please wait while getting your info.");
+    }
   };
 
   const onAutoBetClick = (_betState: boolean) => {

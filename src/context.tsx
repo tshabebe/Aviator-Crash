@@ -444,69 +444,65 @@ export const Provider = ({ children }: any) => {
   }, [socket, msgReceived, msgData]);
 
   const handlePlaceBet = async () => {
-    if (secure) {
-      let attrs = state;
-      let betStatus = userBetState;
-      let fBetFlag = betStatus.fbetState && !attrs.userInfo.f.betted;
-      let sBetFlag = betStatus.sbetState && !attrs.userInfo.s.betted;
-      let fBetBalance = attrs.userInfo.balance - state.userInfo.f.betAmount < 0;
-      let sBetBalance = attrs.userInfo.balance - state.userInfo.s.betAmount < 0;
-      if (fBetFlag) {
-        sBetBalance = attrs.userInfo.balance - state.userInfo.f.betAmount - state.userInfo.s.betAmount < 0;
-      }
+    let attrs = state;
+    let betStatus = userBetState;
+    let fBetFlag = betStatus.fbetState && !attrs.userInfo.f.betted;
+    let sBetFlag = betStatus.sbetState && !attrs.userInfo.s.betted;
+    let fBetBalance = attrs.userInfo.balance - state.userInfo.f.betAmount < 0;
+    let sBetBalance = attrs.userInfo.balance - state.userInfo.s.betAmount < 0;
+    if (fBetFlag) {
+      sBetBalance = attrs.userInfo.balance - state.userInfo.f.betAmount - state.userInfo.s.betAmount < 0;
+    }
 
-      if (fBetFlag) {
-        let fbetid = `Crash-${Date.now()}-${Math.floor(Math.random() * 999999)}`;
-        attrs.userInfo.f.betid = fbetid;
-        attrs.userInfo.f.betted = true;
+    if (fBetFlag) {
+      let fbetid = `Crash-${Date.now()}-${Math.floor(Math.random() * 999999)}`;
+      attrs.userInfo.f.betid = fbetid;
+      attrs.userInfo.f.betted = true;
+    }
+    if (sBetFlag) {
+      let sbetid = `Crash-${Date.now()}-${Math.floor(Math.random() * 999999)}`;
+      attrs.userInfo.s.betid = sbetid;
+      attrs.userInfo.s.betted = true;
+    }
+    if (fBetFlag) {
+      let data = {
+        type: "f",
+        userInfo: attrs.userInfo,
+      };
+      if (fBetBalance) {
+        toast.error("Your balance is not enough");
+        betStatus.fbetState = false;
+        betStatus.fbetted = false;
+        setFLoading(false);
+      } else {
+        attrs.userInfo.balance -= state.userInfo.f.betAmount;
+        setFLoading(true);
+        socket.emit("playBet", data);
+        betStatus.fbetState = false;
+        betStatus.fbetted = true;
+        update(attrs);
+        setUserBetState(betStatus);
       }
-      if (sBetFlag) {
-        let sbetid = `Crash-${Date.now()}-${Math.floor(Math.random() * 999999)}`;
-        attrs.userInfo.s.betid = sbetid;
-        attrs.userInfo.s.betted = true;
+    }
+    if (sBetFlag) {
+      let data = {
+        type: "s",
+        userInfo: attrs.userInfo,
+      };
+      if (sBetBalance) {
+        toast.error("Your balance is not enough");
+        betStatus.sbetState = false;
+        betStatus.sbetted = false;
+        setSLoading(false);
+      } else {
+        attrs.userInfo.balance -= state.userInfo.s.betAmount;
+        setSLoading(true);
+        socket.emit("playBet", data);
+        betStatus.sbetState = false;
+        betStatus.sbetted = true;
+        update(attrs);
+        setUserBetState(betStatus);
       }
-      if (fBetFlag) {
-        let data = {
-          type: "f",
-          userInfo: attrs.userInfo,
-        };
-        if (fBetBalance) {
-          toast.error("Your balance is not enough");
-          betStatus.fbetState = false;
-          betStatus.fbetted = false;
-          setFLoading(false);
-        } else {
-          attrs.userInfo.balance -= state.userInfo.f.betAmount;
-          setFLoading(true);
-          socket.emit("playBet", data);
-          betStatus.fbetState = false;
-          betStatus.fbetted = true;
-          update(attrs);
-          setUserBetState(betStatus);
-        }
-      }
-      if (sBetFlag) {
-        let data = {
-          type: "s",
-          userInfo: attrs.userInfo,
-        };
-        if (sBetBalance) {
-          toast.error("Your balance is not enough");
-          betStatus.sbetState = false;
-          betStatus.sbetted = false;
-          setSLoading(false);
-        } else {
-          attrs.userInfo.balance -= state.userInfo.s.betAmount;
-          setSLoading(true);
-          socket.emit("playBet", data);
-          betStatus.sbetState = false;
-          betStatus.sbetted = true;
-          update(attrs);
-          setUserBetState(betStatus);
-        }
-      }
-    } else {
-      toast.error("Please wait while getting your info.");
     }
   }
 
@@ -530,7 +526,6 @@ export const Provider = ({ children }: any) => {
         }
       );
       if (response?.data?.status) {
-        console.log(response.data.data);
         update({ myBets: response.data.data as GameHistory[] });
       }
     } catch (error) {
@@ -603,6 +598,7 @@ export const Provider = ({ children }: any) => {
         msgTab,
         errorBackend,
         currentTarget,
+        secure,
         rechargeState,
         myUnityContext: unityContext,
         bettedUsers: [...bettedUsers],
