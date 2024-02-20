@@ -154,7 +154,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     if (secure) {
       updateUserBetState({ [`${index}betState`]: s });
     } else {
-      toast.error("Please wait while getting your info.");
+      toast.error("Please wait while getting your info. Or you can't run the duplicate game.");
     }
   };
 
