@@ -19,9 +19,8 @@ const MyBets = () => {
           <span className="cash-out">
             {" "}
             Cash out,{" "}
-            {`${
-              state?.userInfo?.currency ? state?.userInfo?.currency : "INR"
-            }`}{" "}
+            {`${state?.userInfo?.currency ? state?.userInfo?.currency : "INR"
+              }`}{" "}
           </span>
         </div>
         <div className="tools"></div>
@@ -31,9 +30,8 @@ const MyBets = () => {
           {state &&
             state.myBets.map((user, key) => (
               <div
-                className={`bet-item pr-2 ${
-                  user.cashouted ? "celebrated" : ""
-                }`}
+                className={`bet-item pr-2 ${user.cashouted ? "celebrated" : ""
+                  }`}
                 key={key}
               >
                 <div className="user">
@@ -44,18 +42,25 @@ const MyBets = () => {
                   </div>
                 </div>
                 <div className="bet">{Number(user.betAmount).toFixed(2)}</div>
-                {user.cashouted && (
+                {user.cashouted ? (
                   <div className="multiplier-block">
                     <div
-                      className={`bubble opacity-${100 - 2 * key} ${
-                        Number(user.cashoutAt) < 2
-                          ? "blue"
-                          : Number(user.cashoutAt) < 10
+                      className={`bubble opacity-${100 - 2 * key} ${Number(user.cashoutAt) < 2
+                        ? "blue"
+                        : Number(user.cashoutAt) < 10
                           ? "purple"
                           : "big"
-                      }`}
+                        }`}
                     >
                       {Number(user.cashoutAt).toFixed(2)}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="multiplier-block">
+                    <div
+                      className={`bubble opacity-${100 - 2 * key}}`}
+                    >
+                      {user.flyAway}
                     </div>
                   </div>
                 )}
