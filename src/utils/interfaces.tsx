@@ -80,6 +80,7 @@ export declare interface GameHistory {
     cashoutAt: number;
     cashouted: boolean;
     createdAt: string;
+    flyAway: number;
 }
 
 export interface UserStatusType {

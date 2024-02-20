@@ -530,6 +530,7 @@ export const Provider = ({ children }: any) => {
         }
       );
       if (response?.data?.status) {
+        console.log(response.data.data);
         update({ myBets: response.data.data as GameHistory[] });
       }
     } catch (error) {
