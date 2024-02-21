@@ -376,6 +376,7 @@ export const Provider = ({ children }: any) => {
   }, [socket, secure, token, userBetState]);
 
   useEffect(() => {
+
     if (token && UserID && currency && returnurl) {
       socket.emit("sessionCheck", { token, UserID, currency, returnurl });
       socket.on("sessionSecure", (data) => {
@@ -386,6 +387,10 @@ export const Provider = ({ children }: any) => {
           setErrorBackend(true);
         }
       });
+
+      socket.on("deny", (data: any) => {
+        toast.error(data.message)
+      })
 
       socket.on("myInfo", (user: UserType) => {
         localStorage.setItem("aviator-audio", "");
@@ -403,11 +408,12 @@ export const Provider = ({ children }: any) => {
         update(attrs);
         setSecure(true);
       });
+    }
 
-      return () => {
-        socket.off("sessionSecure");
-        socket.off("myInfo");
-      }
+    return () => {
+      socket.off("sessionSecure");
+      socket.off("myInfo");
+      socket.off("deny");
     }
     // eslint-disable-next-line
   }, [socket])
