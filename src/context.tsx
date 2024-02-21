@@ -202,11 +202,14 @@ export const Provider = ({ children }: any) => {
 
       socket.on("myBetState", (userInfo: { user: UserType; type: string }) => {
         var { user, type } = userInfo;
-        var attrs = { ...userBetState };
+        var attrs: any = { ...userBetState };
         attrs.fbetState = false;
         attrs.fbetted = user.f.betted;
         attrs.sbetState = false;
         attrs.sbetted = user.s.betted;
+        let allState = { ...newState };
+        allState.userInfo.balance = user.balance;
+        update(allState);
         setUserBetState(attrs);
         if (type === 'f') {
           setFLoading(false)
@@ -482,7 +485,7 @@ export const Provider = ({ children }: any) => {
         betStatus.fbetted = false;
         setFLoading(false);
       } else {
-        attrs.userInfo.balance -= state.userInfo.f.betAmount;
+        // attrs.userInfo.balance -= state.userInfo.f.betAmount;
         setFLoading(true);
         socket.emit("playBet", data);
         betStatus.fbetState = false;
@@ -502,7 +505,7 @@ export const Provider = ({ children }: any) => {
         betStatus.sbetted = false;
         setSLoading(false);
       } else {
-        attrs.userInfo.balance -= state.userInfo.s.betAmount;
+        // attrs.userInfo.balance -= state.userInfo.s.betAmount;
         setSLoading(true);
         socket.emit("playBet", data);
         betStatus.sbetState = false;
