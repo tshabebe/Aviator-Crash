@@ -36,9 +36,8 @@ const AllData = ({ pre, setPre, allData, betsResults }: AllDataProps) => {
             <div>{bettedUsers?.length}</div>
           </div>
           <div
-            className={`previous-hand items-center flex justify-between ${
-              pre ? "click" : ""
-            }`}
+            className={`previous-hand items-center flex justify-between ${pre ? "click" : ""
+              }`}
           >
             <div className="history-i"></div>
             <span
@@ -88,15 +87,14 @@ const AllData = ({ pre, setPre, allData, betsResults }: AllDataProps) => {
               {user.cashouted && (
                 <div className="multiplier-block">
                   <div
-                    className={`bubble opacity-${100 - 2 * key} ${
-                      Number(user.target) < 2
+                    className={`bubble font-weight-bold opacity-${100 - 2 * key} ${Number(user.target) < 2
                         ? "blue"
                         : Number(user.target) < 10
-                        ? "purple"
-                        : "big"
-                    }`}
+                          ? "purple"
+                          : "big"
+                      }`}
                   >
-                    {Number(user.target).toFixed(2)}
+                    {Number(user.target).toFixed(2)}x
                   </div>
                 </div>
               )}

@@ -49,7 +49,7 @@ const MyBets = () => {
                 {user.cashouted ? (
                   <div className="multiplier-block">
                     <div
-                      className={`bubble opacity-${100 - 2 * key} ${Number(user.cashoutAt) < 2
+                      className={`bubble ${user.cashouted && "font-weight-bold"} opacity-${100 - 2 * key} ${Number(user.cashoutAt) < 2
                         ? "blue"
                         : Number(user.cashoutAt) < 10
                           ? "purple"
