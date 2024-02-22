@@ -1,17 +1,17 @@
 $back-color: #0e0e0e;
 
 $howto-color: linear-gradient(163deg,
-    rgba(44, 71, 38, 1) 0%,
-    rgba(75, 60, 120, 1) 25%,
-    rgba(161, 25, 236, 1) 50%,
-    rgba(16, 28, 96, 1) 86%,
-    rgba(40, 22, 80, 1) 100%);
+  rgba(44, 71, 38, 1) 0%,
+  rgba(75, 60, 120, 1) 25%,
+  rgba(161, 25, 236, 1) 50%,
+  rgba(16, 28, 96, 1) 86%,
+  rgba(40, 22, 80, 1) 100%);
 $howto-hover-color: linear-gradient(180deg,
-    rgba(51, 38, 71, 1) 0%,
-    rgba(85, 40, 134, 1) 25%,
-    rgba(143, 0, 255, 1) 50%,
-    rgba(38, 26, 97, 1) 71%,
-    rgba(41, 16, 96, 1) 100%);
+  rgba(51, 38, 71, 1) 0%,
+  rgba(85, 40, 134, 1) 25%,
+  rgba(143, 0, 255, 1) 50%,
+  rgba(38, 26, 97, 1) 71%,
+  rgba(41, 16, 96, 1) 100%);
 $box-color: rgb(25, 25, 52);
 
 .scroll-restyle ::-webkit-scrollbar {
@@ -620,7 +620,7 @@ code {
       font-size: 11px;
       color: #7b7b7b;
       height: 20px;
-      margin: 0 10px;
+      // margin: 0 10px;
       display: flex;
       align-items: center;
 
@@ -629,7 +629,7 @@ code {
       }
 
       .bet {
-        min-width: 35%;
+        min-width: 42%;
         padding-right: 10px;
         text-align: right;
         white-space: nowrap;
@@ -693,6 +693,14 @@ code {
         color: #bbbfc5;
         display: flex;
         align-items: center;
+
+        .date {
+          min-width: 50px;
+          max-width: 50px;
+          font-size: 12px;
+          color: #bbbfc5;
+          line-height: 1;
+        }
 
         .user {
           width: 19%;

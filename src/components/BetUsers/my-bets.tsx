@@ -6,24 +6,32 @@ const MyBets = () => {
   const { state } = React.useContext(Context);
   // const [state] = useCrashContext();
 
+  const displayDate = (num: number) => {
+    let displayData = '';
+
+    if (num === 0) {
+      displayData = '00';
+    } else if (num < 10) {
+      displayData = `0${num}`
+    } else {
+      displayData = `${num}`;
+    }
+
+    return displayData;
+  }
+
   return (
     <>
-      <div className="legend">
+      <div className="legend px-2 d-flex align-items-center w-100">
         <div className="date">Date</div>
-        <div className="bet-100">
-          <span className="bet">
-            Bet,{" "}
-            {`${state?.userInfo?.currency ? state?.userInfo?.currency : "INR"}`}
-          </span>
+        <div className="d-flex w-100">
+          <span className="bet">Bet, {`${state?.userInfo?.currency ? state?.userInfo?.currency : "INR"}`}</span>
           <span>X</span>
           <span className="cash-out">
-            {" "}
-            Cash out,{" "}
-            {`${state?.userInfo?.currency ? state?.userInfo?.currency : "INR"
-              }`}{" "}
+            Cash out, {`${state?.userInfo?.currency ? state?.userInfo?.currency : "INR"}`}
           </span>
         </div>
-        <div className="tools"></div>
+        <div className="tools h-100"></div>
       </div>
       <div className="cdk-virtual-scroll-viewport">
         <div className="cdk-virtual-scroll-content-wrapper">
@@ -34,12 +42,8 @@ const MyBets = () => {
                   }`}
                 key={key}
               >
-                <div className="user">
-                  <div className="username">
-                    {new Date(user.createdAt).getHours() +
-                      ":" +
-                      new Date(user.createdAt).getMinutes()}
-                  </div>
+                <div className="date">
+                  {`${displayDate(new Date(user.createdAt).getHours())}:${displayDate(new Date(user.createdAt).getMinutes())}`}
                 </div>
                 <div className="bet">{Number(user.betAmount).toFixed(2)}</div>
                 {user.cashouted ? (
@@ -52,7 +56,7 @@ const MyBets = () => {
                           : "big"
                         }`}
                     >
-                      {Number(user.cashoutAt).toFixed(2)}
+                      {Number(user.cashoutAt).toFixed(2)}x
                     </div>
                   </div>
                 ) : (
@@ -60,7 +64,7 @@ const MyBets = () => {
                     <div
                       className={`bubble opacity-${100 - 2 * key}}`}
                     >
-                      {user.flyAway}
+                      {user.flyAway}x
                     </div>
                   </div>
                 )}
