@@ -16,14 +16,14 @@ const MyBets = () => {
             {`${state?.userInfo?.currency ? state?.userInfo?.currency : "INR"}`}
           </span>
           <span>X</span>
-          <span className="cash-out">
-            {" "}
-            Cash out,{" "}
-            {`${state?.userInfo?.currency ? state?.userInfo?.currency : "INR"
-              }`}{" "}
-          </span>
         </div>
-        <div className="tools"></div>
+        <span className="cash-out">
+          {" "}
+          Cash out,{" "}
+          {`${state?.userInfo?.currency ? state?.userInfo?.currency : "INR"
+            }`}{" "}
+        </span>
+        {/* <div className="tools"></div> */}
       </div>
       <div className="cdk-virtual-scroll-viewport">
         <div className="cdk-virtual-scroll-content-wrapper">
