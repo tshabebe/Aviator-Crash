@@ -52,7 +52,7 @@ const AllData = ({ pre, setPre, allData, betsResults }: AllDataProps) => {
           </div>
         </div>
         <div className="spacer"></div>
-        <div className="legend">
+        <div className="legend all-data">
           <span className="user">User</span>
           <span className="bet">
             Bet,{" "}
