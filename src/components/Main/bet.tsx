@@ -67,6 +67,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
         );
       }
     }
+    setMyBetAmount(value.userInfo[`${index}`].betAmount);
     update(value);
   };
 
@@ -95,6 +96,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
         );
       }
     }
+    setMyBetAmount(value.userInfo[`${index}`].betAmount);
     update(value);
   };
 
@@ -295,7 +297,10 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                             ...state,
                             userInfo: {
                               ...state.userInfo,
-                              [`${index}`]: { betAmount },
+                              [`${index}`]: {
+                                ...state.userInfo[`${index}`],
+                                betAmount
+                              },
                             },
                           })
                         }
