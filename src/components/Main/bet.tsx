@@ -51,13 +51,13 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   const minus = (type: FieldNameType) => {
     let value = state;
     if (type === "betAmount") {
-      // if (betAmount - 0.1 < minBet) {
-      //   value.userInfo[index][type] = minBet;
-      // } else {
-      value.userInfo[index][type] = Number(
-        (Number(betAmount) - 1).toFixed(2)
-      );
-      // }
+      if (betAmount - 0.1 < minBet) {
+        value.userInfo[index][type] = minBet;
+      } else {
+        value.userInfo[index][type] = Number(
+          (Number(betAmount) - 1).toFixed(2)
+        );
+      }
     } else {
       if (value[`${index + type}`] - 0.1 < 0.1) {
         value[`${index + type}`] = 0.1;
@@ -78,13 +78,13 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
         value.userInfo[index][type] =
           Math.round(state.userInfo.balance * 100) / 100;
       } else {
-        // if (value.userInfo[index][type] + 1 > maxBet) {
-        //   value.userInfo[index][type] = maxBet;
-        // } else {
-        value.userInfo[index][type] = Number(
-          (Number(betAmount) + 1).toFixed(2)
-        );
-        // }
+        if (value.userInfo[index][type] + 1 > maxBet) {
+          value.userInfo[index][type] = maxBet;
+        } else {
+          value.userInfo[index][type] = Number(
+            (Number(betAmount) + 1).toFixed(2)
+          );
+        }
       }
     } else {
       if (value[`${index + type}`] + 1 > state.userInfo.balance) {
@@ -103,13 +103,13 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   const manualPlus = (amount: number, btnNum: BetOptType) => {
     let value = state;
     if (betOpt === btnNum) {
-      // if (Number(betAmount + amount) > maxBet) {
-      //   value.userInfo[index].betAmount = maxBet;
-      // } else {
-      value.userInfo[index].betAmount = Number(
-        (betAmount + amount).toFixed(2)
-      );
-      // }
+      if (Number(betAmount + amount) > maxBet) {
+        value.userInfo[index].betAmount = maxBet;
+      } else {
+        value.userInfo[index].betAmount = Number(
+          (betAmount + amount).toFixed(2)
+        );
+      }
     } else {
 
       value.userInfo[index].betAmount = Number(Number(amount).toFixed(2));
@@ -291,19 +291,19 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                         const betAmount: number | string = e.target.value;
 
                         // Allow only numbers and up to 2 digits after the decimal point
-                        setMyBetAmount(betAmount)
-                        update({
-                          ...state,
-                          userInfo: {
-                            ...state.userInfo,
-                            [`${index}`]: {
-                              ...state.userInfo[`${index}`],
-                              betAmount
+                        if (parseFloat(betAmount) >= minBet && parseFloat(betAmount) <= maxBet && /^\d*\.?\d{0,2}$/.test(betAmount)) {
+                          setMyBetAmount(betAmount)
+                          update({
+                            ...state,
+                            userInfo: {
+                              ...state.userInfo,
+                              [`${index}`]: {
+                                ...state.userInfo[`${index}`],
+                                betAmount
+                              },
                             },
-                          },
-                        })
-                        // if (parseFloat(betAmount) >= minBet && parseFloat(betAmount) <= maxBet && /^\d*\.?\d{0,2}$/.test(betAmount)) {
-                        // }
+                          })
+                        }
                       }}
                     ></input>
                   )}

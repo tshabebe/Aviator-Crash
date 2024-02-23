@@ -372,7 +372,6 @@ export const Provider = ({ children }: any) => {
       socket.off("recharge");
       socket.off("cancelled")
       socket.off("error");
-      socket.off("justerror");
       socket.off("success");
     };
     // eslint-disable-next-line
