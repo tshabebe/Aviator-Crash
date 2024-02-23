@@ -320,11 +320,11 @@ export const Provider = ({ children }: any) => {
         setRechargeState(true);
       });
 
-      socket.on("cancelled", (data: { status: boolean, type: string, balance: number }) => {
-        const { type, balance } = data;
+      socket.on("cancelled", (data: { status: boolean, type: string, updatedBalance: number }) => {
+        const { type, updatedBalance } = data;
         updateUserBetState({ [`${type}betState`]: false, [`${type}betted`]: false });
         let allState = { ...newState };
-        allState.userInfo.balance = balance;
+        allState.userInfo.balance = updatedBalance;
         update(allState);
         if (type === 'f') {
           setFLoading(false)
