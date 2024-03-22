@@ -81,7 +81,7 @@ export default function WebGLStarter() {
         <Unity unityContext={myUnityContext} matchWebGLToCanvasSize={true} />
       </div>
       <div className="crash-text-container">
-        {GameState === "BET" ? (
+        {/* {GameState === "BET" ? (
           <div className={`crashtext wait font-9`}>
             <div className="rotate">
               <img
@@ -108,7 +108,7 @@ export default function WebGLStarter() {
               <span className="font-[900]">x</span>
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
