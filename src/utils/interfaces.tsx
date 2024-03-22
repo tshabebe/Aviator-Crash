@@ -168,10 +168,10 @@ export interface MsgUserType {
 }
 
 export const unityContext = new UnityContext({
-    loaderUrl: "unity/AirCrash.loader.js",
-    dataUrl: "unity/AirCrash.data.unityweb",
-    frameworkUrl: "unity/AirCrash.framework.js.unityweb",
-    codeUrl: "unity/AirCrash.wasm.unityweb",
+    loaderUrl: "unity/WebGL.loader.js",
+    dataUrl: "unity/WebGL.data.unityweb",
+    frameworkUrl: "unity/WebGL.framework.js.unityweb",
+    codeUrl: "unity/WebGL.wasm.unityweb",
 });
 
 export const init_state = {
