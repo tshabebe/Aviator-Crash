@@ -38,6 +38,7 @@ const settingItems: { label: string; handleType: string }[] = [
 const Menu = ({ setHowto }) => {
   const {
     state,
+    handleChangeUserSeed,
     update,
     handleGetSeed,
     toggleMsgTab,
@@ -52,9 +53,18 @@ const Menu = ({ setHowto }) => {
   const [changeSeed, setChangeSeed] = useState<boolean>(false);
   const [changeAvatar, setChangeAvatar] = useState<boolean>(false);
 
-  const [key, ] = useState<string>(generateRandomString(20));
+  const [key,] = useState<string>(generateRandomString(20));
   const [customKey, setCustomKey] = useState<string>(generateRandomString(20));
   const [imgNums, setImgNums] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (clientSeedType === 0) {
+      handleChangeUserSeed(key);
+    }
+    if (clientSeedType === 1) {
+      handleChangeUserSeed(customKey);
+    }
+  }, [clientSeedType, customKey, key])
 
   /**
    * Toggle the drop down menu

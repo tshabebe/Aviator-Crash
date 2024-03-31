@@ -3,7 +3,7 @@ import AllData from "./all-data";
 import MyBets from "./my-bets";
 import TopHistory from "./top-history";
 import Context from "../../context";
-import { BetResults, BettedUserType, UserType } from "../../utils/interfaces";
+import { BettedUserType, UserType } from "../../utils/interfaces";
 
 export default function BetsUsers() {
   const { previousHand, bettedUsers, getMyBets } = React.useContext(Context);
@@ -14,11 +14,6 @@ export default function BetsUsers() {
     []
   );
   const [pre, setPre] = React.useState(false);
-  const [betsResults, setBetResults] = React.useState<BetResults>({
-    members: 0,
-    betAmount: 0,
-    cashouted: 0,
-  });
 
   const header = [
     { type: "all", value: "All Bets" },
@@ -28,24 +23,6 @@ export default function BetsUsers() {
 
   const getData = (e) => {
     if (e === "myBet") getMyBets();
-  };
-
-  const handleSetBets = () => {
-    let allUsers = [...bettedUsers];
-    if (allUsers.length > 0) {
-      var sum = allUsers.reduce(function (sum, b) {
-        return sum + b.betAmount;
-      }, 0);
-      var cashedOutSum = allUsers.reduce(function (sum, b) {
-        return sum + b.cashOut;
-      }, 0);
-
-      setBetResults({
-        members: bettedUsers.length,
-        betAmount: sum,
-        cashouted: cashedOutSum,
-      });
-    }
   };
 
   React.useEffect(() => {
@@ -73,8 +50,6 @@ export default function BetsUsers() {
         }
       }
     }
-    if (flag === true) handleSetBets();
-    // eslint-disable-next-line
   }, [allData, bettedUsers]);
 
   return (
@@ -105,7 +80,6 @@ export default function BetsUsers() {
               setPre={setPre}
               pre={pre}
               allData={allData}
-              betsResults={betsResults}
             />
           ) : headerType === "my" ? (
             <MyBets />

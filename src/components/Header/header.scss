@@ -211,17 +211,20 @@ $whiteBg: #868b8d;
     padding: 7px 10px;
     justify-content: space-between;
   }
-  & > p {
+
+  &>p {
     margin: 0;
     padding: 0.375rem 0.88rem;
     border-bottom: 1px solid rgb(235, 235, 235);
     min-width: 140px;
   }
-  & > p:hover {
+
+  &>p:hover {
     color: #fff;
     background-color: #0062cc;
   }
-  & > p:last-child {
+
+  &>p:last-child {
     border-bottom: 0 none;
   }
 
@@ -322,6 +325,7 @@ $whiteBg: #868b8d;
     .key-container {
       opacity: 0.2;
     }
+
     .key-change button {
       opacity: 0.2;
     }
@@ -335,6 +339,7 @@ $whiteBg: #868b8d;
   position: absolute;
   top: 0;
   left: 0;
+
   .seed-change {
     position: absolute;
     top: 50%;
@@ -347,6 +352,7 @@ $whiteBg: #868b8d;
     display: flex;
     flex-direction: column;
     align-items: center;
+
     .seed-header {
       width: 100%;
       display: flex;
@@ -361,6 +367,7 @@ $whiteBg: #868b8d;
       border-top-left-radius: 8px;
       border-top-right-radius: 8px;
     }
+
     .seed-body {
       background: #1b1c1d;
       width: 100%;
@@ -368,10 +375,12 @@ $whiteBg: #868b8d;
       padding: 16px 10px 20px;
       border-bottom-right-radius: 8px;
       border-bottom-left-radius: 8px;
+
       &-title {
         font-size: 14px;
         margin-bottom: 6px;
       }
+
       .seed-value {
         position: relative;
         width: 100%;
@@ -379,6 +388,7 @@ $whiteBg: #868b8d;
         display: flex;
         flex-direction: column;
         align-items: center;
+
         input {
           background-color: #000;
           border-radius: 22px;
@@ -390,6 +400,7 @@ $whiteBg: #868b8d;
           margin-bottom: 12px;
         }
       }
+
       .actions {
         padding: 0 5px;
         display: flex;
@@ -434,7 +445,7 @@ $whiteBg: #868b8d;
 
 .btn-outline-secondary:not(:disabled):not(.disabled):active,
 .btn-outline-secondary:not(:disabled):not(.disabled).active,
-.show > .btn-outline-secondary.dropdown-toggle {
+.show>.btn-outline-secondary.dropdown-toggle {
   color: #fff;
   background-color: #6c757d;
   border-color: #6c757d;
@@ -442,7 +453,7 @@ $whiteBg: #868b8d;
 
 .btn-outline-secondary:not(:disabled):not(.disabled):active:focus,
 .btn-outline-secondary:not(:disabled):not(.disabled).active:focus,
-.show > .btn-outline-secondary.dropdown-toggle:focus {
+.show>.btn-outline-secondary.dropdown-toggle:focus {
   box-shadow: 0 0 0 0.2rem #6c757d80;
 }
 
@@ -471,4 +482,8 @@ $whiteBg: #868b8d;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.chat-size {
+  width: calc(100% - 145px);
 }

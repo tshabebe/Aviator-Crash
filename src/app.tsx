@@ -102,7 +102,7 @@ function App() {
   }, [flewAwayAudioRef.current, GameState, state.userInfo.isSoundEnable]);
 
   return (
-    <div className="main-container">
+    <div className="main-container scroll-restyle">
       <div style={{ display: "none" }}>
         {/* Main Audio Section */}
         <audio id="mainAudio" ref={mainAudioRef} loop>

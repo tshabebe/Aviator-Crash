@@ -8,6 +8,7 @@ import { isMobile, isTablet, isDesktop } from 'react-device-detect';
 
 import config from "./config.json";
 import toaster from "./components/Toast";
+import { generateRandomString } from "./components/utils";
 
 import {
   BettedUserType,
@@ -62,6 +63,7 @@ export const Provider = ({ children }: any) => {
   const [msgReceived, setMsgReceived] = useState<boolean>(false);
   const [errorBackend, setErrorBackend] = useState<boolean>(false);
   const [platformLoading, setPlatformLoading] = useState<boolean>(true);
+  const [userSeedText, setUserSeedText] = useState<string>('');
   const [state, setState] = useState<ContextDataType>(init_state);
   const [msgTab, setMsgTab] = useState<boolean>(
     state.userInfo.msgVisible
@@ -455,6 +457,10 @@ export const Provider = ({ children }: any) => {
     };
   }, [socket, msgReceived, msgData]);
 
+  const handleChangeUserSeed = (value: string) => {
+    setUserSeedText(value);
+  }
+
   const handlePlaceBet = async () => {
     let attrs = state;
     let betStatus = userBetState;
@@ -479,6 +485,7 @@ export const Provider = ({ children }: any) => {
     if (fBetFlag) {
       let data = {
         type: "f",
+        seed: userSeedText,
         userInfo: attrs.userInfo,
       };
       if (fBetBalance) {
@@ -499,6 +506,7 @@ export const Provider = ({ children }: any) => {
     if (sBetFlag) {
       let data = {
         type: "s",
+        seed: userSeedText,
         userInfo: attrs.userInfo,
       };
       if (sBetBalance) {
@@ -611,6 +619,7 @@ export const Provider = ({ children }: any) => {
         errorBackend,
         currentTarget,
         secure,
+        userSeedText,
         rechargeState,
         myUnityContext: unityContext,
         bettedUsers: [...bettedUsers],
@@ -629,6 +638,7 @@ export const Provider = ({ children }: any) => {
         handleGetSeed,
         handlePlaceBet,
         toggleMsgTab,
+        handleChangeUserSeed,
       }}
     >
       {children}

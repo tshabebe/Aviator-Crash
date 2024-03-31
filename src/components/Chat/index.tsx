@@ -73,10 +73,9 @@ export default function PerfectLiveChat() {
 
   const getAllChats = async (flag: boolean) => {
     let response: any = await axios.post(
-      `${
-        process.env.REACT_APP_DEVELOPMENT === "true"
-          ? config.development_api
-          : config.production_api
+      `${process.env.REACT_APP_DEVELOPMENT === "true"
+        ? config.development_api
+        : config.production_api
       }/get-all-chat`
     );
     setMsgData(response?.data?.data || []);
@@ -87,10 +86,9 @@ export default function PerfectLiveChat() {
 
   const handleLikeChat = async (chatItem: any) => {
     let response = await axios.post(
-      `${
-        process.env.REACT_APP_DEVELOPMENT === "true"
-          ? config.development_api
-          : config.production_api
+      `${process.env.REACT_APP_DEVELOPMENT === "true"
+        ? config.development_api
+        : config.production_api
       }/like-chat`,
       {
         chatID: chatItem._id,

@@ -33,7 +33,7 @@ const MyBets = () => {
         </div>
         <div className="tools h-100"></div>
       </div>
-      <div className="cdk-virtual-scroll-viewport">
+      <div className="cdk-virtual-scroll-viewport scroll-y">
         <div className="cdk-virtual-scroll-content-wrapper">
           {state &&
             state.myBets.map((user, key) => (

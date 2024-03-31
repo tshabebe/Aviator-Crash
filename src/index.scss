@@ -1,18 +1,22 @@
 $back-color: #0e0e0e;
 
 $howto-color: linear-gradient(163deg,
-  rgba(44, 71, 38, 1) 0%,
-  rgba(75, 60, 120, 1) 25%,
-  rgba(161, 25, 236, 1) 50%,
-  rgba(16, 28, 96, 1) 86%,
-  rgba(40, 22, 80, 1) 100%);
+    rgba(44, 71, 38, 1) 0%,
+    rgba(75, 60, 120, 1) 25%,
+    rgba(161, 25, 236, 1) 50%,
+    rgba(16, 28, 96, 1) 86%,
+    rgba(40, 22, 80, 1) 100%);
 $howto-hover-color: linear-gradient(180deg,
-  rgba(51, 38, 71, 1) 0%,
-  rgba(85, 40, 134, 1) 25%,
-  rgba(143, 0, 255, 1) 50%,
-  rgba(38, 26, 97, 1) 71%,
-  rgba(41, 16, 96, 1) 100%);
+    rgba(51, 38, 71, 1) 0%,
+    rgba(85, 40, 134, 1) 25%,
+    rgba(143, 0, 255, 1) 50%,
+    rgba(38, 26, 97, 1) 71%,
+    rgba(41, 16, 96, 1) 100%);
 $box-color: rgb(25, 25, 52);
+
+.scroll-restyle {
+  scrollbar-color: transparent transparent !important
+}
 
 .scroll-restyle ::-webkit-scrollbar {
   width: 5px !important;
@@ -108,7 +112,6 @@ body {
   position: relative;
   width: 100% !important;
   height: 100%;
-  padding-top: 38px;
   background: #0e0e0e;
 }
 
@@ -438,6 +441,7 @@ code {
   }
 
   .info-board {
+    margin-top: 0;
     height: 80vh !important;
     padding-left: 0 !important;
     padding-top: 20px !important;
@@ -463,6 +467,7 @@ code {
 }
 
 .info-board {
+  margin-top: 38px;
   height: 100%;
   flex-grow: 0;
   flex-shrink: 0;

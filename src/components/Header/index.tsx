@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import SettingsMenu from "./SettingsMenu";
 import Context from "../../context";
@@ -8,7 +8,7 @@ import "../../index.scss";
 import "./header.scss";
 
 export default function Header() {
-  const { state } = React.useContext(Context);
+  const { state, msgTab } = React.useContext(Context);
 
   const [howto, setHowto] = React.useState<"howto" | "short" | "more" | "">(
     "howto"
@@ -16,7 +16,7 @@ export default function Header() {
   const [, setFireSystem] = React.useState(false);
 
   return (
-    <div className="header flex-none items-center">
+    <div className={`header flex-none items-center ${msgTab && 'chat-size'}`}>
       <div className="header-container">
         <div className="header-first">
           <div className="logo-container">
@@ -36,9 +36,8 @@ export default function Header() {
               </span>
               <span className="currency">
                 &nbsp;
-                {`${
-                  state?.userInfo?.currency ? state?.userInfo?.currency : "INR"
-                }`}
+                {`${state?.userInfo?.currency ? state?.userInfo?.currency : "INR"
+                  }`}
               </span>
             </div>
             <div>

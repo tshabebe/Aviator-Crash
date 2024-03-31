@@ -65,6 +65,7 @@ export default function WebGLStarter() {
   }, [GameState, unityState]);
 
   React.useEffect(() => {
+    console.log(flag, currentNum);
     myUnityContext?.send(
       "GameManager",
       "RequestToken",
@@ -79,36 +80,6 @@ export default function WebGLStarter() {
     <div className="crash-container">
       <div className="canvas">
         <Unity unityContext={myUnityContext} matchWebGLToCanvasSize={true} />
-      </div>
-      <div className="crash-text-container">
-        {GameState === "BET" ? (
-          <div className={`crashtext wait font-9`}>
-            <div className="rotate">
-              <img
-                width={100}
-                height={100}
-                src={propeller}
-                alt="propellar"
-              ></img>
-            </div>
-            <div className="waiting-font">WAITING FOR NEXT ROUND</div>
-            <div className="waiting">
-              <div
-                style={{ width: `${((5000 - waiting) * 100) / 5000}%` }}
-              ></div>
-            </div>
-          </div>
-        ) : (
-          <div className={`crashtext ${GameState === "GAMEEND" && "red"}`}>
-            {GameState === "GAMEEND" && (
-              <div className="flew-away">FLEW AWAY!</div>
-            )}
-            <div>
-              {`${target === 1 ? '1.00' : target?.toFixed(2)}`}
-              <span className="font-[900]">x</span>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

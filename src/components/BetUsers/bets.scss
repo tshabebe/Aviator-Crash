@@ -137,11 +137,16 @@
       }
     }
   }
+}
 
-  .scroll-restyle .scroll-y {
-    margin: 0 0 0 5px;
-    overflow-y: scroll !important;
-  }
+.scroll-y {
+  margin: 0 0 0 5px;
+  scrollbar-width: thin !important;
+  overflow-y: scroll !important;
+}
+
+.scroll-y:hover {
+  scrollbar-color: rgba(0, 0, 0, .4) transparent !important;
 }
 
 .d-flex {

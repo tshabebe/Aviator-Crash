@@ -138,6 +138,7 @@ export interface ContextType extends GameBetLimit, UserStatusType, GameStatusTyp
     secure: boolean;
     msgReceived: boolean;
     myUnityContext: UnityContext;
+    userSeedText: string;
     currentTarget: number;
     fLoading: Boolean;
     setFLoading(attrs: Boolean);
@@ -152,6 +153,7 @@ export interface ContextType extends GameBetLimit, UserStatusType, GameStatusTyp
     handleGetSeed();
     handlePlaceBet();
     toggleMsgTab();
+    handleChangeUserSeed(attrs: Partial<string>);
 }
 
 export interface MsgUserType {
@@ -168,10 +170,10 @@ export interface MsgUserType {
 }
 
 export const unityContext = new UnityContext({
-    loaderUrl: "unity/AirCrash.loader.js",
-    dataUrl: "unity/AirCrash.data.unityweb",
-    frameworkUrl: "unity/AirCrash.framework.js.unityweb",
-    codeUrl: "unity/AirCrash.wasm.unityweb",
+    loaderUrl: "unity/WebGL.loader.js",
+    dataUrl: "unity/WebGL.data.unityweb",
+    frameworkUrl: "unity/WebGL.framework.js.unityweb",
+    codeUrl: "unity/WebGL.wasm.unityweb",
 });
 
 export const init_state = {

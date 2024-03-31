@@ -7,15 +7,14 @@ interface AllDataProps {
   pre: boolean;
   setPre: React.Dispatch<React.SetStateAction<boolean>>;
   allData: UserType[] | BettedUserType[];
-  betsResults: BetResults;
 }
 
-const AllData = ({ pre, setPre, allData, betsResults }: AllDataProps) => {
+const AllData = ({ pre, setPre, allData }: AllDataProps) => {
   const { state, bettedUsers } = React.useContext(Context);
 
   return (
     <>
-      <div className="betted-info">
+      {/* <div className="betted-info">
         <div className="info-item">
           <div className="uppercase">Number of players</div>
           <div>{betsResults?.members}</div>
@@ -28,7 +27,7 @@ const AllData = ({ pre, setPre, allData, betsResults }: AllDataProps) => {
           <div className="uppercase">Total winnings</div>
           <div>{betsResults?.cashouted.toFixed(2)}</div>
         </div>
-      </div>
+      </div> */}
       <div>
         <div className="all-bets-block">
           <div>
@@ -64,7 +63,7 @@ const AllData = ({ pre, setPre, allData, betsResults }: AllDataProps) => {
           </span>
         </div>
       </div>
-      <div className="cdk-virtual-scroll-viewport">
+      <div className="cdk-virtual-scroll-viewport scroll-y">
         <div className="cdk-virtual-scroll-content-wrapper">
           {allData?.map((user, key) => (
             <div
@@ -88,10 +87,10 @@ const AllData = ({ pre, setPre, allData, betsResults }: AllDataProps) => {
                 <div className="multiplier-block">
                   <div
                     className={`bubble font-weight-bold opacity-${100 - 2 * key} ${Number(user.target) < 2
-                        ? "blue"
-                        : Number(user.target) < 10
-                          ? "purple"
-                          : "big"
+                      ? "blue"
+                      : Number(user.target) < 10
+                        ? "purple"
+                        : "big"
                       }`}
                   >
                     {Number(user.target).toFixed(2)}x
