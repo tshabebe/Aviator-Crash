@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-// import crypto from 'crypto';
+import CryptoJS from 'crypto-js';
+
 
 export const SeedModal = ({ setModal, seedDetails }: any) => {
 
@@ -15,8 +16,9 @@ export const SeedModal = ({ setModal, seedDetails }: any) => {
         for (let i = 0; i < seedDetails.seedOfUsers.length; i++) {
             combined_seed += seedDetails.seedOfUsers[i].seed
         }
-        // const hash_object = crypto.createHash('sha512').update(`${combined_seed}`).digest('hex');
-        // setSha512Hash(hash_object);
+        const hash_object = CryptoJS.SHA512(combined_seed).toString(CryptoJS.enc.Hex);
+        setSha512Hash(hash_object);
+        console.log(hash_object);
     }, [seedDetails])
     return (
         <div className="modal">
@@ -68,7 +70,7 @@ export const SeedModal = ({ setModal, seedDetails }: any) => {
                                                 </div>
                                                 <div className="seed">
                                                     <span>Seed:</span>
-                                                    <div className="seed-value">{user.seed}</div>
+                                                    <div className="seed-value">{`${user.seed}`}</div>
                                                 </div>
                                             </div>
                                         </div>
