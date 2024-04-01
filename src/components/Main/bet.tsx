@@ -129,6 +129,24 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     }
   };
 
+  const onChangeInput = (e) => {
+    let betAmount: string = e.target.value;
+    console.log("betAmount:", betAmount);
+    if (parseFloat(betAmount) >= minBet && parseFloat(betAmount) <= maxBet && /^\d*\.?\d{0,2}$/.test(betAmount)) {
+      setMyBetAmount(betAmount)
+      update({
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          [`${index}`]: {
+            ...state.userInfo[`${index}`],
+            betAmount
+          },
+        },
+      })
+    }
+  }
+
   const onChangeBlur = (
     e: number,
     type: "cashOutAt" | "decrease" | "increase" | "singleAmount"
@@ -201,9 +219,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     sLoading,
   ]);
 
-  // useEffect(() => {
-  //   setMyBetAmount(betAmount);
-  // }, [betAmount]);
+  useEffect(() => {
+    setMyBetAmount(betAmount);
+  }, [betAmount]);
 
   React.useEffect(() => {
     if (GameState === "BET") {
@@ -283,29 +301,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                       type="number"
                       value={myBetAmount}
                       onChange={(e) => {
-                        // Number(e.target.value) > maxBet
-                        //   ? betAmount = maxBet
-                        //   : Number(e.target.value) < 0
-                        //     ? betAmount = 0
-                        //     : betAmount = Number(e.target.value);
-                        const betAmount: number | string = e.target.value;
-
-                        // Allow only numbers and up to 2 digits after the decimal point
-                        if (parseFloat(betAmount) >= minBet && parseFloat(betAmount) <= maxBet && /^\d*\.?\d{0,2}$/.test(betAmount)) {
-                          setMyBetAmount(betAmount)
-                          update({
-                            ...state,
-                            userInfo: {
-                              ...state.userInfo,
-                              [`${index}`]: {
-                                ...state.userInfo[`${index}`],
-                                betAmount
-                              },
-                            },
-                          })
-                        }
+                        onChangeInput(e)
                       }}
-                    ></input>
+                    />
                   )}
                 </div>
                 <div className="buttons">

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 // import { useCrashContext } from "../Main/context";
 import Context from "../../context";
-import { SeedModal } from "../Main/seedModal";
+// import { SeedModal } from "../Main/seedModal";
 
 const MyBets = () => {
   const { state, handleGetSeedOfRound } = React.useContext(Context);
@@ -11,7 +11,6 @@ const MyBets = () => {
   const handleGetSeed = async (flyDetailId) => {
     const result = await handleGetSeedOfRound(flyDetailId);
     if (result) {
-      console.log(result);
       setSeedDetails(result);
       setModal(true);
     }
@@ -93,7 +92,7 @@ const MyBets = () => {
         </div>
       </div>
 
-      {modal && <SeedModal setModal={setModal} seedDetails={seedDetails} />}
+      {/* {modal && <SeedModal setModal={setModal} seedDetails={seedDetails} />} */}
     </>
   );
 };

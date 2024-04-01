@@ -67,7 +67,6 @@ export default function PerfectLiveChat() {
   };
 
   const handleEmojiSelect = (emoji) => {
-    console.log(emoji)
     setMsgContent(`${msgContent}${emoji.native}`);
   };
 

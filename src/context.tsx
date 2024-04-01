@@ -331,6 +331,7 @@ export const Provider = ({ children }: any) => {
       });
 
       socket.on("getBetLimits", (betAmounts: { max: number; min: number }) => {
+        console.log(betAmounts);
         setBetLimit({ maxBet: betAmounts.max, minBet: betAmounts.min });
       });
 
@@ -401,6 +402,7 @@ export const Provider = ({ children }: any) => {
   useEffect(() => {
 
     if (token && UserID && currency && returnurl) {
+      socket.emit('getBetLimits');
       socket.emit("sessionCheck", { token, UserID, currency, returnurl });
       socket.on("sessionSecure", (data) => {
         if (data.sessionStatus === true) {

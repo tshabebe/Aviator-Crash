@@ -65,7 +65,6 @@ export default function WebGLStarter() {
   }, [GameState, unityState]);
 
   React.useEffect(() => {
-    console.log(flag, currentNum);
     myUnityContext?.send(
       "GameManager",
       "RequestToken",
