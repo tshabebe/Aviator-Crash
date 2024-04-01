@@ -6,11 +6,15 @@ import { SeedModal } from "../Main/seedModal";
 const MyBets = () => {
   const { state, handleGetSeedOfRound } = React.useContext(Context);
   const [modal, setModal] = useState(false);
-  // const [state] = useCrashContext();
+  const [seedDetails, setSeedDetails] = useState<any>();
 
   const handleGetSeed = async (flyDetailId) => {
     const result = await handleGetSeedOfRound(flyDetailId);
-    console.log(result);
+    if (result) {
+      console.log(result);
+      setSeedDetails(result);
+      setModal(true);
+    }
   }
 
   const displayDate = (num: number) => {
@@ -89,7 +93,7 @@ const MyBets = () => {
         </div>
       </div>
 
-      {modal && <SeedModal setModal={setModal} />}
+      {modal && <SeedModal setModal={setModal} seedDetails={seedDetails} />}
     </>
   );
 };

@@ -1315,6 +1315,15 @@ audio {
   text-transform: uppercase !important;
 }
 
+.header__info {
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: auto;
+  margin-left: 5px;
+}
+
 .main-desc {
   padding: 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
