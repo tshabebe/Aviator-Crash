@@ -81,6 +81,7 @@ export declare interface GameHistory {
     cashouted: boolean;
     createdAt: string;
     flyAway: number;
+    flyDetailID: number;
 }
 
 export interface UserStatusType {
@@ -151,6 +152,7 @@ export interface ContextType extends GameBetLimit, UserStatusType, GameStatusTyp
     updateUserBetState(attrs: Partial<UserStatusType>);
     setMsgData(attrs: MsgUserType[]);
     handleGetSeed();
+    handleGetSeedOfRound(attrs: Number);
     handlePlaceBet();
     toggleMsgTab();
     handleChangeUserSeed(attrs: Partial<string>);

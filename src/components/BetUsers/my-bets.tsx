@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 // import { useCrashContext } from "../Main/context";
 import Context from "../../context";
+import { SeedModal } from "../Main/seedModal";
 
 const MyBets = () => {
-  const { state } = React.useContext(Context);
+  const { state, handleGetSeedOfRound } = React.useContext(Context);
+  const [modal, setModal] = useState(false);
   // const [state] = useCrashContext();
+
+  const handleGetSeed = async (flyDetailId) => {
+    const result = await handleGetSeedOfRound(flyDetailId);
+    console.log(result);
+  }
 
   const displayDate = (num: number) => {
     let displayData = '';
@@ -64,7 +71,7 @@ const MyBets = () => {
                     <div
                       className={`bubble opacity-${100 - 2 * key}}`}
                     >
-                      {user.flyAway}x
+                      {(user.flyAway).toFixed(2)}x
                     </div>
                   </div>
                 )}
@@ -74,13 +81,15 @@ const MyBets = () => {
                     : ""}
                 </div>
                 <div className="tools">
-                  <div className="fairness-i"></div>
+                  <div onClick={() => handleGetSeed(user.flyDetailID)} className="fairness-i"></div>
                   <div className="share-i"></div>
                 </div>
               </div>
             ))}
         </div>
       </div>
+
+      {modal && <SeedModal setModal={setModal} />}
     </>
   );
 };

@@ -121,6 +121,18 @@ export const Provider = ({ children }: any) => {
     socket.emit("getSeed");
   };
 
+  const handleGetSeedOfRound = async (flyDetailId) => {
+    const result = await axios.post(`${process.env.REACT_APP_DEVELOPMENT === "true"
+      ? config.development_api
+      : config.production_api
+      }/get-seed-round`, { flyDetailId });
+    if (result.data.status) {
+      return result.data.data
+    } else {
+      return false;
+    }
+  }
+
   const updateUserMsg = (
     _id: string,
     userId: string,
@@ -224,6 +236,10 @@ export const Provider = ({ children }: any) => {
       socket.on("history", (history: any) => {
         setHistory(history);
       });
+
+      socket.on('seedOfRound', (data: any) => {
+
+      })
 
       socket.on("serverSeed", (seed: string) => {
         handleServerSeed(seed);
@@ -636,6 +652,7 @@ export const Provider = ({ children }: any) => {
         getMyBets,
         updateUserBetState,
         handleGetSeed,
+        handleGetSeedOfRound,
         handlePlaceBet,
         toggleMsgTab,
         handleChangeUserSeed,
