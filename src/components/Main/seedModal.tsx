@@ -21,7 +21,7 @@ export const SeedModal = ({ setModal, seedDetails }: any) => {
     return (
         <div className="modal">
             <div className="back" onClick={() => setModal(false)}></div>
-            <div className="modal-dialog">
+            {/* <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
                         <span className="modal-title">ROUND </span>
@@ -35,7 +35,7 @@ export const SeedModal = ({ setModal, seedDetails }: any) => {
                         </button>
                     </div>
                     <div className="modal-body">
-                        {/* <div className="content-wrapper">
+                        <div className="content-wrapper">
                             <div className="content">
                                 <div className="content-part">
                                     <div className="title">
@@ -99,10 +99,10 @@ export const SeedModal = ({ setModal, seedDetails }: any) => {
                                     </div>
                                 </div>
                             </div>
-                        </div> */}
+                        </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }
