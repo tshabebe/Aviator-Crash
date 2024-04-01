@@ -5,7 +5,7 @@ import CryptoJS from 'crypto-js';
 export const SeedModal = ({ setModal, seedDetails }: any) => {
 
     const [date, setDate] = useState('');
-    const [sha512Hash, setSha512Hash] = useState('');
+    const [sha512Hash, setSha512Hash] = useState<string>('abcdef');
 
     useEffect(() => {
         const newDate = new Date(seedDetails.createdAt);
@@ -18,7 +18,6 @@ export const SeedModal = ({ setModal, seedDetails }: any) => {
         }
         const hash_object = CryptoJS.SHA512(combined_seed).toString(CryptoJS.enc.Hex);
         setSha512Hash(hash_object);
-        console.log(hash_object);
     }, [seedDetails])
     return (
         <div className="modal">
@@ -28,7 +27,7 @@ export const SeedModal = ({ setModal, seedDetails }: any) => {
                     <div className="modal-header">
                         <span className="modal-title">ROUND </span>
                         <div className="header__info">
-                            <div className={`bubble-multiplier ${Number(seedDetails.target) < 2 ? "blue" : Number(seedDetails.target) < 10 ? "purple" : "big"}`}>{Number(seedDetails.target).toFixed(2)}x</div>
+                            <div className={`bubble-multiplier ${Number(seedDetails?.target) < 2 ? "blue" : Number(seedDetails?.target) < 10 ? "purple" : "big"}`}>{Number(seedDetails?.target).toFixed(2)}x</div>
 
                             <div style={{ paddingLeft: '5px' }}>{date}</div>
                         </div>
@@ -95,9 +94,9 @@ export const SeedModal = ({ setModal, seedDetails }: any) => {
                                         <span>Result:</span>
                                     </div>
                                     <div className="value">
-                                        <span className="white">{sha512Hash.slice(0, 13)}</span>
-                                        <span className="white">{parseInt(sha512Hash.slice(0, 13), 16)}</span>
-                                        <span className="white">{seedDetails.target.toFixed(2)}</span>
+                                        <span className="white">{sha512Hash?.slice(0, 13)}</span>
+                                        <span className="white">{parseInt(sha512Hash.slice(0, 13) || '', 16)}</span>
+                                        <span className="white">{(seedDetails.target).toFixed(2)}</span>
                                     </div>
                                 </div>
                             </div>
