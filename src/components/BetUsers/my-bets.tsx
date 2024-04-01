@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 // import { useCrashContext } from "../Main/context";
 import Context from "../../context";
-// import { SeedModal } from "../Main/seedModal";
+import { SeedModal } from "../Main/seedModal";
 
 const MyBets = () => {
   const { state, handleGetSeedOfRound } = React.useContext(Context);
@@ -92,7 +92,7 @@ const MyBets = () => {
         </div>
       </div>
 
-      {/* {modal && <SeedModal setModal={setModal} seedDetails={seedDetails} />} */}
+      {modal && <SeedModal setModal={setModal} seedDetails={seedDetails} />}
     </>
   );
 };

@@ -37,7 +37,7 @@ export const SeedModal = ({ setModal, seedDetails }: any) => {
                     <div className="modal-body">
                         <div className="content-wrapper">
                             <div className="content">
-                                <div className="content-part">
+                                {/* <div className="content-part">
                                     <div className="title">
                                         <div className="icon-server"></div>
                                         <div className="text">
@@ -97,7 +97,7 @@ export const SeedModal = ({ setModal, seedDetails }: any) => {
                                         <span className="white">{parseInt(sha512Hash.slice(0, 13), 16)}</span>
                                         <span className="white">{seedDetails.target.toFixed(2)}</span>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>
