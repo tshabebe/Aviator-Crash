@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import crypto from 'crypto';
+// import crypto from 'crypto';
 
 export const SeedModal = ({ setModal, seedDetails }: any) => {
 
@@ -15,13 +15,13 @@ export const SeedModal = ({ setModal, seedDetails }: any) => {
         for (let i = 0; i < seedDetails.seedOfUsers.length; i++) {
             combined_seed += seedDetails.seedOfUsers[i].seed
         }
-        const hash_object = crypto.createHash('sha512').update(`${combined_seed}`).digest('hex');
-        setSha512Hash(hash_object);
+        // const hash_object = crypto.createHash('sha512').update(`${combined_seed}`).digest('hex');
+        // setSha512Hash(hash_object);
     }, [seedDetails])
     return (
         <div className="modal">
             <div className="back" onClick={() => setModal(false)}></div>
-            {/* <div className="modal-dialog">
+            <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
                         <span className="modal-title">ROUND </span>
@@ -102,7 +102,7 @@ export const SeedModal = ({ setModal, seedDetails }: any) => {
                         </div>
                     </div>
                 </div>
-            </div> */}
+            </div>
         </div>
     )
 }
