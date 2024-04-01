@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 // import { useCrashContext } from "./context";
 import Context from "../../context";
 
 export default function History() {
   const { history } = React.useContext(Context);
+
+  useEffect(() => {
+    console.log(history);
+  }, [history])
 
   const [showHistory, setShowHistory] = React.useState(false);
 
@@ -13,7 +17,7 @@ export default function History() {
         <div className="payouts-block">
           {!!history.length && history.map((item: any, key) => (
             <div key={key} className="payout">
-              <div className={`item opacity-${100 - 2 * key} ${Number(item.target) < 2 ? "blue" : Number(item.target) < 10 ? "purple" : "big"}`}>{Number(item).toFixed(2)}x</div>
+              <div className={`item opacity-${100 - 2 * key} ${Number(item.target) < 2 ? "blue" : Number(item.target) < 10 ? "purple" : "big"}`}>{Number(item.target).toFixed(2)}x</div>
             </div>
           ))}
         </div>
