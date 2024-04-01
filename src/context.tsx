@@ -92,7 +92,7 @@ export const Provider = ({ children }: any) => {
     setState({ ...state, ...attrs });
   };
   const [previousHand, setPreviousHand] = useState<UserType[]>([]);
-  const [history, setHistory] = useState<number[]>([]);
+  const [history, setHistory] = useState<any>([]);
   const [userBetState, setUserBetState] = useState<UserStatusType>({
     fbetState: false,
     fbetted: false,
