@@ -140,6 +140,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
 
   .stage-board {
     height: 100%;
+    min-height: 200px !important;
     position: relative;
 
     .play-board-wrapper {
@@ -1659,11 +1660,13 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
 
 @media (max-width: 992px) {
   .stage-board {
-    height: calc(50vh - 38px) !important;
+    height: calc(40vh - 38px) !important;
     min-height: 200px !important;
   }
 
   .game-play {
+    justify-content: flex-start;
+    flex: 0.7 1;
     padding: 0 !important;
   }
 

@@ -433,22 +433,18 @@ code {
 }
 
 @media (max-width: 1300px) {
-  .game-container {
-    flex-direction: column-reverse !important;
-    padding-left: 5px !important;
-    padding-right: 5px !important;
-    height: 150vh !important;
-  }
 
   .info-board {
-    margin-top: 0;
-    height: 80vh !important;
     padding-left: 0 !important;
     padding-top: 20px !important;
   }
 }
 
 @media (max-width: 992px) {
+  .info-board {
+    margin-top: 0 !important;
+  }
+
   .game-container {
     flex-direction: column-reverse !important;
     padding-left: 5px !important;
@@ -480,15 +476,12 @@ code {
   flex: 1;
 
   @media (min-width: 992px) {
-    // min-width: 320px !important;
-    // max-width: 320px !important;
     width: 100% !important;
   }
 
-  @media (min-width: 1200px) {
-    // min-width: 370px !important;
-    // max-width: 370px !important;
-    width: 100% !important;
+  @media (min-width: 1000px) {
+    min-width: 370px !important;
+    max-width: 370px !important;
   }
 
   @media (min-width: 1300px) {
