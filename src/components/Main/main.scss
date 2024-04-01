@@ -1270,7 +1270,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
             min-width: 30px;
             max-width: 30px;
             height: 30px;
-            background-image: url('../../assets/images/icon-hash.svg');
+            background: url('../../assets/images/icon-hash.svg');
             margin-right: 10px;
           }
 
@@ -1278,13 +1278,13 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
             width: 32px;
             height: 31px;
             margin-right: 10px;
-            background-image: url("../../assets/images/server.svg");
+            background: url("../../assets/images/server.svg");
           }
 
           .icon-client {
             width: 32px;
             height: 25px;
-            background-image: url("../../assets/images/client.svg");
+            background: url("../../assets/images/client.svg");
             margin-right: 10px;
           }
 

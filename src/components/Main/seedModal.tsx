@@ -57,8 +57,8 @@ export const SeedModal = ({ setModal, seedDetails }: any) => {
                                             <div className="tip">Generated on players side</div>
                                         </div>
                                     </div>
-                                    {seedDetails.seedOfUsers.map((user: any, key: number) => (
-                                        <div className="client">
+                                    {seedDetails.seedOfUsers?.map((user: any, key: number) => (
+                                        <div className="client" key={key}>
                                             <div className="value">
                                                 <div className="player">
                                                     <span>Player N1:</span>
