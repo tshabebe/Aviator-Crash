@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-// import { useCrashContext } from "./context";
 import Context from "../../context";
-// import { SeedModal } from "./seedModal";
+import { SeedModal } from "./seedModal";
 
 export default function History() {
   const { history, handleGetSeedOfRound } = React.useContext(Context);
@@ -53,7 +52,7 @@ export default function History() {
       </div>
       }
 
-      {/* {modal && <SeedModal setModal={setModal} seedDetails={seedDetails} />} */}
+      {modal && <SeedModal setModal={setModal} seedDetails={seedDetails} />}
     </div>
   );
 }
