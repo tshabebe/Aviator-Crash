@@ -87,6 +87,7 @@ input {
 
 body {
   margin: 0;
+  padding: 0;
   height: 100%;
   font-family: Roboto, sans-serif;
   user-select: none;
@@ -1345,7 +1346,6 @@ audio {
 .main-game-container {
   width: calc(100% - 290px);
   height: 100%;
-  overflow: auto;
   display: flex;
   flex-direction: row;
   flex: 1 1;

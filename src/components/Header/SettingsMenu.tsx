@@ -126,6 +126,10 @@ const Menu = ({ setHowto }) => {
     [state]
   );
 
+  useEffect(() => {
+    console.log("current user info:", state.userInfo);
+  }, [state.userInfo])
+
   const handleToggleMusic = useCallback(
     async (checked) => {
       let mainEle: any = document.getElementById("mainAudio");

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-// import { useCrashContext } from "../Main/context";
+import copy from "copy-to-clipboard";
+import { toast } from "react-hot-toast";
+
 import Context from "../../context";
 import { SeedModal } from "../Main/seedModal";
 
@@ -85,7 +87,7 @@ const MyBets = () => {
                 </div>
                 <div className="tools">
                   <div onClick={() => handleGetSeed(user.flyDetailID)} className="fairness-i"></div>
-                  <div className="share-i"></div>
+                  <div className="share-i" onClick={() => { copy(`${user.flyDetailID}`); toast.success('Copied for Fly ID!') }}></div>
                 </div>
               </div>
             ))}

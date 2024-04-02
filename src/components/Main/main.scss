@@ -1260,6 +1260,10 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
         background-color: transparent;
         width: 100%;
 
+        input {
+          outline: none;
+        }
+
         .title {
           opacity: 1;
           display: flex;

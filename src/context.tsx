@@ -204,7 +204,7 @@ export const Provider = ({ children }: any) => {
       console.log(`Socket connection is ${socket.connected}`)
     );
 
-    socket.on("gameState", (gameState: GameStatusType) => {
+    socket.on("myGameState", (gameState: GameStatusType) => {
       setGameState(gameState);
     });
 
@@ -326,7 +326,7 @@ export const Provider = ({ children }: any) => {
           }
         }
         handleSetDefaultLoading()
-        update(attrs);
+        // update(attrs);
         setUserBetState(betStatus);
       });
 
@@ -387,12 +387,12 @@ export const Provider = ({ children }: any) => {
       socket.off("myBetState");
       socket.off("sessionSecure");
       socket.off("history");
-      socket.off("gameState");
+      socket.off("myGameState");
       socket.off("previousHand");
       socket.off("finishGame");
       socket.off("getBetLimits");
       socket.off("recharge");
-      socket.off("cancelled")
+      socket.off("cancelled");
       socket.off("error");
       socket.off("success");
     };
