@@ -121,6 +121,10 @@ function App() {
           <source src={FlewAwayAudio} type="audio/mp3" />
           Your browser does not support the audio element.
         </audio>
+
+        <audio id="cashoutAudio">
+
+        </audio>
       </div>
 
       {platformLoading && (
@@ -137,21 +141,6 @@ function App() {
           </div>
         </div>
       )}
-      {/* {!platformLoading && !unityLoading && (
-        <div className="myloading">
-          <div className="loading-container">
-            <div className="rotation">
-              <img alt="propeller" src={propeller}></img>
-            </div>
-            <div className="waiting">
-              <div
-                style={{ width: `${currentProgress * 1.111 + 0.01}%` }}
-              ></div>
-            </div>
-            <p>{Number(currentProgress * 1.111 + 0.01).toFixed(2)}%</p>
-          </div>
-        </div>
-      )} */}
       <div className="contianer">
         <div className="main-game-container">
           <div className="game-container">
@@ -162,54 +151,6 @@ function App() {
         </div>
         {msgTab && <PerfectLiveChat />}
       </div>
-
-      {/* <div class="wrapper">
-    <div class="disconn-icon"></div>
-    <div class="alert">
-        <div class="text ng-star-inserted">
-            You have been disconnected. Check connection and refresh your browser, or go back to landing page
-        </div>
-    </div>
-</div>
-
-
-
-.wrapper {
-    height: 100%;
-    max-height: 500px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-
-    .alert {
-        background-color: #1b1c1d;
-        max-width: 600px;
-        width: 100%;
-        min-height: 204px;
-        border-radius: 10px;
-        border: 1px solid #2a2b2e;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 20px 50px;
-
-        .text {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-    }
-}
-
-.disconn-icon {
-    background: url(error-page.4aa561fd98783d15.svg) no-repeat center;
-    width: 120px;
-    height: 120px;
-    background-size: contain;
-    margin-bottom: 40px;
-} */}
     </div>
   );
 }

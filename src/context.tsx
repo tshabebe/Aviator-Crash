@@ -51,6 +51,9 @@ let sDecreaseAmount = 0;
 let newState;
 let newBetState;
 
+const takeOffAudio = new Audio("/sound/take_off.mp3");
+
+
 export const Provider = ({ children }: any) => {
   const token = new URLSearchParams(useLocation().search).get("token");
   const UserID = new URLSearchParams(useLocation().search).get("UserID");
@@ -68,7 +71,6 @@ export const Provider = ({ children }: any) => {
   const [msgTab, setMsgTab] = useState<boolean>(
     state.userInfo.msgVisible
   );
-
   const toggleMsgTab = () => {
     setMsgTab(!msgTab);
   };
@@ -204,7 +206,7 @@ export const Provider = ({ children }: any) => {
       console.log(`Socket connection is ${socket.connected}`)
     );
 
-    socket.on("myGameState", (gameState: GameStatusType) => {
+    socket.on("gameState", (gameState: GameStatusType) => {
       setGameState(gameState);
     });
 
@@ -250,6 +252,15 @@ export const Provider = ({ children }: any) => {
       });
 
       socket.on("finishGame", (user: UserType) => {
+
+        console.log('finishGame,', user.f.cashouted, state.userInfo.isSoundEnable, takeOffAudio)
+        if (user.f.cashouted && state.userInfo.isSoundEnable === true && takeOffAudio) {
+          takeOffAudio.play();
+        }
+        console.log('finishGame,', user.s.cashouted, state.userInfo.isSoundEnable, takeOffAudio)
+        if (user.s.cashouted && state.userInfo.isSoundEnable === true && takeOffAudio) {
+          takeOffAudio.play();
+        }
         let attrs = newState;
         let fauto = attrs.userInfo.f.auto;
         let sauto = attrs.userInfo.s.auto;
@@ -371,6 +382,7 @@ export const Provider = ({ children }: any) => {
         } else {
           setSLoading(false)
         }
+
         toaster(
           "success",
           data.msg,
@@ -387,7 +399,7 @@ export const Provider = ({ children }: any) => {
       socket.off("myBetState");
       socket.off("sessionSecure");
       socket.off("history");
-      socket.off("myGameState");
+      socket.off("gameState");
       socket.off("previousHand");
       socket.off("finishGame");
       socket.off("getBetLimits");
