@@ -131,7 +131,6 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
   const onChangeInput = (e) => {
     let betAmount: string = e.target.value;
-    console.log("betAmount:", betAmount);
     if (parseFloat(betAmount) >= minBet && parseFloat(betAmount) <= maxBet && /^\d*\.?\d{0,2}$/.test(betAmount)) {
       setMyBetAmount(betAmount)
       update({

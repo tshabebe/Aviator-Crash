@@ -202,10 +202,6 @@ export const Provider = ({ children }: any) => {
   );
 
   useEffect(() => {
-    console.log(state.userInfo);
-  }, [state.userInfo])
-
-  useEffect(() => {
     socket.on("connect", () =>
       console.log(`Socket connection is ${socket.connected}`)
     );
@@ -345,7 +341,6 @@ export const Provider = ({ children }: any) => {
       });
 
       socket.on("getBetLimits", (betAmounts: { max: number; min: number }) => {
-        console.log(betAmounts);
         setBetLimit({ maxBet: betAmounts.max, minBet: betAmounts.min });
       });
 
