@@ -202,6 +202,10 @@ export const Provider = ({ children }: any) => {
   );
 
   useEffect(() => {
+    console.log(state.userInfo);
+  }, [state.userInfo])
+
+  useEffect(() => {
     socket.on("connect", () =>
       console.log(`Socket connection is ${socket.connected}`)
     );
@@ -252,16 +256,15 @@ export const Provider = ({ children }: any) => {
       });
 
       socket.on("finishGame", (user: UserType) => {
-
-        console.log('finishGame,', user.f.cashouted, state.userInfo.isSoundEnable, takeOffAudio)
         if (user.f.cashouted && state.userInfo.isSoundEnable === true && takeOffAudio) {
           takeOffAudio.play();
         }
-        console.log('finishGame,', user.s.cashouted, state.userInfo.isSoundEnable, takeOffAudio)
         if (user.s.cashouted && state.userInfo.isSoundEnable === true && takeOffAudio) {
           takeOffAudio.play();
         }
         let attrs = newState;
+        user.isMusicEnable = attrs.userInfo.isMusicEnable;
+        user.isSoundEnable = attrs.userInfo.isSoundEnable;
         let fauto = attrs.userInfo.f.auto;
         let sauto = attrs.userInfo.s.auto;
         let fbetAmount = attrs.userInfo.f.betAmount;
@@ -337,7 +340,7 @@ export const Provider = ({ children }: any) => {
           }
         }
         handleSetDefaultLoading()
-        // update(attrs);
+        update(attrs);
         setUserBetState(betStatus);
       });
 
