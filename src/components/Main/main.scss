@@ -715,26 +715,25 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
   justify-content: center;
   align-items: center;
   text-align: center;
+  margin-top: -30px;
   font-size: 100px;
   font-weight: 700;
   color: white;
 
   .flew-away {
     color: white;
-    font-size: 40px;
+    font-size: 36px;
+    font-weight: 400;
     margin-top: 25px;
   }
 
-  &.wait {
-    top: 35%;
+  .waiting-font {
+    font-size: 36px;
+    font-weight: 400;
   }
 
   @media (max-width: 1314px) {
     font-size: 80px;
-
-    &.wait {
-      top: 22%;
-    }
 
     .flew-away {
       font-size: 25px;
@@ -756,7 +755,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
   }
 
   &.red {
-    color: red !important;
+    color: #e70439 !important;
   }
 }
 
@@ -850,20 +849,16 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
 
 .waiting {
   margin-top: 10px;
-  width: 250px;
-  background-color: rgb(138, 138, 138);
+  width: 200px;
+  background-color: rgb(73, 73, 73);
   border-radius: 8px;
 
   div {
-    background-color: rgb(190, 13, 13);
+    background-color: #e70439;
     height: 100%;
     border-radius: 8px;
-    padding: 2px 0;
+    padding: 3px 0;
     color: white;
-
-    @media (max-width: 560px) {
-      padding: 2px 0;
-    }
   }
 
   .width-transition {
@@ -871,7 +866,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
   }
 
   @media (max-width: 560px) {
-    width: 200px;
+    width: 150px;
   }
 }
 

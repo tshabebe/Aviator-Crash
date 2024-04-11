@@ -6,7 +6,7 @@ import Unity from "react-unity-webgl";
 import propeller from "../../assets/images/propeller.png";
 import Context from "../../context";
 
-let currentFlag = 0;
+let currentFlag = '';
 
 export default function WebGLStarter() {
   const {
@@ -18,41 +18,41 @@ export default function WebGLStarter() {
     setCurrentTarget,
   } = React.useContext(Context);
   const [waiting, setWaiting] = React.useState(0);
-  const [flag, setFlag] = React.useState(1);
+  const [flag, setFlag] = React.useState('');
   const [target, setTarget] = React.useState(1);
 
   React.useEffect(() => {
     let myInterval;
     if (GameState === "PLAYING") {
-      setFlag(2);
-      let startTime = Date.now() - time;
-      let currentTime;
-      let currentNum;
-      const getCurrentTime = (e) => {
-        currentTime = (Date.now() - startTime) / 1000;
-        currentNum =
-          1 +
-          0.06 * currentTime +
-          Math.pow(0.06 * currentTime, 2) -
-          Math.pow(0.04 * currentTime, 3) +
-          Math.pow(0.04 * currentTime, 4);
-        if (currentNum > 2 && e === 2) {
-          setFlag(3);
-        } else if (currentNum > 10 && e === 3) {
-          setFlag(4);
-        }
-        setCurrentTarget(currentNum);
-        setTarget(currentNum);
-      };
-      myInterval = setInterval(() => {
-        getCurrentTime(currentFlag);
-      }, 20);
+      setFlag('PLAYING');
+      // let startTime = Date.now() - time;
+      // let currentTime;
+      // let currentNum;
+      // const getCurrentTime = (e) => {
+      //   currentTime = (Date.now() - startTime) / 1000;
+      //   currentNum =
+      //     1 +
+      //     0.06 * currentTime +
+      //     Math.pow(0.06 * currentTime, 2) -
+      //     Math.pow(0.04 * currentTime, 3) +
+      //     Math.pow(0.04 * currentTime, 4);
+      //   if (currentNum > 2 && e === 2) {
+      //     setFlag('SCORE_2');
+      //   } else if (currentNum > 10 && e === 3) {
+      //     setFlag('SCORE_10');
+      //   }
+      //   setCurrentTarget(currentNum);
+      //   setTarget(currentNum);
+      // };
+      // myInterval = setInterval(() => {
+      //   getCurrentTime(currentFlag);
+      // }, 20);
     } else if (GameState === "GAMEEND") {
-      setFlag(5);
+      setFlag('GAMEEND');
       setCurrentTarget(currentNum);
       setTarget(currentNum);
     } else if (GameState === "BET") {
-      setFlag(1);
+      setFlag('BET');
       let startWaiting = Date.now() - time;
       setCurrentTarget(1);
       setTarget(1);
@@ -66,10 +66,10 @@ export default function WebGLStarter() {
 
   React.useEffect(() => {
     myUnityContext?.send(
-      "GameManager",
-      "RequestToken",
+      "CrashManager",
+      "GetStateFromJavascript",
       JSON.stringify({
-        gameState: flag,
+        strState: flag,
       })
     );
     currentFlag = flag;
@@ -80,8 +80,26 @@ export default function WebGLStarter() {
       <div className="canvas">
         <Unity unityContext={myUnityContext} matchWebGLToCanvasSize={true} />
       </div>
+      {/* <div className="crash-text-container">
+        <div className='crashtext wait font-9'>
+          <div className="rotate">
+            <img
+              width={100}
+              height={100}
+              src={propeller}
+              alt="propellar"
+            ></img>
+          </div>
+          <div className="waiting-font">WAITING FOR NEXT ROUND</div>
+          <div className="waiting">
+            <div
+              style={{ width: `${((5000 - waiting) * 100) / 5000}%` }}
+            ></div>
+          </div>
+        </div>
+      </div> */}
       <div className="crash-text-container">
-        {/* {GameState === "BET" ? (
+        {GameState === "BET" ? (
           <div className={`crashtext wait font-9`}>
             <div className="rotate">
               <img
@@ -104,12 +122,13 @@ export default function WebGLStarter() {
               <div className="flew-away">FLEW AWAY!</div>
             )}
             <div>
-              {`${target === 1 ? '1.00' : target?.toFixed(2)}`}
+              {`${currentNum === -1 ? '1.00' : currentNum?.toFixed(2)}`}
               <span className="font-[900]">x</span>
             </div>
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );
+
 }

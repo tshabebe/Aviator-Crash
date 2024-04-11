@@ -170,10 +170,14 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   };
 
   const onBetClick = (s: boolean) => {
-    if (secure) {
-      updateUserBetState({ [`${index}betState`]: s });
+    if (state.userInfo[index].betAmount > state.userInfo.balance) {
+      toast.error("Your balance is not enough");
     } else {
-      toast.error("Please wait while getting your info. Or you can't run the duplicate game.");
+      if (secure) {
+        updateUserBetState({ [`${index}betState`]: s });
+      } else {
+        toast.error("Please wait while getting your info. Or you can't run the duplicate game.");
+      }
     }
   };
 
