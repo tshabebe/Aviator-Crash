@@ -51,7 +51,7 @@ let sDecreaseAmount = 0;
 let newState;
 let newBetState;
 
-const takeOffAudio = new Audio("/sound/take_off.mp3");
+const takeOffAudio = new Audio("/sound/cashout.mp3");
 
 
 export const Provider = ({ children }: any) => {
