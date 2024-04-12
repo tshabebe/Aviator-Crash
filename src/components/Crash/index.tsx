@@ -5,58 +5,34 @@ import "./crash.scss";
 import Unity from "react-unity-webgl";
 import propeller from "../../assets/images/propeller.png";
 import Context from "../../context";
+import { binaryToFloat } from "../utils";
+
+let currentSubFlag = '';
 
 export default function WebGLStarter() {
   const {
     GameState,
     currentNum,
-    time,
     unityState,
     myUnityContext,
     setCurrentTarget,
   } = React.useContext(Context);
   const [waiting, setWaiting] = React.useState(0);
-  const [flag, setFlag] = React.useState('BET');
-  const [subFlag, setSubFlag] = React.useState('');
-  const [target, setTarget] = React.useState(1);
+  const [flag, setFlag] = React.useState('');
 
   React.useEffect(() => {
     let myInterval;
     if (GameState === "PLAYING") {
       setFlag('PLAYING');
-      // let startTime = Date.now() - time;
-      // let currentTime;
-      // let currentNum;
-      // const getCurrentTime = (e) => {
-      //   currentTime = (Date.now() - startTime) / 1000;
-      //   currentNum =
-      //     1 +
-      //     0.06 * currentTime +
-      //     Math.pow(0.06 * currentTime, 2) -
-      //     Math.pow(0.04 * currentTime, 3) +
-      //     Math.pow(0.04 * currentTime, 4);
-      //   if (currentNum > 2 && e === 2) {
-      //     setFlag('SCORE_2');
-      //   } else if (currentNum > 10 && e === 3) {
-      //     setFlag('SCORE_10');
-      //   }
-      //   setCurrentTarget(currentNum);
-      //   setTarget(currentNum);
-      // };
-      // myInterval = setInterval(() => {
-      //   getCurrentTime(currentFlag);
-      // }, 20);
+      setCurrentTarget(binaryToFloat(currentNum));
     } else if (GameState === "GAMEEND") {
       setFlag('GAMEEND');
-      setSubFlag('');
-      setCurrentTarget(currentNum);
-      setTarget(currentNum);
+      currentSubFlag = '';
     } else if (GameState === "BET") {
       setFlag('BET');
-      setSubFlag('');
-      let startWaiting = Date.now() - time;
+      currentSubFlag = '';
+      let startWaiting = Date.now();
       setCurrentTarget(1);
-      setTarget(1);
 
       myInterval = setInterval(() => {
         setWaiting(Date.now() - startWaiting);
@@ -66,23 +42,25 @@ export default function WebGLStarter() {
   }, [GameState, unityState]);
 
   useEffect(() => {
-    if (currentNum > 2 && currentNum < 10 && subFlag !== 'SCORE_2') {
-      setSubFlag('SCORE_2');
-    } else if (currentNum > 10 && subFlag !== 'SCORE_10') {
-      setSubFlag('SCORE_10');
+    if (binaryToFloat(currentNum) > 2 && binaryToFloat(currentNum) < 10 && currentSubFlag !== 'SCORE_2') {
+      currentSubFlag = 'SCORE_2';
+    } else if (binaryToFloat(currentNum) > 10 && currentSubFlag !== 'SCORE_10') {
+      currentSubFlag = 'SCORE_10';
     }
+    setCurrentTarget(binaryToFloat(currentNum));
   }, [currentNum])
 
   React.useEffect(() => {
+    console.log("flag:", flag, 'subFlag:', currentSubFlag);
     myUnityContext?.send(
       "CrashManager",
       "GetStateFromJavascript",
       JSON.stringify({
         strState: flag,
-        strSubState: subFlag
+        strSubState: currentSubFlag
       })
     );
-  }, [flag, subFlag, myUnityContext]);
+  }, [flag, currentSubFlag]);
 
   return (
     <div className="crash-container">
@@ -131,7 +109,7 @@ export default function WebGLStarter() {
               <div className="flew-away">FLEW AWAY!</div>
             )}
             <div>
-              {`${currentNum === -1 ? '1.00' : currentNum?.toFixed(2)}`}
+              {`${binaryToFloat(currentNum) === -1 ? '1.00' : binaryToFloat(currentNum)?.toFixed(2)}`}
               <span className="font-[900]">x</span>
             </div>
           </div>

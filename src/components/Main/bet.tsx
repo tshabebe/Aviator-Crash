@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import Context, { callCashOut, callCancelBet } from "../../context";
 import toaster from "../Toast";
 import toast from "react-hot-toast";
+import { binaryToFloat } from "../utils";
 
 interface BetProps {
   index: "f" | "s";
@@ -130,7 +131,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
   const onChangeInput = (e) => {
     let betAmount: string = e.target.value;
-    if (parseFloat(betAmount) >= minBet && parseFloat(betAmount) <= maxBet && /^\d*\.?\d{0,2}$/.test(betAmount)) {
+    if (Number(betAmount) >= minBet && Number(betAmount) <= maxBet && /^\d*\.?\d{0,2}$/.test(betAmount)) {
       setMyBetAmount(betAmount)
       update({
         ...state,
@@ -190,7 +191,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   };
 
   useEffect(() => {
-    if (index === "f" && GameState === "PLAYING" && betted && autoCashoutState && cashOut < currentSecondNum) {
+    if (index === "f" && GameState === "PLAYING" && betted && autoCashoutState && cashOut < binaryToFloat(currentSecondNum)) {
       updateUserBetState({ [`${index}betted`]: false });
       setFLoading(true);
       callCashOut(state.userInfo, state.userInfo.userId, cashOut, index);
@@ -206,7 +207,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   ]);
 
   useEffect(() => {
-    if (index === "s" && GameState === "PLAYING" && betted && autoCashoutState && cashOut + 0.01 < currentSecondNum) {
+    if (index === "s" && GameState === "PLAYING" && betted && autoCashoutState && cashOut + 0.01 < binaryToFloat(currentSecondNum)) {
       updateUserBetState({ [`${index}betted`]: false });
       setSLoading(true);
       callCashOut(state.userInfo, state.userInfo.userId, cashOut, index);

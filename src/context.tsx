@@ -82,9 +82,9 @@ export const Provider = ({ children }: any) => {
     currentProgress: 0,
   });
   const [gameState, setGameState] = useState({
-    currentNum: 0,
-    lastSecondNum: 0,
-    currentSecondNum: 0,
+    currentNum: '0',
+    lastSecondNum: '0',
+    currentSecondNum: '0',
     GameState: "",
     time: 0,
   });
