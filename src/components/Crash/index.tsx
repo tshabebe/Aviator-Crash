@@ -1,12 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
+import React, { useEffect } from "react";
 // import { useCrashContext } from "../Main/context";
 import "./crash.scss";
 import Unity from "react-unity-webgl";
 import propeller from "../../assets/images/propeller.png";
 import Context from "../../context";
-
-let currentFlag = '';
 
 export default function WebGLStarter() {
   const {
@@ -18,7 +16,8 @@ export default function WebGLStarter() {
     setCurrentTarget,
   } = React.useContext(Context);
   const [waiting, setWaiting] = React.useState(0);
-  const [flag, setFlag] = React.useState('');
+  const [flag, setFlag] = React.useState('BET');
+  const [subFlag, setSubFlag] = React.useState('');
   const [target, setTarget] = React.useState(1);
 
   React.useEffect(() => {
@@ -49,10 +48,12 @@ export default function WebGLStarter() {
       // }, 20);
     } else if (GameState === "GAMEEND") {
       setFlag('GAMEEND');
+      setSubFlag('');
       setCurrentTarget(currentNum);
       setTarget(currentNum);
     } else if (GameState === "BET") {
       setFlag('BET');
+      setSubFlag('');
       let startWaiting = Date.now() - time;
       setCurrentTarget(1);
       setTarget(1);
@@ -64,16 +65,24 @@ export default function WebGLStarter() {
     return () => clearInterval(myInterval);
   }, [GameState, unityState]);
 
+  useEffect(() => {
+    if (currentNum > 2 && currentNum < 10 && subFlag !== 'SCORE_2') {
+      setSubFlag('SCORE_2');
+    } else if (currentNum > 10 && subFlag !== 'SCORE_10') {
+      setSubFlag('SCORE_10');
+    }
+  }, [currentNum])
+
   React.useEffect(() => {
     myUnityContext?.send(
       "CrashManager",
       "GetStateFromJavascript",
       JSON.stringify({
         strState: flag,
+        strSubState: subFlag
       })
     );
-    currentFlag = flag;
-  }, [flag, myUnityContext]);
+  }, [flag, subFlag, myUnityContext]);
 
   return (
     <div className="crash-container">

@@ -111,7 +111,6 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
         );
       }
     } else {
-
       value.userInfo[index].betAmount = Number(Number(amount).toFixed(2));
       setBetOpt(btnNum);
     }
@@ -540,7 +539,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                           />
                         )}
                       </div>
-                      <span className="text">×</span>
+                      <span className="text" onClick={() => autoCashoutState && setCashOut(1)}>×</span>
                     </div>
                   </div>
                 </div>
