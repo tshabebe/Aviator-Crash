@@ -2,6 +2,7 @@ import React from "react";
 import Context from "../../context";
 import { displayName } from "../utils";
 import { BetResults, BettedUserType, UserType } from "../../utils/interfaces";
+import { binaryToFloat } from "../utils";
 
 interface AllDataProps {
   pre: boolean;
@@ -86,14 +87,14 @@ const AllData = ({ pre, setPre, allData }: AllDataProps) => {
               {user.cashouted && (
                 <div className="multiplier-block">
                   <div
-                    className={`bubble font-weight-bold opacity-${100 - 2 * key} ${Number(user.target) < 2
+                    className={`bubble font-weight-bold opacity-${100 - 2 * key} ${binaryToFloat(user.target) < 2
                       ? "blue"
-                      : Number(user.target) < 10
+                      : binaryToFloat(user.target) < 10
                         ? "purple"
                         : "big"
                       }`}
                   >
-                    {Number(user.target).toFixed(2)}x
+                    {binaryToFloat(user.target).toFixed(2)}x
                   </div>
                 </div>
               )}
