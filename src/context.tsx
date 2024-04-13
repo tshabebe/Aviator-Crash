@@ -171,7 +171,6 @@ export const Provider = ({ children }: any) => {
 
   useEffect(
     function () {
-      setPlatformLoading(false);
       unityContext.on("GameController", function (message) {
         if (message === "Ready") {
           setUnity({
@@ -184,6 +183,7 @@ export const Provider = ({ children }: any) => {
       unityContext.on("progress", (progression) => {
         const currentProgress = progression * 100;
         if (progression === 1) {
+          setPlatformLoading(false);
           setUnity({ currentProgress, unityLoading: true, unityState: true });
         } else {
           setUnity({
