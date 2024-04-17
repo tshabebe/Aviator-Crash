@@ -52,6 +52,9 @@ let newState;
 let newBetState;
 
 const takeOffAudio = new Audio("/sound/cashout.mp3");
+const musicAudio = new Audio("/sound/main.wav");
+musicAudio.loop = true;
+musicAudio.volume = 0.2;
 
 
 export const Provider = ({ children }: any) => {
@@ -408,6 +411,14 @@ export const Provider = ({ children }: any) => {
     };
     // eslint-disable-next-line
   }, [socket, secure, token, userBetState]);
+
+  useEffect(() => {
+    if (state.userInfo.isMusicEnable) {
+      musicAudio.play();
+    } else {
+      musicAudio.pause();
+    }
+  }, [state.userInfo.isMusicEnable])
 
   useEffect(() => {
 

@@ -105,22 +105,26 @@ const Menu = ({ setHowto }) => {
         takeOffAudioEle.pause();
         flewAwayAudioEle.pause();
       }
-      await axios.post(
-        `${process.env.REACT_APP_DEVELOPMENT === "true"
-          ? config.development_api
-          : config.production_api
-        }/update-info`,
-        {
-          userId: state.userInfo.userId,
-          updateData: { isSoundEnable: checked },
-        }
-      );
-      update({
-        userInfo: {
-          ...state.userInfo,
-          isSoundEnable: checked,
-        },
-      });
+      try {
+        await axios.post(
+          `${process.env.REACT_APP_DEVELOPMENT === "true"
+            ? config.development_api
+            : config.production_api
+          }/update-info`,
+          {
+            userId: state.userInfo.userId,
+            updateData: { isSoundEnable: checked },
+          }
+        );
+        update({
+          userInfo: {
+            ...state.userInfo,
+            isSoundEnable: checked,
+          },
+        });
+      } catch (error) {
+        console.log("Failed to update Sound state");
+      }
     },
     // eslint-disable-next-line
     [state]
@@ -128,31 +132,26 @@ const Menu = ({ setHowto }) => {
 
   const handleToggleMusic = useCallback(
     async (checked) => {
-      let mainEle: any = document.getElementById("mainAudio");
-      mainEle.volume = 0.2;
-      if (checked === true) {
-        try {
-          mainEle.play();
-        } catch (error) { }
-      } else {
-        mainEle.pause();
+      try {
+        await axios.post(
+          `${process.env.REACT_APP_DEVELOPMENT === "true"
+            ? config.development_api
+            : config.production_api
+          }/update-info`,
+          {
+            userId: state.userInfo.userId,
+            updateData: { isMusicEnable: checked },
+          }
+        );
+        update({
+          userInfo: {
+            ...state.userInfo,
+            isMusicEnable: checked,
+          },
+        });
+      } catch (error) {
+        console.log("Failed to update music state");
       }
-      await axios.post(
-        `${process.env.REACT_APP_DEVELOPMENT === "true"
-          ? config.development_api
-          : config.production_api
-        }/update-info`,
-        {
-          userId: state.userInfo.userId,
-          updateData: { isMusicEnable: checked },
-        }
-      );
-      update({
-        userInfo: {
-          ...state.userInfo,
-          isMusicEnable: checked,
-        },
-      });
     },
     // eslint-disable-next-line
     [state]
@@ -345,12 +344,6 @@ const Menu = ({ setHowto }) => {
                   );
                 })}
               </div>
-              {/* <a href={config.production_wss} className="logout">
-                <span>
-                  <HiOutlineHome size={16} />
-                </span>
-                <span>Home</span>
-              </a> */}
             </div>
           </div>
         )}

@@ -48,7 +48,7 @@ function App() {
     "return_url"
   );
 
-  const mainAudioRef = useRef<HTMLAudioElement>(null);
+  // const mainAudioRef = useRef<HTMLAudioElement>(null);
   const takeOffAudioRef = useRef<HTMLAudioElement>(null);
   const flewAwayAudioRef = useRef<HTMLAudioElement>(null);
 
@@ -104,11 +104,6 @@ function App() {
   return (
     <div className="main-container scroll-restyle">
       <div style={{ display: "none" }}>
-        {/* Main Audio Section */}
-        <audio id="mainAudio" ref={mainAudioRef} loop>
-          <source src={MainAudio} type="audio/wav" />
-          Your browser does not support the audio element.
-        </audio>
 
         {/* Take Off Audio Section */}
         <audio id="takeOffAudio" ref={takeOffAudioRef}>
