@@ -193,8 +193,8 @@ export const init_state = {
         token: '',
         Session_Token: '',
         currency: "INR",
-        isSoundEnable: true,
-        isMusicEnable: true,
+        isSoundEnable: false,
+        isMusicEnable: false,
         msgVisible: false,
         f: {
             auto: false,
