@@ -12,7 +12,7 @@ import { displayName } from "../utils";
 
 export default function PerfectLiveChat() {
   const {
-    state,
+    userInfo,
     socket,
     msgTab,
     msgReceived,
@@ -40,7 +40,7 @@ export default function PerfectLiveChat() {
 
   const handleSendMsg = () => {
     if (msgContent.trim() !== '') {
-      socket.emit("sendMsg", { msgType: "normal", msgContent, userInfo: state.userInfo });
+      socket.emit("sendMsg", { msgType: "normal", msgContent, userInfo: userInfo });
       setMsgContent("");
     } else {
       console.log("message empty");
@@ -58,7 +58,7 @@ export default function PerfectLiveChat() {
   const handleChooseGif = (item) => {
     let gif: any = { ...item };
     if (item) {
-      socket.emit("sendMsg", { msgType: "gif", msgContent: gif.url, userInfo: state.userInfo });
+      socket.emit("sendMsg", { msgType: "gif", msgContent: gif.url, userInfo: userInfo });
       setMsgContent("");
     } else {
       console.log("message empty");
@@ -91,7 +91,7 @@ export default function PerfectLiveChat() {
       }/like-chat`,
       {
         chatID: chatItem._id,
-        userId: state.userInfo.userId,
+        userId: userInfo.userId,
       }
     );
     if (response?.data?.status) {
@@ -132,7 +132,7 @@ export default function PerfectLiveChat() {
             >
               {msgData?.map((item, index) => {
                 let active = item?.likesIDs?.filter(
-                  (item) => item === state.userInfo.userId
+                  (item) => item === userInfo.userId
                 ).length;
                 let userName = displayName(item.userName);
                 return (

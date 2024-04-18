@@ -22,6 +22,7 @@ import {
   MsgUserType,
   unityContext,
   init_state,
+  init_userInfo,
 } from "./utils/interfaces"
 
 const Context = createContext<ContextType>(null!);
@@ -48,7 +49,7 @@ let fDecreaseAmount = 0;
 let sIncreaseAmount = 0;
 let sDecreaseAmount = 0;
 
-let newState;
+let newState: ContextDataType;
 let newBetState;
 
 const takeOffAudio = new Audio("/sound/cashout.mp3");
@@ -71,8 +72,9 @@ export const Provider = ({ children }: any) => {
   const [platformLoading, setPlatformLoading] = useState<boolean>(true);
   const [userSeedText, setUserSeedText] = useState<string>('');
   const [state, setState] = useState<ContextDataType>(init_state);
+  const [userInfo, setUserInfo] = useState<UserType>(init_userInfo);
   const [msgTab, setMsgTab] = useState<boolean>(
-    state.userInfo.msgVisible
+    userInfo.msgVisible
   );
   const toggleMsgTab = () => {
     setMsgTab(!msgTab);
@@ -96,6 +98,10 @@ export const Provider = ({ children }: any) => {
   const update = (attrs: Partial<ContextDataType>) => {
     setState({ ...state, ...attrs });
   };
+
+  const updateUserInfo = (attrs: Partial<UserType>) => {
+    setUserInfo({ ...userInfo, ...attrs });
+  }
   const [previousHand, setPreviousHand] = useState<UserType[]>([]);
   const [history, setHistory] = useState<any>([]);
   const [userBetState, setUserBetState] = useState<UserStatusType>({
@@ -219,16 +225,18 @@ export const Provider = ({ children }: any) => {
         setBettedUsers(bettedUsers);
       });
 
-      socket.on("myBetState", (userInfo: { user: UserType; type: string }) => {
-        var { user, type } = userInfo;
+      socket.on("myBetState", (myInfo: { user: UserType; type: string }) => {
+        var { user, type } = myInfo;
         var attrs: any = { ...userBetState };
+        var newUserInfo = { ...userInfo };
         attrs.fbetState = false;
         attrs.fbetted = user.f.betted;
         attrs.sbetState = false;
         attrs.sbetted = user.s.betted;
         let allState = { ...newState };
-        allState.userInfo.balance = user.balance;
+        newUserInfo.balance = user.balance;
         update(allState);
+        updateUserInfo(newUserInfo);
         setUserBetState(attrs);
         if (type === 'f') {
           setFLoading(false)
@@ -255,52 +263,53 @@ export const Provider = ({ children }: any) => {
       });
 
       socket.on("finishGame", (user: UserType) => {
-        if (user.f.cashouted && state.userInfo.isSoundEnable === true && takeOffAudio) {
+        if (user.f.cashouted && userInfo.isSoundEnable === true && takeOffAudio) {
           takeOffAudio.play();
         }
-        if (user.s.cashouted && state.userInfo.isSoundEnable === true && takeOffAudio) {
+        if (user.s.cashouted && userInfo.isSoundEnable === true && takeOffAudio) {
           takeOffAudio.play();
         }
         let attrs = newState;
-        user.isMusicEnable = attrs.userInfo.isMusicEnable;
-        user.isSoundEnable = attrs.userInfo.isSoundEnable;
-        let fauto = attrs.userInfo.f.auto;
-        let sauto = attrs.userInfo.s.auto;
-        let fbetAmount = attrs.userInfo.f.betAmount;
-        let sbetAmount = attrs.userInfo.s.betAmount;
+        let newUserInfo = { ...userInfo };
+        user.isMusicEnable = userInfo.isMusicEnable;
+        user.isSoundEnable = userInfo.isSoundEnable;
+        let fauto = userInfo.f.auto;
+        let sauto = userInfo.s.auto;
+        let fbetAmount = userInfo.f.betAmount;
+        let sbetAmount = userInfo.s.betAmount;
         let betStatus = newBetState;
-        attrs.userInfo = user;
-        attrs.userInfo.f.betAmount = fbetAmount;
-        attrs.userInfo.s.betAmount = sbetAmount;
-        attrs.userInfo.f.auto = fauto;
-        attrs.userInfo.s.auto = sauto;
+        newUserInfo = user;
+        newUserInfo.f.betAmount = fbetAmount;
+        newUserInfo.s.betAmount = sbetAmount;
+        newUserInfo.f.auto = fauto;
+        newUserInfo.s.auto = sauto;
         if (!user.f.betted) {
           betStatus.fbetted = false;
-          if (attrs.userInfo.f.auto) {
+          if (newUserInfo.f.auto) {
             if (user.f.cashouted) {
               fIncreaseAmount += user.f.cashAmount;
               if (attrs.finState && attrs.fincrease - fIncreaseAmount <= 0) {
-                attrs.userInfo.f.auto = false;
+                newUserInfo.f.auto = false;
                 betStatus.fbetState = false;
                 fIncreaseAmount = 0;
               } else if (
                 attrs.fsingle &&
                 attrs.fsingleAmount <= user.f.cashAmount
               ) {
-                attrs.userInfo.f.auto = false;
+                newUserInfo.f.auto = false;
                 betStatus.fbetState = false;
               } else {
-                attrs.userInfo.f.auto = true;
+                newUserInfo.f.auto = true;
                 betStatus.fbetState = true;
               }
             } else {
               fDecreaseAmount += user.f.betAmount;
               if (attrs.fdeState && attrs.fdecrease - fDecreaseAmount <= 0) {
-                attrs.userInfo.f.auto = false;
+                newUserInfo.f.auto = false;
                 betStatus.fbetState = false;
                 fDecreaseAmount = 0;
               } else {
-                attrs.userInfo.f.auto = true;
+                newUserInfo.f.auto = true;
                 betStatus.fbetState = true;
               }
             }
@@ -312,34 +321,34 @@ export const Provider = ({ children }: any) => {
             if (user.s.cashouted) {
               sIncreaseAmount += user.s.cashAmount;
               if (attrs.sinState && attrs.sincrease - sIncreaseAmount <= 0) {
-                attrs.userInfo.s.auto = false;
+                newUserInfo.s.auto = false;
                 betStatus.sbetState = false;
                 sIncreaseAmount = 0;
               } else if (
                 attrs.ssingle &&
                 attrs.ssingleAmount <= user.s.cashAmount
               ) {
-                attrs.userInfo.s.auto = false;
+                newUserInfo.s.auto = false;
                 betStatus.sbetState = false;
               } else {
-                attrs.userInfo.s.auto = true;
+                newUserInfo.s.auto = true;
                 betStatus.sbetState = true;
               }
             } else {
               sDecreaseAmount += user.s.betAmount;
               if (attrs.sdeState && attrs.sdecrease - sDecreaseAmount <= 0) {
-                attrs.userInfo.s.auto = false;
+                newUserInfo.s.auto = false;
                 betStatus.sbetState = false;
                 sDecreaseAmount = 0;
               } else {
-                attrs.userInfo.s.auto = true;
+                newUserInfo.s.auto = true;
                 betStatus.sbetState = true;
               }
             }
           }
         }
         handleSetDefaultLoading()
-        update(attrs);
+        updateUserInfo(newUserInfo);
         setUserBetState(betStatus);
       });
 
@@ -354,9 +363,9 @@ export const Provider = ({ children }: any) => {
       socket.on("cancelled", (data: { status: boolean, type: string, updatedBalance: number }) => {
         const { type, updatedBalance } = data;
         updateUserBetState({ [`${type}betState`]: false, [`${type}betted`]: false });
-        let allState = { ...newState };
-        allState.userInfo.balance = updatedBalance;
-        update(allState);
+        let newUserInfo = { ...userInfo };
+        newUserInfo.balance = updatedBalance;
+        updateUserInfo(newUserInfo);
         if (type === 'f') {
           setFLoading(false)
         } else {
@@ -413,12 +422,12 @@ export const Provider = ({ children }: any) => {
   }, [socket, secure, token, userBetState]);
 
   useEffect(() => {
-    if (state.userInfo.isMusicEnable) {
+    if (userInfo.isMusicEnable) {
       musicAudio.play();
     } else {
       musicAudio.pause();
     }
-  }, [state.userInfo.isMusicEnable])
+  }, [userInfo.isMusicEnable])
 
   useEffect(() => {
 
@@ -441,16 +450,16 @@ export const Provider = ({ children }: any) => {
       socket.on("myInfo", (user: UserType) => {
         localStorage.setItem("aviator-audio", "");
         let attrs = { ...state };
-        attrs.userInfo.balance = user.balance;
-        attrs.userInfo.userType = user.userType;
-        attrs.userInfo.userId = user.userId;
-        attrs.userInfo.userName = user.userName;
-        attrs.userInfo.avatar = user.avatar;
-        attrs.userInfo.currency = user.currency;
-        attrs.userInfo.isSoundEnable = user.isSoundEnable;
-        attrs.userInfo.isMusicEnable = user.isMusicEnable;
-        attrs.userInfo.ipAddress = user.ipAddress;
-        attrs.userInfo.Session_Token = user.Session_Token;
+        userInfo.balance = user.balance;
+        userInfo.userType = user.userType;
+        userInfo.userId = user.userId;
+        userInfo.userName = user.userName;
+        userInfo.avatar = user.avatar;
+        userInfo.currency = user.currency;
+        userInfo.isSoundEnable = user.isSoundEnable;
+        userInfo.isMusicEnable = user.isMusicEnable;
+        userInfo.ipAddress = user.ipAddress;
+        userInfo.Session_Token = user.Session_Token;
         update(attrs);
         setSecure(true);
       });
@@ -501,31 +510,31 @@ export const Provider = ({ children }: any) => {
   }
 
   const handlePlaceBet = async () => {
-    let attrs = state;
+    let attrs = userInfo;
     let betStatus = userBetState;
-    let fBetFlag = betStatus.fbetState && !attrs.userInfo.f.betted;
-    let sBetFlag = betStatus.sbetState && !attrs.userInfo.s.betted;
-    let fBetBalance = attrs.userInfo.balance - state.userInfo.f.betAmount < 0;
-    let sBetBalance = attrs.userInfo.balance - state.userInfo.s.betAmount < 0;
-    if (fBetFlag) {
-      sBetBalance = attrs.userInfo.balance - state.userInfo.f.betAmount - state.userInfo.s.betAmount < 0;
-    }
+    let fBetFlag = betStatus.fbetState && !attrs.f.betted;
+    let sBetFlag = betStatus.sbetState && !attrs.s.betted;
+    let fBetBalance = attrs.balance - attrs.f.betAmount < 0;
+    let sBetBalance = attrs.balance - attrs.s.betAmount < 0;
+    // if (fBetFlag) {
+    //   sBetBalance = attrs.userInfo.balance - state.userInfo.f.betAmount - state.userInfo.s.betAmount < 0;
+    // }
 
     if (fBetFlag) {
       let fbetid = `Crash-${Date.now()}-${Math.floor(Math.random() * 999999)}`;
-      attrs.userInfo.f.betid = fbetid;
-      attrs.userInfo.f.betted = true;
+      attrs.f.betid = fbetid;
+      attrs.f.betted = true;
     }
     if (sBetFlag) {
       let sbetid = `Crash-${Date.now()}-${Math.floor(Math.random() * 999999)}`;
-      attrs.userInfo.s.betid = sbetid;
-      attrs.userInfo.s.betted = true;
+      attrs.s.betid = sbetid;
+      attrs.s.betted = true;
     }
     if (fBetFlag) {
       let data = {
         type: "f",
         seed: userSeedText,
-        userInfo: attrs.userInfo,
+        userInfo: attrs,
       };
       if (fBetBalance) {
         toast.error("Your balance is not enough");
@@ -535,10 +544,11 @@ export const Provider = ({ children }: any) => {
       } else {
         // attrs.userInfo.balance -= state.userInfo.f.betAmount;
         setFLoading(true);
+        console.log("First Betted UserInfo:", attrs)
+        updateUserInfo(attrs);
         socket.emit("playBet", data);
         betStatus.fbetState = false;
         betStatus.fbetted = true;
-        update(attrs);
         setUserBetState(betStatus);
       }
     }
@@ -546,7 +556,7 @@ export const Provider = ({ children }: any) => {
       let data = {
         type: "s",
         seed: userSeedText,
-        userInfo: attrs.userInfo,
+        userInfo: attrs,
       };
       if (sBetBalance) {
         toast.error("Your balance is not enough");
@@ -556,10 +566,11 @@ export const Provider = ({ children }: any) => {
       } else {
         // attrs.userInfo.balance -= state.userInfo.s.betAmount;
         setSLoading(true);
+        console.log("Second Betted UserInfo:", attrs);
+        updateUserInfo(attrs);
         socket.emit("playBet", data);
         betStatus.sbetState = false;
         betStatus.sbetted = true;
-        update(attrs);
         setUserBetState(betStatus);
       }
     }
@@ -620,13 +631,12 @@ export const Provider = ({ children }: any) => {
         }
       );
       if (response?.data?.status) {
-        update({
-          userInfo: {
-            ...state.userInfo,
-            ipAddress: res.data.ip,
-            platform
-          }
-        });
+        updateUserInfo({
+          ...userInfo,
+          ipAddress: res.data.ip,
+          platform
+        }
+        );
         setIP(res.data.ip)
       }
     } catch (error) {
@@ -636,11 +646,11 @@ export const Provider = ({ children }: any) => {
 
   useEffect(() => {
     if (UserID) {
-      if ((state.userInfo.ipAddress === "0.0.0.0" || state.userInfo.ipAddress === "") && ip === "") {
+      if ((userInfo.ipAddress === "0.0.0.0" || userInfo.ipAddress === "") && ip === "") {
         updateMyIpAddress();
       }
     }
-  }, [state.userInfo, UserID, ip]);
+  }, [userInfo, UserID, ip]);
 
   return (
     <Context.Provider
@@ -650,6 +660,7 @@ export const Provider = ({ children }: any) => {
         ...userBetState,
         ...unity,
         ...gameState,
+        userInfo,
         socket,
         msgData,
         msgReceived,
@@ -672,6 +683,7 @@ export const Provider = ({ children }: any) => {
         setCurrentTarget,
         setMsgReceived,
         update,
+        updateUserInfo,
         getMyBets,
         updateUserBetState,
         handleGetSeed,

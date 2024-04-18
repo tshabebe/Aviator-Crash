@@ -6,7 +6,7 @@ import Context from "../../context";
 import { SeedModal } from "../Main/seedModal";
 
 const MyBets = () => {
-  const { state, handleGetSeedOfRound } = React.useContext(Context);
+  const { state, userInfo, handleGetSeedOfRound } = React.useContext(Context);
   const [modal, setModal] = useState(false);
   const [seedDetails, setSeedDetails] = useState<any>();
 
@@ -37,10 +37,10 @@ const MyBets = () => {
       <div className="legend px-2 d-flex align-items-center w-100">
         <div className="date">Date</div>
         <div className="d-flex w-100">
-          <span className="bet">Bet, {`${state?.userInfo?.currency ? state?.userInfo?.currency : "INR"}`}</span>
+          <span className="bet">Bet, {`${userInfo?.currency ? userInfo?.currency : "INR"}`}</span>
           <span>X</span>
           <span className="cash-out">
-            Cash out, {`${state?.userInfo?.currency ? state?.userInfo?.currency : "INR"}`}
+            Cash out, {`${userInfo?.currency ? userInfo?.currency : "INR"}`}
           </span>
         </div>
         <div className="tools h-100"></div>

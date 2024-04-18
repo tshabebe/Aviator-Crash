@@ -8,7 +8,7 @@ import "../../index.scss";
 import "./header.scss";
 
 export default function Header() {
-  const { state, msgTab } = React.useContext(Context);
+  const { userInfo, msgTab } = React.useContext(Context);
 
   const [howto, setHowto] = React.useState<"howto" | "short" | "more" | "">(
     "howto"
@@ -32,11 +32,11 @@ export default function Header() {
           <div className="d-flex">
             <div className="balance">
               <span className="amount">
-                {Number(state.userInfo.balance).toFixed(2)}{" "}
+                {Number(userInfo.balance).toFixed(2)}{" "}
               </span>
               <span className="currency">
                 &nbsp;
-                {`${state?.userInfo?.currency ? state?.userInfo?.currency : "INR"
+                {`${userInfo?.currency ? userInfo?.currency : "INR"
                   }`}
               </span>
             </div>

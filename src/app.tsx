@@ -18,6 +18,7 @@ import PerfectLiveChat from "./components/Chat";
 function App() {
   const {
     state,
+    userInfo,
     msgTab,
     platformLoading,
     errorBackend,
@@ -56,7 +57,7 @@ function App() {
     if (
       GameState === "PLAYING" &&
       unityState === true &&
-      state.userInfo.isSoundEnable === true
+      userInfo.isSoundEnable === true
     ) {
       if (takeOffAudioRef.current) {
         var playPromise = takeOffAudioRef.current.play();
@@ -75,13 +76,13 @@ function App() {
 
     }
     // eslint-disable-next-line
-  }, [takeOffAudioRef, GameState, state.userInfo.isSoundEnable]);
+  }, [takeOffAudioRef, GameState, userInfo.isSoundEnable]);
 
   useEffect(() => {
     if (
       GameState === "GAMEEND" &&
       unityState === true &&
-      state.userInfo.isSoundEnable === true
+      userInfo.isSoundEnable === true
     ) {
       if (flewAwayAudioRef.current) {
         var playPromise = flewAwayAudioRef.current.play();
@@ -99,7 +100,7 @@ function App() {
       }
     }
     // eslint-disable-next-line
-  }, [flewAwayAudioRef.current, GameState, state.userInfo.isSoundEnable]);
+  }, [flewAwayAudioRef.current, GameState, userInfo.isSoundEnable]);
 
   return (
     <div className="main-container scroll-restyle">

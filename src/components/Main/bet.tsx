@@ -17,6 +17,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   const context = React.useContext(Context);
   const {
     state,
+    userInfo,
     fbetted,
     sbetted,
     fbetState,
@@ -32,15 +33,16 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     sLoading,
     setSLoading,
     update,
+    updateUserInfo,
     updateUserBetState,
   } = context;
   const [cashOut, setCashOut] = React.useState(2);
 
-  const auto = index === "f" ? state.userInfo.f.auto : state.userInfo.s.auto;
+  const auto = index === "f" ? userInfo.f.auto : userInfo.s.auto;
   const betted = index === "f" ? fbetted : sbetted;
   const betState = index === "f" ? fbetState : sbetState;
   const betAmount =
-    index === "f" ? state.userInfo.f.betAmount : state.userInfo.s.betAmount;
+    index === "f" ? userInfo.f.betAmount : userInfo.s.betAmount;
   const autoCashoutState =
     index === "f" ? state.fautoCashoutState : state.sautoCashoutState;
 
@@ -50,12 +52,12 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   const [targetAmount, setTargetAmount] = React.useState<number | string>(0);
 
   const minus = (type: FieldNameType) => {
-    let value = state;
+    let value = userInfo;
     if (type === "betAmount") {
       if (betAmount - 0.1 < minBet) {
-        value.userInfo[index][type] = minBet;
+        value[index][type] = minBet;
       } else {
-        value.userInfo[index][type] = Number(
+        value[index][type] = Number(
           (Number(betAmount) - 1).toFixed(2)
         );
       }
@@ -68,55 +70,55 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
         );
       }
     }
-    setMyBetAmount(value.userInfo[`${index}`].betAmount);
-    update(value);
+    setMyBetAmount(value[`${index}`].betAmount);
+    updateUserInfo(value);
   };
 
   const plus = (type: FieldNameType) => {
-    let value = state;
+    let value = userInfo;
     if (type === "betAmount") {
-      if (value.userInfo[index][type] + 1 > state.userInfo.balance) {
-        value.userInfo[index][type] =
-          Math.round(state.userInfo.balance * 100) / 100;
+      if (value[index][type] + 1 > userInfo.balance) {
+        value[index][type] =
+          Math.round(userInfo.balance * 100) / 100;
       } else {
-        if (value.userInfo[index][type] + 1 > maxBet) {
-          value.userInfo[index][type] = maxBet;
+        if (value[index][type] + 1 > maxBet) {
+          value[index][type] = maxBet;
         } else {
-          value.userInfo[index][type] = Number(
+          value[index][type] = Number(
             (Number(betAmount) + 1).toFixed(2)
           );
         }
       }
     } else {
-      if (value[`${index + type}`] + 1 > state.userInfo.balance) {
+      if (value[`${index + type}`] + 1 > userInfo.balance) {
         value[`${index + type}`] =
-          Math.round(state.userInfo.balance * 100) / 100;
+          Math.round(userInfo.balance * 100) / 100;
       } else {
         value[`${index + type}`] = Number(
           (Number(value[`${index + type}`]) + 1).toFixed(2)
         );
       }
     }
-    setMyBetAmount(value.userInfo[`${index}`].betAmount);
-    update(value);
+    setMyBetAmount(value[`${index}`].betAmount);
+    updateUserInfo(value);
   };
 
   const manualPlus = (amount: number, btnNum: BetOptType) => {
-    let value = state;
+    let value = userInfo;
     if (betOpt === btnNum) {
       if (Number(betAmount + amount) > maxBet) {
-        value.userInfo[index].betAmount = maxBet;
+        value[index].betAmount = maxBet;
       } else {
-        value.userInfo[index].betAmount = Number(
+        value[index].betAmount = Number(
           (betAmount + amount).toFixed(2)
         );
       }
     } else {
-      value.userInfo[index].betAmount = Number(Number(amount).toFixed(2));
+      value[index].betAmount = Number(Number(amount).toFixed(2));
       setBetOpt(btnNum);
     }
-    setMyBetAmount(value.userInfo[index].betAmount)
-    update(value);
+    setMyBetAmount(value[index].betAmount)
+    updateUserInfo(value);
   };
 
   const changeBetType = (e: GameType) => {
@@ -133,14 +135,11 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     let betAmount: string = e.target.value;
     if (Number(betAmount) >= minBet && Number(betAmount) <= maxBet && /^\d*\.?\d{0,2}$/.test(betAmount)) {
       setMyBetAmount(betAmount)
-      update({
-        ...state,
-        userInfo: {
-          ...state.userInfo,
-          [`${index}`]: {
-            ...state.userInfo[`${index}`],
-            betAmount
-          },
+      updateUserInfo({
+        ...userInfo,
+        [`${index}`]: {
+          ...userInfo[`${index}`],
+          betAmount
         },
       })
     }
@@ -150,13 +149,13 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     e: number,
     type: "cashOutAt" | "decrease" | "increase" | "singleAmount"
   ) => {
-    let value = state;
+    let value = userInfo;
     if (type === "cashOutAt") {
       if (e < 1.01) {
-        value.userInfo[index]["target"] = 1.01;
+        value[index]["target"] = 1.01;
         setCashOut(1.01);
       } else {
-        value.userInfo[index]["target"] = Math.round(e * 100) / 100;
+        value[index]["target"] = Math.round(e * 100) / 100;
         setCashOut(Math.round(e * 100) / 100);
       }
     } else {
@@ -166,11 +165,11 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
         value[`${index + type}`] = Math.round(e * 100) / 100;
       }
     }
-    update(value);
+    updateUserInfo(value);
   };
 
   const onBetClick = (s: boolean) => {
-    if (state.userInfo[index].betAmount > state.userInfo.balance) {
+    if (userInfo[index].betAmount > userInfo.balance) {
       toast.error("Your balance is not enough");
     } else {
       if (secure) {
@@ -182,9 +181,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   };
 
   const onAutoBetClick = (_betState: boolean) => {
-    let attrs = state;
-    attrs.userInfo[index].auto = _betState;
-    update(attrs);
+    let attrs = userInfo;
+    attrs[index].auto = _betState;
+    updateUserInfo(attrs);
 
     updateUserBetState({ [`${index}betState`]: _betState });
 
@@ -194,7 +193,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     if (index === "f" && GameState === "PLAYING" && betted && autoCashoutState && cashOut < binaryToFloat(currentSecondNum)) {
       updateUserBetState({ [`${index}betted`]: false });
       setFLoading(true);
-      callCashOut(state.userInfo, state.userInfo.userId, cashOut, index);
+      callCashOut(userInfo, userInfo.userId, cashOut, index);
     }
     // eslint-disable-next-line
   }, [
@@ -202,7 +201,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     currentSecondNum,
     fbetted,
     autoCashoutState,
-    state.userInfo.f.target,
+    userInfo.f.target,
     fLoading
   ]);
 
@@ -210,7 +209,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     if (index === "s" && GameState === "PLAYING" && betted && autoCashoutState && cashOut + 0.01 < binaryToFloat(currentSecondNum)) {
       updateUserBetState({ [`${index}betted`]: false });
       setSLoading(true);
-      callCashOut(state.userInfo, state.userInfo.userId, cashOut, index);
+      callCashOut(userInfo, userInfo.userId, cashOut, index);
     }
     // eslint-disable-next-line
   }, [
@@ -218,7 +217,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     currentSecondNum,
     sbetted,
     autoCashoutState,
-    state.userInfo.s.target,
+    userInfo.s.target,
     sLoading,
   ]);
 
@@ -375,7 +374,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                       setSLoading(true);
                     }
                     setTargetAmount(Number(betAmount * Number(currentTarget.toFixed(2))).toFixed(2))
-                    callCashOut(state.userInfo, state.userInfo.userId, Number(currentTarget.toFixed(2)), index);
+                    callCashOut(userInfo, userInfo.userId, Number(currentTarget.toFixed(2)), index);
                   }}
                 >
                   <span>
@@ -384,8 +383,8 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                       <span>
                         {targetAmount ? targetAmount : Number(betAmount * Number(currentTarget.toFixed(2))).toFixed(2)}
                       </span>
-                      <span className="currency">{`${state?.userInfo?.currency
-                        ? state?.userInfo?.currency
+                      <span className="currency">{`${userInfo?.currency
+                        ? userInfo?.currency
                         : "INR"
                         }`}</span>
                     </label>
@@ -398,7 +397,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                     className="btn-danger h-[70%]"
                     onClick={() => {
                       onBetClick(false);
-                      let userInfo = { ...state.userInfo }
+                      let attr = { ...userInfo };
                       if (index === 'f') {
                         setFLoading(true);
                       } else {
@@ -408,11 +407,14 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                       update({
                         ...state,
                         [`${index}autoCound`]: 0,
-                        userInfo: {
+                      });
+
+                      updateUserInfo(
+                        {
                           ...userInfo,
                           [index]: { ...userInfo[index], auto: false },
                         },
-                      });
+                      )
                     }}
                   >
                     <label>CANCEL</label>
@@ -430,11 +432,14 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                     update({
                       ...state,
                       [`${index}autoCound`]: 0,
-                      userInfo: {
-                        ...state.userInfo,
-                        [index]: { ...state.userInfo[index], auto: false },
-                      },
                     });
+
+                    updateUserInfo(
+                      {
+                        ...userInfo,
+                        [index]: { ...userInfo[index], auto: false },
+                      }
+                    )
                   }}
                 >
                   <label>CANCEL</label>
@@ -446,8 +451,8 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                   <label>BET</label>
                   <label className="amount">
                     <span>{Number(betAmount).toFixed(2)}&nbsp;</span>
-                    <span className="currency">{`${state?.userInfo?.currency
-                      ? state?.userInfo?.currency
+                    <span className="currency">{`${userInfo?.currency
+                      ? userInfo?.currency
                       : "INR"
                       }`}</span>
                   </label>
@@ -512,16 +517,14 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                           <input
                             type="number"
                             onChange={(e) => {
-                              update({
-                                ...state,
-                                userInfo: {
-                                  ...state.userInfo,
-                                  [`${index}`]: {
-                                    ...state.userInfo[index],
-                                    target: Number(e.target.value),
-                                  },
+                              updateUserInfo({
+                                ...userInfo,
+                                [`${index}`]: {
+                                  ...userInfo[index],
+                                  target: Number(e.target.value),
                                 },
-                              });
+                              },
+                              );
                               setCashOut(Number(e.target.value));
                             }}
                             value={cashOut}

@@ -7,7 +7,7 @@ import Context from "../../context";
 import { displayName } from "../utils";
 
 const TopHistory = () => {
-  const { state } = React.useContext(Context);
+  const { userInfo } = React.useContext(Context);
   const [type, setType] = React.useState(0);
   const [history, setHistory] = React.useState([]);
   const [loadingEffect, setLoadingEffect] = React.useState(false);
@@ -23,10 +23,9 @@ const TopHistory = () => {
     try {
       setLoadingEffect(true);
       let response = await axios.get(
-        `${
-          process.env.REACT_APP_DEVELOPMENT === "true"
-            ? config.development_api
-            : config.production_api
+        `${process.env.REACT_APP_DEVELOPMENT === "true"
+          ? config.development_api
+          : config.production_api
         }/get-${date}-history`
       );
       if (response?.data?.status) {
@@ -61,9 +60,8 @@ const TopHistory = () => {
                   setHeaderType(item.value);
                 }
               }}
-              className={`tab ${
-                headerType === item.value ? "active" : "inactive"
-              }`}
+              className={`tab ${headerType === item.value ? "active" : "inactive"
+                }`}
             >
               {item.label}
             </button>
@@ -115,11 +113,10 @@ const TopHistory = () => {
                         <div className="">
                           <span>
                             Bet,{" "}
-                            {`${
-                              state?.userInfo?.currency
-                                ? state?.userInfo?.currency
+                            {`${userInfo?.currency
+                                ? userInfo?.currency
                                 : "INR"
-                            }`}
+                              }`}
                             :&nbsp;
                           </span>
                           <span></span>
@@ -133,13 +130,12 @@ const TopHistory = () => {
                           <span>Cashed out:&nbsp;</span>
                         </div>
                         <span
-                          className={`amount cashout ${
-                            Number(item.cashoutAt) < 2
+                          className={`amount cashout ${Number(item.cashoutAt) < 2
                               ? "blue"
                               : Number(item.cashoutAt) < 10
-                              ? "purple"
-                              : "big"
-                          }`}
+                                ? "purple"
+                                : "big"
+                            }`}
                         >
                           {Number(item.cashoutAt).toFixed(2)}x
                         </span>
@@ -151,11 +147,10 @@ const TopHistory = () => {
                         <div className="">
                           <span>
                             Win,{" "}
-                            {`${
-                              state?.userInfo?.currency
-                                ? state?.userInfo?.currency
+                            {`${userInfo?.currency
+                                ? userInfo?.currency
                                 : "INR"
-                            }`}
+                              }`}
                             : &nbsp;
                           </span>
                         </div>

@@ -38,8 +38,10 @@ const settingItems: { label: string; handleType: string }[] = [
 const Menu = ({ setHowto }) => {
   const {
     state,
+    userInfo,
     handleChangeUserSeed,
     update,
+    updateUserInfo,
     handleGetSeed,
     toggleMsgTab,
     msgReceived,
@@ -112,16 +114,15 @@ const Menu = ({ setHowto }) => {
             : config.production_api
           }/update-info`,
           {
-            userId: state.userInfo.userId,
+            userId: userInfo.userId,
             updateData: { isSoundEnable: checked },
           }
         );
-        update({
-          userInfo: {
-            ...state.userInfo,
-            isSoundEnable: checked,
-          },
-        });
+        updateUserInfo({
+          ...userInfo,
+          isSoundEnable: checked,
+        },
+        );
       } catch (error) {
         console.log("Failed to update Sound state");
       }
@@ -139,16 +140,15 @@ const Menu = ({ setHowto }) => {
             : config.production_api
           }/update-info`,
           {
-            userId: state.userInfo.userId,
+            userId: userInfo.userId,
             updateData: { isMusicEnable: checked },
           }
         );
-        update({
-          userInfo: {
-            ...state.userInfo,
-            isMusicEnable: checked,
-          },
-        });
+        updateUserInfo({
+          ...userInfo,
+          isMusicEnable: checked,
+        },
+        );
       } catch (error) {
         console.log("Failed to update music state");
       }
@@ -177,18 +177,17 @@ const Menu = ({ setHowto }) => {
         : config.production_api
       }/update-info`,
       {
-        userId: state.userInfo.userId,
+        userId: userInfo.userId,
         updateData: { avatar },
       }
     );
 
     if (response.data?.status) {
-      update({
-        userInfo: {
-          ...state.userInfo,
-          avatar,
-        },
-      });
+      updateUserInfo({
+        ...userInfo,
+        avatar,
+      },
+      );
     }
   };
 
@@ -207,7 +206,7 @@ const Menu = ({ setHowto }) => {
       try {
         if (
           localStorage.getItem("aviator-audio") !== "true" &&
-          state.userInfo.isMusicEnable === true
+          userInfo.isMusicEnable === true
         ) {
           let mainEle: any = document.getElementById("mainAudio");
           mainEle.volume = 0.2;
@@ -265,15 +264,15 @@ const Menu = ({ setHowto }) => {
                   <div className="avatar">
                     <img
                       className="avatar"
-                      src={`${state.userInfo?.avatar
-                        ? state.userInfo?.avatar
+                      src={`${userInfo?.avatar
+                        ? userInfo?.avatar
                         : "./avatars/av-5.png"
                         }`}
                       alt="avatar"
                     />
                   </div>
                   <div className="name">
-                    {displayName(state?.userInfo?.userName)}
+                    {displayName(userInfo?.userName)}
                   </div>
                 </div>
                 <div
@@ -303,7 +302,7 @@ const Menu = ({ setHowto }) => {
                       <input
                         className="aviator-input"
                         type="checkbox"
-                        checked={state.userInfo.isSoundEnable || false}
+                        checked={userInfo.isSoundEnable || false}
                         onChange={(e) => handleToggleSound(e.target.checked)}
                       />
                       <span className="aviator-slider round"></span>
@@ -320,7 +319,7 @@ const Menu = ({ setHowto }) => {
                       <input
                         className="aviator-input"
                         type="checkbox"
-                        checked={state.userInfo.isMusicEnable || false}
+                        checked={userInfo.isMusicEnable || false}
                         onChange={(e) => handleToggleMusic(e.target.checked)}
                       />
                       <span className="aviator-slider round"></span>
@@ -599,7 +598,7 @@ const Menu = ({ setHowto }) => {
                 <div className="content">
                   {imgNums.map((item) => {
                     let imgURL = `/avatars/av-${item}.png`;
-                    let flag = imgURL === state.userInfo?.avatar;
+                    let flag = imgURL === userInfo?.avatar;
                     return (
                       <span key={item} className="img-item">
                         <button

@@ -95,7 +95,6 @@ export interface ContextDataType {
     myBets: GameHistory[];
     width: number;
     seed: string;
-    userInfo: UserType;
     fautoCashoutState: boolean;
     fautoCound: number;
     finState: boolean;
@@ -124,6 +123,7 @@ export interface LoadingType {
 
 export interface ContextType extends GameBetLimit, UserStatusType, GameStatusType {
     state: ContextDataType;
+    userInfo: UserType;
     socket: Socket;
     msgData: MsgUserType[];
     platformLoading: boolean;
@@ -148,6 +148,7 @@ export interface ContextType extends GameBetLimit, UserStatusType, GameStatusTyp
     setCurrentTarget(attrs: Partial<number>);
     setMsgReceived(attrs: Partial<boolean>);
     update(attrs: Partial<ContextDataType>);
+    updateUserInfo(attrs: Partial<UserType>);
     getMyBets();
     updateUserBetState(attrs: Partial<UserStatusType>);
     setMsgData(attrs: MsgUserType[]);
@@ -182,39 +183,6 @@ export const init_state = {
     myBets: [],
     width: 1500,
     seed: "",
-    userInfo: {
-        balance: 0,
-        userType: false,
-        userId: "",
-        avatar: "",
-        userName: "",
-        ipAddress: "",
-        platform: "desktop",
-        token: '',
-        Session_Token: '',
-        currency: "INR",
-        isSoundEnable: false,
-        isMusicEnable: false,
-        msgVisible: false,
-        f: {
-            auto: false,
-            betid: '0',
-            betted: false,
-            cashouted: false,
-            cashAmount: 0,
-            betAmount: 20,
-            target: 2,
-        },
-        s: {
-            auto: false,
-            betid: '0',
-            betted: false,
-            cashouted: false,
-            cashAmount: 0,
-            betAmount: 20,
-            target: 2,
-        },
-    },
     fautoCashoutState: false,
     fautoCound: 0,
     finState: false,
@@ -235,3 +203,37 @@ export const init_state = {
     sdefaultBetAmount: 20,
     myUnityContext: unityContext,
 } as ContextDataType;
+
+export const init_userInfo = {
+    balance: 0,
+    userType: false,
+    userId: "",
+    avatar: "",
+    userName: "",
+    ipAddress: "",
+    platform: "desktop",
+    token: '',
+    Session_Token: '',
+    currency: "INR",
+    isSoundEnable: false,
+    isMusicEnable: false,
+    msgVisible: false,
+    f: {
+        auto: false,
+        betid: '0',
+        betted: false,
+        cashouted: false,
+        cashAmount: 0,
+        betAmount: 20,
+        target: 2,
+    },
+    s: {
+        auto: false,
+        betid: '0',
+        betted: false,
+        cashouted: false,
+        cashAmount: 0,
+        betAmount: 20,
+        target: 2,
+    },
+}

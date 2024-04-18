@@ -11,7 +11,7 @@ interface AllDataProps {
 }
 
 const AllData = ({ pre, setPre, allData }: AllDataProps) => {
-  const { state, bettedUsers } = React.useContext(Context);
+  const { userInfo, bettedUsers } = React.useContext(Context);
 
   return (
     <>
@@ -55,12 +55,12 @@ const AllData = ({ pre, setPre, allData }: AllDataProps) => {
           <span className="user">User</span>
           <span className="bet">
             Bet,{" "}
-            {`${state?.userInfo?.currency ? state?.userInfo?.currency : "INR"}`}
+            {`${userInfo?.currency ? userInfo?.currency : "INR"}`}
           </span>
           <span>X</span>
           <span className="cash-out">
             Cash out,{" "}
-            {`${state?.userInfo?.currency ? state?.userInfo?.currency : "INR"}`}
+            {`${userInfo?.currency ? userInfo?.currency : "INR"}`}
           </span>
         </div>
       </div>
