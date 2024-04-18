@@ -15,6 +15,8 @@ export default function WebGLStarter() {
     currentNum,
     unityState,
     myUnityContext,
+    time,
+    unityLoading,
     setCurrentTarget,
   } = React.useContext(Context);
   const [waiting, setWaiting] = React.useState(0);
@@ -31,7 +33,7 @@ export default function WebGLStarter() {
     } else if (GameState === "BET") {
       setFlag('BET');
       currentSubFlag = '';
-      let startWaiting = Date.now();
+      let startWaiting = Date.now() - time;
       setCurrentTarget(1);
 
       myInterval = setInterval(() => {
@@ -51,7 +53,6 @@ export default function WebGLStarter() {
   }, [currentNum])
 
   React.useEffect(() => {
-    console.log("flag:", flag, 'subFlag:', currentSubFlag);
     myUnityContext?.send(
       "CrashManager",
       "GetStateFromJavascript",
@@ -60,31 +61,13 @@ export default function WebGLStarter() {
         strSubState: currentSubFlag
       })
     );
-  }, [flag, currentSubFlag]);
+  }, [flag, currentSubFlag, unityLoading]);
 
   return (
     <div className="crash-container">
       <div className="canvas">
         <Unity unityContext={myUnityContext} matchWebGLToCanvasSize={true} />
       </div>
-      {/* <div className="crash-text-container">
-        <div className='crashtext wait font-9'>
-          <div className="rotate">
-            <img
-              width={100}
-              height={100}
-              src={propeller}
-              alt="propellar"
-            ></img>
-          </div>
-          <div className="waiting-font">WAITING FOR NEXT ROUND</div>
-          <div className="waiting">
-            <div
-              style={{ width: `${((5000 - waiting) * 100) / 5000}%` }}
-            ></div>
-          </div>
-        </div>
-      </div> */}
       <div className="crash-text-container">
         {GameState === "BET" ? (
           <div className={`crashtext wait font-9`}>
