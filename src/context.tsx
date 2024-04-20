@@ -261,7 +261,6 @@ export const Provider = ({ children }: any) => {
       });
 
       socket.on("finishGame", (user: UserType) => {
-        console.log(user);
         if (user.f.cashouted && userInfo.isSoundEnable === true && takeOffAudio) {
           takeOffAudio.play();
         }
@@ -539,7 +538,6 @@ export const Provider = ({ children }: any) => {
       } else {
         // attrs.userInfo.balance -= state.userInfo.f.betAmount;
         setFLoading(true);
-        console.log("First Betted UserInfo:", attrs)
         updateUserInfo(attrs);
         socket.emit("playBet", data);
         betStatus.fbetState = false;
@@ -561,7 +559,6 @@ export const Provider = ({ children }: any) => {
       } else {
         // attrs.userInfo.balance -= state.userInfo.s.betAmount;
         setSLoading(true);
-        console.log("Second Betted UserInfo:", attrs);
         updateUserInfo(attrs);
         socket.emit("playBet", data);
         betStatus.sbetState = false;
