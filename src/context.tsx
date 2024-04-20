@@ -597,12 +597,12 @@ export const Provider = ({ children }: any) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (UserID) {
-  //     getMyBets();
-  //   }
-  //   // eslint-disable-next-line
-  // }, [UserID, gameState.GameState]);
+  useEffect(() => {
+    if (UserID) {
+      getMyBets();
+    }
+    // eslint-disable-next-line
+  }, [UserID]);
 
   const updateMyIpAddress = async () => {
     const res = await axios.get("https://api.ipify.org/?format=json");
