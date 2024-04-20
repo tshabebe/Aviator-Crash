@@ -36,7 +36,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     updateUserInfo,
     updateUserBetState,
   } = context;
-  const [cashOut, setCashOut] = React.useState(2);
+  const [cashOut, setCashOut] = React.useState(userInfo[index].target);
 
   const auto = index === "f" ? userInfo.f.auto : userInfo.s.auto;
   const betted = index === "f" ? fbetted : sbetted;
@@ -44,11 +44,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   const betAmount =
     index === "f" ? userInfo.f.betAmount : userInfo.s.betAmount;
   const autoCashoutState =
-    index === "f" ? state.fautoCashoutState : state.sautoCashoutState;
-
-  useEffect(() => {
-    console.log(userInfo);
-  }, [betAmount])
+    index === "f" ? userInfo.f.autocashout : userInfo.s.autocashout;
 
   const [gameType, setGameType] = React.useState<GameType>("manual");
   const [betOpt, setBetOpt] = React.useState<BetOptType>("20.00");
@@ -193,21 +189,21 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
   };
 
-  useEffect(() => {
-    if (index === "f" && GameState === "PLAYING" && betted && autoCashoutState && cashOut < binaryToFloat(currentNum)) {
-      updateUserBetState({ [`${index}betted`]: false });
-      setFLoading(true);
-      callCashOut(cashOut, index);
-    }
-    // eslint-disable-next-line
-  }, [
-    GameState,
-    currentNum,
-    fbetted,
-    autoCashoutState,
-    userInfo.f.target,
-    fLoading
-  ]);
+  // useEffect(() => {
+  //   if (index === "f" && GameState === "PLAYING" && betted && autoCashoutState && cashOut < binaryToFloat(currentNum)) {
+  //     updateUserBetState({ [`${index}betted`]: false });
+  //     setFLoading(true);
+  //     callCashOut(cashOut, index);
+  //   }
+  //   // eslint-disable-next-line
+  // }, [
+  //   GameState,
+  //   currentNum,
+  //   fbetted,
+  //   autoCashoutState,
+  //   userInfo.f.target,
+  //   fLoading
+  // ]);
 
   useEffect(() => {
     if (index === "s" && GameState === "PLAYING" && betted && autoCashoutState && cashOut + 0.01 < binaryToFloat(currentNum)) {
@@ -501,9 +497,11 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                   ) : (
                     <div
                       onClick={() => {
-                        update({
-                          [`${index}autoCashoutState`]: !autoCashoutState,
-                        });
+                        updateUserInfo({
+                          [index]: {
+                            autocashout: !autoCashoutState
+                          }
+                        })
                       }}
                       className={`input-switch ${autoCashoutState ? "" : "off"}`}
                     >

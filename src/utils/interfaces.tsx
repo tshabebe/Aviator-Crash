@@ -33,6 +33,7 @@ export interface UserType {
     msgVisible: boolean;
     f: {
         auto: boolean;
+        autocashout: boolean;
         betid: string;
         betted: boolean;
         cashouted: boolean;
@@ -42,6 +43,7 @@ export interface UserType {
     };
     s: {
         auto: boolean;
+        autocashout: boolean;
         betid: string;
         betted: boolean;
         cashouted: boolean;
@@ -218,6 +220,7 @@ export const init_userInfo = {
     msgVisible: false,
     f: {
         auto: false,
+        autocashout: false,
         betid: '0',
         betted: false,
         cashouted: false,
@@ -227,6 +230,7 @@ export const init_userInfo = {
     },
     s: {
         auto: false,
+        autocashout: false,
         betid: '0',
         betted: false,
         cashouted: false,
