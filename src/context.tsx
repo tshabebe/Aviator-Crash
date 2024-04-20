@@ -271,10 +271,7 @@ export const Provider = ({ children }: any) => {
       socket.on("cancelled", (data: { status: boolean, type: string, updatedBalance: number }) => {
         const { type, updatedBalance } = data;
         updateUserBetState({ [`${type}betState`]: false });
-        updateUserInfo({ ...userInfo, [type]: { betted: false } });
-        let newUserInfo = { ...userInfo };
-        newUserInfo.balance = updatedBalance;
-        updateUserInfo(newUserInfo);
+        updateUserInfo({ ...userInfo, [type]: { ...userInfo[type], betted: false }, balance: updatedBalance });
         if (type === 'f') {
           setFLoading(false)
         } else {
@@ -365,12 +362,8 @@ export const Provider = ({ children }: any) => {
       newUserInfo.s.target = userInfo.s.target;
       if (newUserInfo.f.auto)
         betStatus.fbetState = true;
-      else
-        betStatus.fbetState = false;
       if (newUserInfo.s.auto)
         betStatus.sbetState = true;
-      else
-        betStatus.sbetState = false;
       handleSetDefaultLoading();
       updateUserInfo(newUserInfo);
       setUserBetState(betStatus);
