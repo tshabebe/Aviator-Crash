@@ -62,8 +62,6 @@ export interface PlayerType {
 
 export interface GameStatusType {
     currentNum: string;
-    lastSecondNum: string;
-    currentSecondNum: string;
     GameState: string;
     time: number;
 }

@@ -24,7 +24,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     sbetState,
     GameState,
     secure,
-    currentSecondNum,
+    currentNum,
     minBet,
     maxBet,
     currentTarget,
@@ -190,15 +190,15 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   };
 
   useEffect(() => {
-    if (index === "f" && GameState === "PLAYING" && betted && autoCashoutState && cashOut < binaryToFloat(currentSecondNum)) {
+    if (index === "f" && GameState === "PLAYING" && betted && autoCashoutState && cashOut < binaryToFloat(currentNum)) {
       updateUserBetState({ [`${index}betted`]: false });
       setFLoading(true);
-      callCashOut(userInfo, userInfo.userId, cashOut, index);
+      callCashOut(cashOut, index);
     }
     // eslint-disable-next-line
   }, [
     GameState,
-    currentSecondNum,
+    currentNum,
     fbetted,
     autoCashoutState,
     userInfo.f.target,
@@ -206,15 +206,15 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   ]);
 
   useEffect(() => {
-    if (index === "s" && GameState === "PLAYING" && betted && autoCashoutState && cashOut + 0.01 < binaryToFloat(currentSecondNum)) {
+    if (index === "s" && GameState === "PLAYING" && betted && autoCashoutState && cashOut + 0.01 < binaryToFloat(currentNum)) {
       updateUserBetState({ [`${index}betted`]: false });
       setSLoading(true);
-      callCashOut(userInfo, userInfo.userId, cashOut, index);
+      callCashOut(cashOut, index);
     }
     // eslint-disable-next-line
   }, [
     GameState,
-    currentSecondNum,
+    currentNum,
     sbetted,
     autoCashoutState,
     userInfo.s.target,
@@ -374,7 +374,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                       setSLoading(true);
                     }
                     setTargetAmount(Number(betAmount * Number(currentTarget.toFixed(2))).toFixed(2))
-                    callCashOut(userInfo, userInfo.userId, Number(currentTarget.toFixed(2)), index);
+                    callCashOut(Number(currentTarget.toFixed(2)), index);
                   }}
                 >
                   <span>

@@ -33,9 +33,9 @@ const socket = io(
     : config.production_wss
 );
 
-export const callCashOut = (userInfo: any, userId: string, at: number, index: "f" | "s") => {
+export const callCashOut = (at: number, index: "f" | "s") => {
   let endTarget: Number = Number(at.toFixed(2))
-  let data = { userInfo, userId, type: index, endTarget };
+  let data = { type: index, endTarget };
   socket.emit("cashOut", data);
 };
 
@@ -88,8 +88,6 @@ export const Provider = ({ children }: any) => {
   });
   const [gameState, setGameState] = useState({
     currentNum: '0',
-    lastSecondNum: '0',
-    currentSecondNum: '0',
     GameState: "",
     time: 0,
   });
@@ -243,7 +241,7 @@ export const Provider = ({ children }: any) => {
         } else {
           setSLoading(false)
         }
-        getMyBets();
+        // getMyBets();
       });
 
       socket.on("history", (history: any) => {
@@ -263,6 +261,7 @@ export const Provider = ({ children }: any) => {
       });
 
       socket.on("finishGame", (user: UserType) => {
+        console.log(user);
         if (user.f.cashouted && userInfo.isSoundEnable === true && takeOffAudio) {
           takeOffAudio.play();
         }
@@ -374,6 +373,12 @@ export const Provider = ({ children }: any) => {
       })
 
       socket.on("error", (data) => {
+        setUserInfo({
+          ...userInfo,
+          [data.index]: {
+            betted: false
+          }
+        })
         setUserBetState({
           ...userBetState,
           [`${data.index}betted`]: false,
@@ -449,18 +454,7 @@ export const Provider = ({ children }: any) => {
 
       socket.on("myInfo", (user: UserType) => {
         localStorage.setItem("aviator-audio", "");
-        let attrs = { ...state };
-        userInfo.balance = user.balance;
-        userInfo.userType = user.userType;
-        userInfo.userId = user.userId;
-        userInfo.userName = user.userName;
-        userInfo.avatar = user.avatar;
-        userInfo.currency = user.currency;
-        userInfo.isSoundEnable = user.isSoundEnable;
-        userInfo.isMusicEnable = user.isMusicEnable;
-        userInfo.ipAddress = user.ipAddress;
-        userInfo.Session_Token = user.Session_Token;
-        update(attrs);
+        updateUserInfo(user);
         setSecure(true);
       });
     }
@@ -603,12 +597,12 @@ export const Provider = ({ children }: any) => {
     }
   };
 
-  useEffect(() => {
-    if (UserID) {
-      getMyBets();
-    }
-    // eslint-disable-next-line
-  }, [UserID, gameState.GameState]);
+  // useEffect(() => {
+  //   if (UserID) {
+  //     getMyBets();
+  //   }
+  //   // eslint-disable-next-line
+  // }, [UserID, gameState.GameState]);
 
   const updateMyIpAddress = async () => {
     const res = await axios.get("https://api.ipify.org/?format=json");
