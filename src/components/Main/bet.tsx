@@ -46,6 +46,10 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   const autoCashoutState =
     index === "f" ? state.fautoCashoutState : state.sautoCashoutState;
 
+  useEffect(() => {
+    console.log(userInfo);
+  }, [betAmount])
+
   const [gameType, setGameType] = React.useState<GameType>("manual");
   const [betOpt, setBetOpt] = React.useState<BetOptType>("20.00");
   const [myBetAmount, setMyBetAmount] = React.useState<number | string>(20);

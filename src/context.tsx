@@ -376,6 +376,7 @@ export const Provider = ({ children }: any) => {
         setUserInfo({
           ...userInfo,
           [data.index]: {
+            ...userInfo[data.index],
             betted: false
           }
         })
