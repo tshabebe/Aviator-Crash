@@ -497,11 +497,12 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                   ) : (
                     <div
                       onClick={() => {
-                        updateUserInfo({
-                          [index]: {
-                            autocashout: !autoCashoutState
+                        updateUserInfo(
+                          {
+                            ...userInfo,
+                            [index]: { ...userInfo[index], autocashout: !autoCashoutState },
                           }
-                        })
+                        )
                       }}
                       className={`input-switch ${autoCashoutState ? "" : "off"}`}
                     >

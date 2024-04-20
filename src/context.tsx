@@ -281,6 +281,8 @@ export const Provider = ({ children }: any) => {
         newUserInfo.s.betAmount = sbetAmount;
         newUserInfo.f.auto = fauto;
         newUserInfo.s.auto = sauto;
+        newUserInfo.f.autocashout = userInfo.f.autocashout;
+        newUserInfo.s.autocashout = userInfo.s.autocashout;
         if (!user.f.betted) {
           betStatus.fbetted = false;
           if (newUserInfo.f.auto) {
