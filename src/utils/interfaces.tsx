@@ -86,9 +86,7 @@ export declare interface GameHistory {
 
 export interface UserStatusType {
     fbetState: boolean;
-    fbetted: boolean;
     sbetState: boolean;
-    sbetted: boolean;
 }
 
 export interface ContextDataType {

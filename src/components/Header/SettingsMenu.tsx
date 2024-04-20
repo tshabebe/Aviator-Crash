@@ -128,7 +128,7 @@ const Menu = ({ setHowto }) => {
       }
     },
     // eslint-disable-next-line
-    [state]
+    [userInfo]
   );
 
   const handleToggleMusic = useCallback(
@@ -154,7 +154,7 @@ const Menu = ({ setHowto }) => {
       }
     },
     // eslint-disable-next-line
-    [state]
+    [userInfo]
   );
 
   const handleOpenSettings = (type: string) => {
@@ -214,8 +214,8 @@ const Menu = ({ setHowto }) => {
           localStorage.setItem("aviator-audio", "true");
         }
       } catch (error) {
-        handleToggleSound(true);
-        handleToggleMusic(true);
+        // handleToggleSound(true);
+        // handleToggleMusic(true);
       }
     });
     // eslint-disable-next-line

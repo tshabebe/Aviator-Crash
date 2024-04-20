@@ -18,8 +18,6 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   const {
     state,
     userInfo,
-    fbetted,
-    sbetted,
     fbetState,
     sbetState,
     GameState,
@@ -39,7 +37,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   const [cashOut, setCashOut] = React.useState(userInfo[index].target);
 
   const auto = index === "f" ? userInfo.f.auto : userInfo.s.auto;
-  const betted = index === "f" ? fbetted : sbetted;
+  const betted = index === "f" ? userInfo.f.betted : userInfo.s.betted;
   const betState = index === "f" ? fbetState : sbetState;
   const betAmount =
     index === "f" ? userInfo.f.betAmount : userInfo.s.betAmount;
@@ -139,7 +137,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
         ...userInfo,
         [`${index}`]: {
           ...userInfo[`${index}`],
-          betAmount
+          betAmount: Number(betAmount)
         },
       })
     }
@@ -186,24 +184,26 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     updateUserInfo(attrs);
 
     updateUserBetState({ [`${index}betState`]: _betState });
-
   };
 
-  // useEffect(() => {
-  //   if (index === "f" && GameState === "PLAYING" && betted && autoCashoutState && cashOut < binaryToFloat(currentNum)) {
-  //     updateUserBetState({ [`${index}betted`]: false });
-  //     setFLoading(true);
-  //     callCashOut(cashOut, index);
-  //   }
-  //   // eslint-disable-next-line
-  // }, [
-  //   GameState,
-  //   currentNum,
-  //   fbetted,
-  //   autoCashoutState,
-  //   userInfo.f.target,
-  //   fLoading
-  // ]);
+  useEffect(() => {
+    if (index === "f" && GameState === "PLAYING" && betted && autoCashoutState && cashOut < binaryToFloat(currentNum)) {
+      updateUserBetState({ [`${index}betted`]: false });
+      setFLoading(true);
+    }
+    if (index === "s" && GameState === "PLAYING" && betted && autoCashoutState && cashOut < binaryToFloat(currentNum)) {
+      updateUserBetState({ [`${index}betted`]: false });
+      setSLoading(true);
+    }
+    // eslint-disable-next-line
+  }, [
+    GameState,
+    currentNum,
+    userInfo.f.betted,
+    autoCashoutState,
+    userInfo.f.target,
+    fLoading
+  ]);
 
   useEffect(() => {
     if (index === "s" && GameState === "PLAYING" && betted && autoCashoutState && cashOut + 0.01 < binaryToFloat(currentNum)) {
@@ -215,7 +215,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   }, [
     GameState,
     currentNum,
-    sbetted,
+    userInfo.s.betted,
     autoCashoutState,
     userInfo.s.target,
     sLoading,
@@ -229,7 +229,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     if (GameState === "BET") {
       setTargetAmount(0)
       if (auto === true) {
-        updateUserBetState({ [`${index}betted`]: true });
+        updateUserBetState({ [`${index}betState`]: true });
       }
     }
     // eslint-disable-next-line
