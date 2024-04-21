@@ -83,7 +83,7 @@ const AllData = ({ pre, setPre, allData }: AllDataProps) => {
                 )}
                 <div className="username">{displayName(user.name)}</div>
               </div>
-              <div className="bet">{Number(user.betAmount).toFixed(2)}</div>
+              <div className="bet">{binaryToFloat(user.betAmount).toFixed(2)}</div>
               {user.cashouted && (
                 <div className="multiplier-block">
                   <div
@@ -99,8 +99,8 @@ const AllData = ({ pre, setPre, allData }: AllDataProps) => {
                 </div>
               )}
               <div className="cash-out">
-                {Number(user.cashOut) > 0
-                  ? Number(user.cashOut).toFixed(2)
+                {binaryToFloat(user.cashOut) > 0
+                  ? binaryToFloat(user.cashOut).toFixed(2)
                   : ""}
               </div>
             </div>
