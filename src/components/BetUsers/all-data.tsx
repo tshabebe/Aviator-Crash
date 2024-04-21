@@ -68,7 +68,7 @@ const AllData = ({ pre, setPre, allData }: AllDataProps) => {
         <div className="cdk-virtual-scroll-content-wrapper">
           {allData?.map((user, key) => (
             <div
-              className={`bet-item ${user.cashouted ? "celebrated" : ""}`}
+              className={`bet-item ${user.cashouted ? "celebrated" : ""} ${user.name === userInfo.userName && 'border-green'}`}
               key={key}
             >
               <div className="user">
