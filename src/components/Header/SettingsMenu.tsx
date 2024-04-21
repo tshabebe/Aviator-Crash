@@ -38,6 +38,8 @@ const settingItems: { label: string; handleType: string }[] = [
 const Menu = ({ setHowto }) => {
   const {
     state,
+    minBet,
+    maxBet,
     userInfo,
     handleChangeUserSeed,
     update,
@@ -552,7 +554,7 @@ const Menu = ({ setHowto }) => {
                       <span>(INR):</span>
                     </div>
                     <span className="badge badge-success px-2 font-weight-normal">
-                      10
+                      {minBet}
                     </span>
                   </li>
                   <li className="list-group-item pl-2 pr-1">
@@ -561,7 +563,7 @@ const Menu = ({ setHowto }) => {
                       <span>(INR):</span>
                     </div>
                     <span className="badge badge-success px-2 font-weight-normal">
-                      100000
+                      {maxBet}
                     </span>
                   </li>
                   <li className="list-group-item pl-2 pr-1">

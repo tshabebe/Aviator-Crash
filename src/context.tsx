@@ -260,10 +260,6 @@ export const Provider = ({ children }: any) => {
         setPreviousHand(previousHand);
       });
 
-      socket.on("getBetLimits", (betAmounts: { max: number; min: number }) => {
-        setBetLimit({ maxBet: betAmounts.max, minBet: betAmounts.min });
-      });
-
       socket.on("recharge", () => {
         setRechargeState(true);
       });
@@ -391,6 +387,10 @@ export const Provider = ({ children }: any) => {
           toast.error(data.message);
           setErrorBackend(true);
         }
+      });
+
+      socket.on("getBetLimits", (betAmounts: { max: number; min: number }) => {
+        setBetLimit({ maxBet: betAmounts.max, minBet: betAmounts.min });
       });
 
       socket.on("deny", (data: any) => {

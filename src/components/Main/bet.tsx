@@ -131,16 +131,35 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
   const onChangeInput = (e) => {
     let betAmount: string = e.target.value;
-    if (Number(betAmount) >= minBet && Number(betAmount) <= maxBet && /^\d*\.?\d{0,2}$/.test(betAmount)) {
-      setMyBetAmount(betAmount)
-      updateUserInfo({
-        ...userInfo,
-        [`${index}`]: {
-          ...userInfo[`${index}`],
-          betAmount: Number(betAmount)
-        },
-      })
+    // if (Number(betAmount) >= minBet && Number(betAmount) <= maxBet && /^\d*\.?\d{0,2}$/.test(betAmount)) {
+    setMyBetAmount(betAmount)
+    updateUserInfo({
+      ...userInfo,
+      [`${index}`]: {
+        ...userInfo[`${index}`],
+        betAmount: Number(betAmount)
+      },
+    })
+    // }
+  }
+
+  const onChangeBlurOfBetAmount = (amount: number) => {
+    if (amount >= minBet && amount <= maxBet) {
+      if (amount >= Number(userInfo.balance)) {
+        amount = userInfo.balance
+      }
+    } else {
+      if (amount < minBet) amount = minBet;
+      if (amount > maxBet) amount = maxBet
     }
+    setMyBetAmount(amount)
+    updateUserInfo({
+      ...userInfo,
+      [`${index}`]: {
+        ...userInfo[`${index}`],
+        betAmount: Number(betAmount)
+      },
+    })
   }
 
   const onChangeBlur = (
@@ -305,6 +324,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                       onChange={(e) => {
                         onChangeInput(e)
                       }}
+                      onBlur={(e) => onChangeBlurOfBetAmount(Number(e.target.value))}
                     />
                   )}
                 </div>
@@ -513,12 +533,13 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                 <div className="cashout-snipper-wrapper">
                   <div className="cashout-snipper">
                     <div
-                      className={`snipper small ${autoCashoutState ? "" : "disabled"}`}
+                      className={`snipper small ${!autoCashoutState && "disabled"} ${betted && 'disabled'} ${betState && 'disabled'}`}
                     >
                       <div className="input">
                         {autoCashoutState ? (
                           <input
                             type="number"
+                            readOnly={betted || betState}
                             onChange={(e) => {
                               updateUserInfo({
                                 ...userInfo,
