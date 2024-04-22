@@ -37,11 +37,13 @@ export const SeedModal = ({ setModal, modalParam }: any) => {
                 <div className="modal-content">
                     <div className="modal-header">
                         <span className="modal-title">ROUND </span>
-                        <div className="header__info">
-                            <div className={`bubble-multiplier ${Number(seedDetails?.target) < 2 ? "blue" : Number(seedDetails?.target) < 10 ? "purple" : "big"}`}>{Number(seedDetails?.target).toFixed(2)}x</div>
+                        {seedDetails &&
+                            <div className="header__info">
+                                <div className={`bubble-multiplier ${Number(seedDetails?.target) < 2 ? "blue" : Number(seedDetails?.target) < 10 ? "purple" : "big"}`}>{Number(seedDetails?.target).toFixed(2)}x</div>
 
-                            <div style={{ paddingLeft: '5px' }}>{date}</div>
-                        </div>
+                                <div style={{ paddingLeft: '5px' }}>{date}</div>
+                            </div>
+                        }
                         <button className="close" onClick={() => setModal({ modalState: false, flyDetailId: '' })}>
                             <span>x</span>
                         </button>
