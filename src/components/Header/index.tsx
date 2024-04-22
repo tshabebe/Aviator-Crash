@@ -47,7 +47,7 @@ export default function Header() {
         </div>
       </div>
       {howto === "short" && (
-        <div className="modal">
+        <div className="modal active">
           <div className="back" onClick={() => setHowto("howto")}></div>
           <div className="modal-dialog">
             <div className="modal-content">
@@ -114,7 +114,7 @@ export default function Header() {
       )}
 
       {howto === "more" && (
-        <div className="modal">
+        <div className="modal active">
           <div className="back" onClick={() => setHowto("howto")}></div>
           <div className="modal-dialog">
             <div className="modal-content">

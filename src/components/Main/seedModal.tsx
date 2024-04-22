@@ -3,7 +3,7 @@ import CryptoJS from 'crypto-js';
 import Context from "../../context";
 import { Oval } from "react-loader-spinner";
 
-export const SeedModal = ({ setModal, flyDetailId }: any) => {
+export const SeedModal = ({ setModal, modalParam }: any) => {
     const { handleGetSeedOfRound } = React.useContext(Context);
     const [date, setDate] = useState('');
     const [loading, setLoading] = useState(false);
@@ -12,7 +12,7 @@ export const SeedModal = ({ setModal, flyDetailId }: any) => {
 
     const getSeedDetails = async () => {
         setLoading(true);
-        const data = await handleGetSeedOfRound(flyDetailId);
+        const data = await handleGetSeedOfRound(modalParam.flyDetailId);
         setLoading(false);
         setSeedDetails(data);
         const newDate = new Date(data.createdAt);
@@ -29,9 +29,9 @@ export const SeedModal = ({ setModal, flyDetailId }: any) => {
 
     useEffect(() => {
         getSeedDetails();
-    }, [flyDetailId])
+    }, [modalParam.flyDetailId])
     return (
-        <div className="modal">
+        <div className={`modal ${modalParam.modalState && 'active'}`}>
             <div className="back" onClick={() => setModal({ modalState: false, flyDetailId: '' })}></div>
             <div className="modal-dialog">
                 <div className="modal-content">

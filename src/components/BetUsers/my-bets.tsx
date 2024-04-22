@@ -96,7 +96,7 @@ const MyBets = () => {
         </div>
       </div>
 
-      {modalParam.modalState && <SeedModal setModal={setModalParam} flyDetailId={modalParam.flyDetailId} />}
+      {modalParam.modalState && <SeedModal setModal={setModalParam} modalParam={modalParam} />}
     </>
   );
 };

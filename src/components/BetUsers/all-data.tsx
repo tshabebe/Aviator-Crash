@@ -38,13 +38,13 @@ const AllData = ({ pre, setPre, allData }: AllDataProps) => {
           <div
             className={`previous-hand items-center flex justify-between ${pre ? "click" : ""
               }`}
+            onClick={() => {
+              setPre(!pre);
+            }}
           >
             <div className="history-i"></div>
             <span
               className="ml-1 "
-              onClick={() => {
-                setPre(!pre);
-              }}
             >
               Previous hand
             </span>

@@ -350,7 +350,7 @@ const Menu = ({ setHowto }) => {
         )}
       </div>
       {showModal && modalType === "fair" && (
-        <div className="modal">
+        <div className="modal active">
           <div onClick={() => setShowModal(false)} className="back"></div>
           <div className="modal-dialog">
             <div className="modal-content">
@@ -536,7 +536,7 @@ const Menu = ({ setHowto }) => {
       )}
 
       {showModal && modalType === "limits" && (
-        <div className="modal">
+        <div className="modal active">
           <div onClick={() => setShowModal(false)} className="back"></div>
           <div className="modal-dialog">
             <div className="modal-content">
@@ -583,7 +583,7 @@ const Menu = ({ setHowto }) => {
       )}
 
       {changeAvatar && (
-        <div className="modal">
+        <div className="modal active">
           <div className="modal-dialog modal-lg">
             <div className="modal-content">
               <div className="modal-header">
