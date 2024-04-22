@@ -33,6 +33,8 @@ const socket = io(
     : config.production_wss
 );
 
+let socketState = false;
+
 export const callCashOut = (at: number, index: "f" | "s") => {
   let endTarget: Number = Number(at.toFixed(2))
   let data = { type: index, endTarget };
@@ -176,10 +178,15 @@ export const Provider = ({ children }: any) => {
     setSLoading(false)
   }
 
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log(`Socket connection is ${socket.connected}`);
+      socketState = true;
+    });
+  }, [])
 
   useEffect(() => {
-
-    if (token && UserID && currency && returnurl) {
+    if (token && UserID && currency && returnurl && socketState) {
       console.log("Send socket emit for get User Info and session");
       socket.emit('getBetLimits');
       socket.emit("sessionCheck", { token, UserID, currency, returnurl });
@@ -216,7 +223,7 @@ export const Provider = ({ children }: any) => {
       socket.off("deny");
     }
     // eslint-disable-next-line
-  }, [socket])
+  }, [socket, socketState])
 
   useEffect(
     function () {
@@ -251,16 +258,11 @@ export const Provider = ({ children }: any) => {
   );
 
   useEffect(() => {
-    socket.on("connect", () =>
-      console.log(`Socket connection is ${socket.connected}`)
-    );
-
     socket.on("gameState", (gameState: GameStatusType) => {
       setGameState(gameState);
     });
 
-    if (secure) {
-
+    if (secure && socketState) {
       socket.on("bettedUserInfo", (bettedUsers: BettedUserType[]) => {
         setBettedUsers(bettedUsers);
       });
@@ -370,7 +372,7 @@ export const Provider = ({ children }: any) => {
       socket.off("success");
     };
     // eslint-disable-next-line
-  }, [socket, secure]);
+  }, [socket, secure, socketState]);
 
   useEffect(() => {
     socket.on("finishGame", (user: UserType) => {
