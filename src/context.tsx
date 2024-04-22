@@ -328,7 +328,7 @@ export const Provider = ({ children }: any) => {
       socket.off("success");
     };
     // eslint-disable-next-line
-  }, [socket, secure, token, userBetState]);
+  }, [socket, secure]);
 
   useEffect(() => {
     socket.on("finishGame", (user: UserType) => {
@@ -382,7 +382,9 @@ export const Provider = ({ children }: any) => {
       socket.emit("sessionCheck", { token, UserID, currency, returnurl });
       socket.on("sessionSecure", (data) => {
         if (data.sessionStatus === true) {
-          socket.emit("enterRoom", { token, UserID, currency });
+          updateUserInfo(data.user);
+          setSecure(true);
+          // socket.emit("enterRoom", { token, UserID, currency });
         } else {
           toast.error(data.message);
           setErrorBackend(true);
@@ -397,16 +399,16 @@ export const Provider = ({ children }: any) => {
         toast.error(data.message)
       })
 
-      socket.on("myInfo", (user: UserType) => {
-        localStorage.setItem("aviator-audio", "");
-        updateUserInfo(user);
-        setSecure(true);
-      });
+      // socket.on("myInfo", (user: UserType) => {
+      //   localStorage.setItem("aviator-audio", "");
+      //   updateUserInfo(user);
+      //   setSecure(true);
+      // });
     }
 
     return () => {
       socket.off("sessionSecure");
-      socket.off("myInfo");
+      // socket.off("myInfo");
       socket.off("deny");
     }
     // eslint-disable-next-line
