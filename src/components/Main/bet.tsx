@@ -228,7 +228,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     if (index === "s" && GameState === "PLAYING" && betted && autoCashoutState && cashOut + 0.01 < binaryToFloat(currentNum)) {
       updateUserBetState({ [`${index}betted`]: false });
       setSLoading(true);
-      callCashOut(cashOut, index);
+      // callCashOut(cashOut, index);
     }
     // eslint-disable-next-line
   }, [
