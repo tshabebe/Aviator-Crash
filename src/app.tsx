@@ -23,7 +23,7 @@ function App() {
     platformLoading,
     errorBackend,
     // unityLoading,
-    // currentProgress,
+    currentProgress,
     unityState,
     GameState,
   } = React.useContext(Context);
@@ -132,7 +132,14 @@ function App() {
             {errorBackend === true ? (
               <div className="waiting-font">{return_url}</div>
             ) : (
-              <div className="waiting-font">LOADING</div>
+              <>
+                <div className="waiting-font">LOADING</div>
+                <div className="waiting">
+                  <div
+                    style={{ width: `${currentProgress * 1.111}%` }}
+                  ></div>
+                </div>
+              </>
             )}
           </div>
         </div>
