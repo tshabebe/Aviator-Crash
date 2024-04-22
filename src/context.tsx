@@ -472,6 +472,7 @@ export const Provider = ({ children }: any) => {
         // attrs.userInfo.balance -= state.userInfo.f.betAmount;
         setFLoading(true);
         updateUserInfo(attrs);
+        console.log(attrs.f.betted, attrs.s.betted);
         socket.emit("playBet", data);
         betStatus.fbetState = false;
         setUserBetState(betStatus);
@@ -494,6 +495,7 @@ export const Provider = ({ children }: any) => {
         // attrs.userInfo.balance -= state.userInfo.s.betAmount;
         setSLoading(true);
         updateUserInfo(attrs);
+        console.log(attrs.f.betted, attrs.s.betted);
         socket.emit("playBet", data);
         betStatus.sbetState = false;
         setUserBetState(betStatus);

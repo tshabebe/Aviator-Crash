@@ -3,18 +3,19 @@ import Context from "../../context";
 import { SeedModal } from "./seedModal";
 
 export default function History() {
-  const { history, handleGetSeedOfRound } = React.useContext(Context);
+  const { history } = React.useContext(Context);
 
   const [showHistory, setShowHistory] = React.useState(false);
-  const [modal, setModal] = useState(false);
-  const [seedDetails, setSeedDetails] = useState<any>();
+  const [modalParam, setModalParam] = useState({
+    modalState: false,
+    flyDetailId: ''
+  });
 
   const handleGetSeed = async (flyDetailId) => {
-    const result = await handleGetSeedOfRound(flyDetailId);
-    if (result) {
-      setSeedDetails(result);
-      setModal(true);
-    }
+    setModalParam({
+      modalState: true,
+      flyDetailId
+    });
   }
 
   return (
@@ -52,7 +53,7 @@ export default function History() {
       </div>
       }
 
-      {modal && <SeedModal setModal={setModal} seedDetails={seedDetails} />}
+      {modalParam.modalState && <SeedModal setModal={setModalParam} flyDetailId={modalParam.flyDetailId} />}
     </div>
   );
 }
