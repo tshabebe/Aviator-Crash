@@ -176,6 +176,48 @@ export const Provider = ({ children }: any) => {
     setSLoading(false)
   }
 
+
+  useEffect(() => {
+
+    if (token && UserID && currency && returnurl) {
+      console.log("Send socket emit for get User Info and session");
+      socket.emit('getBetLimits');
+      socket.emit("sessionCheck", { token, UserID, currency, returnurl });
+      socket.on("sessionSecure", (data) => {
+        console.log("get Data for sessionsecure and userInfo");
+        if (data.sessionStatus === true) {
+          updateUserInfo(data.user);
+          setSecure(true);
+          // socket.emit("enterRoom", { token, UserID, currency });
+        } else {
+          toast.error(data.message);
+          setErrorBackend(true);
+        }
+      });
+
+      socket.on("getBetLimits", (betAmounts: { max: number; min: number }) => {
+        setBetLimit({ maxBet: betAmounts.max, minBet: betAmounts.min });
+      });
+
+      socket.on("deny", (data: any) => {
+        toast.error(data.message)
+      })
+
+      // socket.on("myInfo", (user: UserType) => {
+      //   localStorage.setItem("aviator-audio", "");
+      //   updateUserInfo(user);
+      //   setSecure(true);
+      // });
+    }
+
+    return () => {
+      socket.off("sessionSecure");
+      // socket.off("myInfo");
+      socket.off("deny");
+    }
+    // eslint-disable-next-line
+  }, [socket])
+
   useEffect(
     function () {
       unityContext.on("GameController", function (message) {
@@ -376,45 +418,6 @@ export const Provider = ({ children }: any) => {
   }, [userInfo.isMusicEnable])
 
   useEffect(() => {
-
-    if (token && UserID && currency && returnurl) {
-      socket.emit('getBetLimits');
-      socket.emit("sessionCheck", { token, UserID, currency, returnurl });
-      socket.on("sessionSecure", (data) => {
-        if (data.sessionStatus === true) {
-          updateUserInfo(data.user);
-          setSecure(true);
-          // socket.emit("enterRoom", { token, UserID, currency });
-        } else {
-          toast.error(data.message);
-          setErrorBackend(true);
-        }
-      });
-
-      socket.on("getBetLimits", (betAmounts: { max: number; min: number }) => {
-        setBetLimit({ maxBet: betAmounts.max, minBet: betAmounts.min });
-      });
-
-      socket.on("deny", (data: any) => {
-        toast.error(data.message)
-      })
-
-      // socket.on("myInfo", (user: UserType) => {
-      //   localStorage.setItem("aviator-audio", "");
-      //   updateUserInfo(user);
-      //   setSecure(true);
-      // });
-    }
-
-    return () => {
-      socket.off("sessionSecure");
-      // socket.off("myInfo");
-      socket.off("deny");
-    }
-    // eslint-disable-next-line
-  }, [socket])
-
-  useEffect(() => {
     socket.on("newMsg", ({
       _id,
       userId,
@@ -474,7 +477,6 @@ export const Provider = ({ children }: any) => {
         // attrs.userInfo.balance -= state.userInfo.f.betAmount;
         setFLoading(true);
         updateUserInfo(attrs);
-        console.log(attrs.f.betted, attrs.s.betted);
         socket.emit("playBet", data);
         betStatus.fbetState = false;
         setUserBetState(betStatus);
