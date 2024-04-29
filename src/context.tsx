@@ -178,23 +178,12 @@ export const Provider = ({ children }: any) => {
     setSLoading(false)
   }
 
-  const getUserInfos = () => {
-    if (token && UserID && currency && returnurl && socketState && userInfo.userId === "")
-      socket.emit("sessionCheck", { token, UserID, currency, returnurl });
-  }
-
   useEffect(() => {
     socket.on("connect", () => {
       console.log(`Socket connection is ${socket.connected}`);
       socketState = true;
     });
   }, [])
-
-  useEffect(() => {
-    if (unity.currentProgress === 100) {
-      getUserInfos();
-    }
-  }, [unity.currentProgress])
 
   useEffect(() => {
     if (token && UserID && currency && returnurl && socketState) {
@@ -490,6 +479,7 @@ export const Provider = ({ children }: any) => {
         // attrs.userInfo.balance -= state.userInfo.f.betAmount;
         setFLoading(true);
         updateUserInfo(attrs);
+        console.log(attrs.f.target, attrs.s.target);
         socket.emit("playBet", data);
         betStatus.fbetState = false;
         setUserBetState(betStatus);
@@ -512,7 +502,7 @@ export const Provider = ({ children }: any) => {
         // attrs.userInfo.balance -= state.userInfo.s.betAmount;
         setSLoading(true);
         updateUserInfo(attrs);
-        console.log(attrs.f.betted, attrs.s.betted);
+        console.log(attrs.f.target, attrs.s.target);
         socket.emit("playBet", data);
         betStatus.sbetState = false;
         setUserBetState(betStatus);

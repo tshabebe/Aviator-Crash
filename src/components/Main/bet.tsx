@@ -208,10 +208,12 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   useEffect(() => {
     if (index === "f" && GameState === "PLAYING" && betted && autoCashoutState && cashOut < binaryToFloat(currentNum) && !fLoading) {
       updateUserBetState({ [`${index}betted`]: false });
+      setTargetAmount(Number(betAmount * Number(currentTarget.toFixed(2))).toFixed(2))
       setFLoading(true);
     }
     if (index === "s" && GameState === "PLAYING" && betted && autoCashoutState && cashOut < binaryToFloat(currentNum) && !sLoading) {
       updateUserBetState({ [`${index}betted`]: false });
+      setTargetAmount(Number(betAmount * Number(currentTarget.toFixed(2))).toFixed(2))
       setSLoading(true);
     }
     // eslint-disable-next-line
