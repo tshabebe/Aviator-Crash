@@ -509,7 +509,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                 <div className="cashout-switcher">
                   <label className="label">Auto Cash Out</label>
                   {/* {betted || betState ? ( */}
-                  {betted ? (
+                  {betted || betState ? (
                     <div
                       className={`input-switch ${autoCashoutState ? "" : "off"
                         }`}
