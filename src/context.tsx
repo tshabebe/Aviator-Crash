@@ -187,11 +187,9 @@ export const Provider = ({ children }: any) => {
 
   useEffect(() => {
     if (token && UserID && currency && returnurl && socketState && unity.unityLoading) {
-      console.log("Send socket emit for get User Info and session");
       socket.emit('getBetLimits');
       socket.emit("sessionCheck", { token, UserID, currency, returnurl });
       socket.on("sessionSecure", (data) => {
-        console.log("get Data for sessionsecure and userInfo");
         if (data.sessionStatus === true) {
           updateUserInfo(data.user);
           setSecure(true);
@@ -479,6 +477,7 @@ export const Provider = ({ children }: any) => {
         // attrs.userInfo.balance -= state.userInfo.f.betAmount;
         setFLoading(true);
         updateUserInfo(attrs);
+        console.log(attrs.f.target, attrs.s.target);
         socket.emit("playBet", data);
         betStatus.fbetState = false;
         setUserBetState(betStatus);
