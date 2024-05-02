@@ -21,6 +21,7 @@ export default function WebGLStarter() {
   } = React.useContext(Context);
   const [waiting, setWaiting] = React.useState(0);
   const [flag, setFlag] = React.useState('');
+  const unityRef = React.useRef(null);
 
   React.useEffect(() => {
     let myInterval;
