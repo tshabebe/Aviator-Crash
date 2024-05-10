@@ -419,17 +419,12 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                     className="btn-danger h-[70%]"
                     onClick={() => {
                       onBetClick(false);
-                      let attr = { ...userInfo };
                       if (index === 'f') {
                         setFLoading(true);
                       } else {
                         setSLoading(true);
                       }
                       callCancelBet(userInfo.userId, userInfo[index].betid, userInfo[index].betAmount, userInfo.currency, userInfo.Session_Token, index);
-                      update({
-                        ...state,
-                        [`${index}autoCound`]: 0,
-                      });
 
                       updateUserInfo(
                         {
@@ -451,10 +446,6 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                   className="btn-danger h-[70%]"
                   onClick={() => {
                     onBetClick(false);
-                    update({
-                      ...state,
-                      [`${index}autoCound`]: 0,
-                    });
 
                     updateUserInfo(
                       {

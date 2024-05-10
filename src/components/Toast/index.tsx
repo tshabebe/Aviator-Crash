@@ -12,28 +12,30 @@ const toaster = (
   switch (type) {
     case "success":
       toast.custom(
-        <div className="alert-win celebrated ng-trigger ng-trigger-messageState ng-star-inserted ng-animating">
-          <div className="multiplier ">
-            <div className="label ">{msg}</div>
-            <div className="value ">{point}x</div>
-          </div>
-          <div className="win celebrated">
-            <div className="label no-wrap ">
-              <span>Win</span>
-              <span className="currency ">, {currency}</span>
+        (t) => (
+          <div className="alert-win celebrated ng-trigger ng-trigger-messageState ng-star-inserted ng-animating">
+            <div className="multiplier ">
+              <div className="label ">{msg}</div>
+              <div className="value ">{point}x</div>
             </div>
-            <div className="value ">
-              <span>{cashoutAmount}</span>
+            <div className="win celebrated">
+              <div className="label no-wrap ">
+                <span>Win</span>
+                <span className="currency ">, {currency}</span>
+              </div>
+              <div className="value ">
+                <span>{cashoutAmount}</span>
+              </div>
             </div>
+            <button
+              type="button"
+              className="close"
+              onClick={() => { toast.dismiss(t.id); console.log("Closing toast with ID:", t.id); }}
+            >
+              ×
+            </button>
           </div>
-          <button
-            type="button"
-            className="close"
-            onClick={() => toast.dismiss()}
-          >
-            ×
-          </button>
-        </div>
+        )
       );
       break;
     case "error":

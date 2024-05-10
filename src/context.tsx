@@ -110,14 +110,14 @@ export const Provider = ({ children }: any) => {
     fbetState: false,
     sbetState: false,
   });
-  newBetState = userBetState;
   const [fLoading, setFLoading] = useState<Boolean>(false);
   const [sLoading, setSLoading] = useState<Boolean>(false);
   const [rechargeState, setRechargeState] = useState(false);
   const [currentTarget, setCurrentTarget] = useState(0);
   const [ip, setIP] = useState<string>("");
   const updateUserBetState = (attrs: Partial<UserStatusType>) => {
-    setUserBetState({ ...userBetState, ...attrs });
+    newBetState = { ...newBetState, ...attrs }
+    setUserBetState(newBetState);
   };
   const handleServerSeed = (seed: string) => {
     setState({ ...state, seed });
@@ -267,7 +267,7 @@ export const Provider = ({ children }: any) => {
 
       socket.on("myBetState", (myInfo: { user: UserType; type: string }) => {
         var { user, type } = myInfo;
-        var attrs: any = { ...userBetState };
+        var attrs: any = newBetState;
         var newUserInfo = globalUserInfo;
         attrs.fbetState = false;
         // newUserInfo.f.betted = user.f.betted;
