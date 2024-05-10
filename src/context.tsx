@@ -52,7 +52,10 @@ let sIncreaseAmount = 0;
 let sDecreaseAmount = 0;
 
 let newState: ContextDataType;
-let newBetState: UserStatusType;
+let newUserState: UserStatusType = {
+  fbetState: false,
+  sbetState: false,
+};
 
 const takeOffAudio = new Audio("/sound/cashout.mp3");
 const musicAudio = new Audio("/sound/main.wav");
@@ -116,8 +119,10 @@ export const Provider = ({ children }: any) => {
   const [currentTarget, setCurrentTarget] = useState(0);
   const [ip, setIP] = useState<string>("");
   const updateUserBetState = (attrs: Partial<UserStatusType>) => {
-    newBetState = { ...newBetState, ...attrs }
-    setUserBetState(newBetState);
+    console.log("UpdateUserBetState Bet State:", newUserState, attrs);
+    newUserState = { ...newUserState, ...attrs };
+    console.log(newUserState);
+    setUserBetState(newUserState);
   };
   const handleServerSeed = (seed: string) => {
     setState({ ...state, seed });
@@ -127,6 +132,10 @@ export const Provider = ({ children }: any) => {
     minBet: 10,
     maxBet: 100000,
   });
+
+  useEffect(() => {
+    console.log(userBetState);
+  }, [userBetState])
 
   const handleGetSeed = () => {
     socket.emit("getSeed");
@@ -267,7 +276,7 @@ export const Provider = ({ children }: any) => {
 
       socket.on("myBetState", (myInfo: { user: UserType; type: string }) => {
         var { user, type } = myInfo;
-        var attrs: any = newBetState;
+        var attrs: any = newUserState;
         var newUserInfo = globalUserInfo;
         attrs.fbetState = false;
         // newUserInfo.f.betted = user.f.betted;
@@ -277,7 +286,8 @@ export const Provider = ({ children }: any) => {
         newUserInfo.balance = user.balance;
         update(allState);
         updateUserInfo(newUserInfo);
-        setUserBetState(attrs);
+        console.log("MyBetState Bet State")
+        updateUserBetState(attrs);
         if (type === 'f') {
           setFLoading(false)
         } else {
@@ -326,7 +336,8 @@ export const Provider = ({ children }: any) => {
             auto: false
           }
         })
-        setUserBetState({
+        console.log("Error Bet State");
+        updateUserBetState({
           ...userBetState,
           [`${data.index}betState`]: false,
         });
@@ -388,7 +399,7 @@ export const Provider = ({ children }: any) => {
       let sauto = userInfo.s.auto;
       let fbetAmount = userInfo.f.betAmount;
       let sbetAmount = userInfo.s.betAmount;
-      let betStatus: UserStatusType = newBetState;
+      let betStatus: UserStatusType = newUserState;
       newUserInfo = user;
       newUserInfo.f.betAmount = fbetAmount;
       newUserInfo.s.betAmount = sbetAmount;
@@ -404,7 +415,7 @@ export const Provider = ({ children }: any) => {
         betStatus.sbetState = true;
       handleSetDefaultLoading();
       updateUserInfo(newUserInfo);
-      setUserBetState(betStatus);
+      updateUserBetState(betStatus);
     });
     return () => { socket.off("finishGame"); }
   }, [socket, userInfo])
@@ -455,7 +466,7 @@ export const Provider = ({ children }: any) => {
 
   const handlePlaceBet = async () => {
     let attrs = userInfo;
-    let betStatus = userBetState;
+    let betStatus = newUserState;
     let fBetFlag = betStatus.fbetState && !attrs.f.betted;
     let sBetFlag = betStatus.sbetState && !attrs.s.betted;
     let fBetBalance = attrs.balance - attrs.f.betAmount < 0;
@@ -479,8 +490,9 @@ export const Provider = ({ children }: any) => {
         updateUserInfo(attrs);
         console.log(attrs.f.target, attrs.s.target);
         socket.emit("playBet", data);
-        betStatus.fbetState = false;
-        setUserBetState(betStatus);
+        // betStatus.fbetState = false;
+        console.log("Handle Place Bet of F");
+        updateUserBetState(betStatus);
       }
     }
     if (sBetFlag) {
@@ -502,8 +514,9 @@ export const Provider = ({ children }: any) => {
         updateUserInfo(attrs);
         console.log(attrs.f.target, attrs.s.target);
         socket.emit("playBet", data);
-        betStatus.sbetState = false;
-        setUserBetState(betStatus);
+        // betStatus.sbetState = false;
+        console.log("Handle Place Bet of S");
+        updateUserBetState(betStatus);
       }
     }
   }
