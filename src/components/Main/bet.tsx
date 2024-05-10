@@ -535,13 +535,13 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                 <div className="cashout-snipper-wrapper">
                   <div className="cashout-snipper">
                     <div
-                      className={`snipper small ${!autoCashoutState && "disabled"} ${betted && 'disabled'} ${betState && 'disabled'}`}
+                      className={`snipper small ${!autoCashoutState && "disabled"} ${betted && 'disabled'}`}
                     >
                       <div className="input">
                         {autoCashoutState ? (
                           <input
                             type="number"
-                            readOnly={betted || betState}
+                            readOnly={betted}
                             onChange={(e) => {
                               updateUserInfo({
                                 ...userInfo,
@@ -553,7 +553,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                               );
                               setCashOut(Number(e.target.value));
                             }}
-                            value={cashOut}
+                            value={userInfo[index].target}
                             onBlur={(e) =>
                               onChangeBlur(
                                 Number(e.target.value) || 0,
