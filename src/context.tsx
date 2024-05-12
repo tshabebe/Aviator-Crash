@@ -475,6 +475,9 @@ export const Provider = ({ children }: any) => {
       let fbetid = `Crash-${Date.now()}-${Math.floor(Math.random() * 999999)}`;
       attrs.f.betid = fbetid;
       attrs.f.betted = true;
+      if (attrs.f.target < 1) {
+        attrs.f.target = 1.01;
+      }
       let data = {
         type: "f",
         seed: userSeedText,
@@ -499,6 +502,9 @@ export const Provider = ({ children }: any) => {
       let sbetid = `Crash-${Date.now()}-${Math.floor(Math.random() * 999999)}`;
       attrs.s.betid = sbetid;
       attrs.s.betted = true;
+      if (attrs.s.target < 1) {
+        attrs.s.target = 1.01;
+      }
       let data = {
         type: "s",
         seed: userSeedText,
