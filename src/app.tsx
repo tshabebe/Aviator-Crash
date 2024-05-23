@@ -117,10 +117,6 @@ function App() {
           <source src={FlewAwayAudio} type="audio/mp3" />
           Your browser does not support the audio element.
         </audio>
-
-        <audio id="cashoutAudio">
-
-        </audio>
       </div>
 
       {platformLoading && (
