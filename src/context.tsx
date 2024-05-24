@@ -120,9 +120,7 @@ export const Provider = ({ children }: any) => {
   const [currentTarget, setCurrentTarget] = useState(0);
   const [ip, setIP] = useState<string>("");
   const updateUserBetState = (attrs: Partial<UserStatusType>) => {
-    console.log("UpdateUserBetState Bet State:", newUserState, attrs);
     newUserState = { ...newUserState, ...attrs };
-    console.log(newUserState);
     setUserBetState(newUserState);
   };
   const handleServerSeed = (seed: string) => {
@@ -133,10 +131,6 @@ export const Provider = ({ children }: any) => {
     minBet: 10,
     maxBet: 100000,
   });
-
-  useEffect(() => {
-    console.log(userBetState);
-  }, [userBetState])
 
   const handleGetSeed = () => {
     socket.emit("getSeed");
@@ -190,59 +184,39 @@ export const Provider = ({ children }: any) => {
 
   useEffect(() => {
     socket.on("connect", () => {
-      console.log(`Socket connection is ${socket.connected}`);
-      socketState = true;
+      if (token && UserID && currency && returnurl) {
+        socket.emit('getBetLimits');
+        socket.emit("sessionCheck", { token, UserID, currency, returnurl });
+        socket.on("sessionSecure", (data) => {
+          if (data.sessionStatus === true) {
+            updateUserInfo(data.user);
+            setHistory(data.history);
+            setSecure(true);
+            setBettedUsers(data.info);
+            setLoadState(true);
+            // socket.emit("enterRoom", { token, UserID, currency });
+          } else {
+            toast.error(data.message);
+            setErrorBackend(true);
+          }
+        });
+
+        socket.on("getBetLimits", (betAmounts: { max: number; min: number }) => {
+          setBetLimit({ maxBet: betAmounts.max, minBet: betAmounts.min });
+        });
+
+        socket.on("deny", (data: any) => {
+          toast.error(data.message)
+        })
+
+        // socket.on("myInfo", (user: UserType) => {
+        //   localStorage.setItem("aviator-audio", "");
+        //   updateUserInfo(user);
+        //   setSecure(true);
+        // });
+      }
     });
   }, [])
-
-  useEffect(() => {
-    if (token && UserID && currency && returnurl && socketState && unity.unityLoading) {
-      console.log("socket.connected:", socket.connected)
-      if (!socket.connected)
-        socket = io(
-          process.env.REACT_APP_DEVELOPMENT === "true"
-            ? config.development_wss
-            : config.production_wss
-        );
-      socket.emit('getBetLimits');
-      socket.emit("sessionCheck", { token, UserID, currency, returnurl });
-      socket.on("sessionSecure", (data) => {
-        if (data.sessionStatus === true) {
-          updateUserInfo(data.user);
-          console.log(data.history);
-          setHistory(data.history);
-          setSecure(true);
-          setBettedUsers(data.info);
-          setLoadState(true);
-          // socket.emit("enterRoom", { token, UserID, currency });
-        } else {
-          toast.error(data.message);
-          setErrorBackend(true);
-        }
-      });
-
-      socket.on("getBetLimits", (betAmounts: { max: number; min: number }) => {
-        setBetLimit({ maxBet: betAmounts.max, minBet: betAmounts.min });
-      });
-
-      socket.on("deny", (data: any) => {
-        toast.error(data.message)
-      })
-
-      // socket.on("myInfo", (user: UserType) => {
-      //   localStorage.setItem("aviator-audio", "");
-      //   updateUserInfo(user);
-      //   setSecure(true);
-      // });
-    }
-
-    return () => {
-      socket.off("sessionSecure");
-      // socket.off("myInfo");
-      socket.off("deny");
-    }
-    // eslint-disable-next-line
-  }, [socket, socketState, unity.unityLoading])
 
   useEffect(
     function () {
@@ -302,7 +276,6 @@ export const Provider = ({ children }: any) => {
         newUserInfo.balance = user.balance;
         update(allState);
         updateUserInfo(newUserInfo);
-        console.log("MyBetState Bet State")
         updateUserBetState(attrs);
         if (type === 'f') {
           setFLoading(false)
@@ -352,7 +325,6 @@ export const Provider = ({ children }: any) => {
             auto: false
           }
         })
-        console.log("Error Bet State");
         updateUserBetState({
           ...userBetState,
           [`${data.index}betState`]: false,
@@ -507,10 +479,8 @@ export const Provider = ({ children }: any) => {
         // attrs.userInfo.balance -= state.userInfo.f.betAmount;
         setFLoading(true);
         updateUserInfo(attrs);
-        console.log(attrs.f.target, attrs.s.target);
         socket.emit("playBet", data);
         // betStatus.fbetState = false;
-        console.log("Handle Place Bet of F");
         updateUserBetState(betStatus);
       }
     }
@@ -534,10 +504,8 @@ export const Provider = ({ children }: any) => {
         // attrs.userInfo.balance -= state.userInfo.s.betAmount;
         setSLoading(true);
         updateUserInfo(attrs);
-        console.log(attrs.f.target, attrs.s.target);
         socket.emit("playBet", data);
         // betStatus.sbetState = false;
-        console.log("Handle Place Bet of S");
         updateUserBetState(betStatus);
       }
     }
