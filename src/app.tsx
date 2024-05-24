@@ -132,7 +132,7 @@ function App() {
                 <div className="waiting-font">LOADING</div>
                 <div className="waiting">
                   <div
-                    style={{ width: `${currentProgress * 1.111}%` }}
+                    style={{ width: `${currentProgress}%` }}
                   ></div>
                 </div>
               </>

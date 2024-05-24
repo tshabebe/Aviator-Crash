@@ -27,7 +27,7 @@ import {
 
 const Context = createContext<ContextType>(null!);
 
-const socket = io(
+let socket = io(
   process.env.REACT_APP_DEVELOPMENT === "true"
     ? config.development_wss
     : config.production_wss
@@ -197,6 +197,13 @@ export const Provider = ({ children }: any) => {
 
   useEffect(() => {
     if (token && UserID && currency && returnurl && socketState && unity.unityLoading) {
+      console.log("socket.connected:", socket.connected)
+      if (!socket.connected)
+        socket = io(
+          process.env.REACT_APP_DEVELOPMENT === "true"
+            ? config.development_wss
+            : config.production_wss
+        );
       socket.emit('getBetLimits');
       socket.emit("sessionCheck", { token, UserID, currency, returnurl });
       socket.on("sessionSecure", (data) => {
