@@ -72,6 +72,7 @@ export const Provider = ({ children }: any) => {
 
   const [msgData, setMsgData] = useState<MsgUserType[]>([]);
 
+  const [loadState, setLoadState] = useState(false);
   const [secure, setSecure] = useState<boolean>(false);
   const [msgReceived, setMsgReceived] = useState<boolean>(false);
   const [errorBackend, setErrorBackend] = useState<boolean>(false);
@@ -201,7 +202,11 @@ export const Provider = ({ children }: any) => {
       socket.on("sessionSecure", (data) => {
         if (data.sessionStatus === true) {
           updateUserInfo(data.user);
+          console.log(data.history);
+          setHistory(data.history);
           setSecure(true);
+          setBettedUsers(data.info);
+          setLoadState(true);
           // socket.emit("enterRoom", { token, UserID, currency });
         } else {
           toast.error(data.message);
@@ -246,7 +251,6 @@ export const Provider = ({ children }: any) => {
       unityContext.on("progress", (progression) => {
         const currentProgress = progression * 100;
         if (progression === 1) {
-          setPlatformLoading(false);
           setUnity({ currentProgress, unityLoading: true, unityState: true });
         } else {
           setUnity({
@@ -263,6 +267,11 @@ export const Provider = ({ children }: any) => {
     []
     // [secure]
   );
+
+  useEffect(() => {
+    if (loadState && unity.unityLoading)
+      setPlatformLoading(false);
+  }, [loadState, unity.unityLoading])
 
   useEffect(() => {
     socket.on("gameState", (gameState: GameStatusType) => {
