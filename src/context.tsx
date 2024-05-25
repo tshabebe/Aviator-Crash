@@ -184,30 +184,10 @@ export const Provider = ({ children }: any) => {
 
   useEffect(() => {
     socket.on("connect", () => {
+      socketState = true;
       if (token && UserID && currency && returnurl) {
         socket.emit('getBetLimits');
         socket.emit("sessionCheck", { token, UserID, currency, returnurl });
-        socket.on("sessionSecure", (data) => {
-          if (data.sessionStatus === true) {
-            updateUserInfo(data.user);
-            setHistory(data.history);
-            setSecure(true);
-            setBettedUsers(data.info);
-            setLoadState(true);
-            // socket.emit("enterRoom", { token, UserID, currency });
-          } else {
-            toast.error(data.message);
-            setErrorBackend(true);
-          }
-        });
-
-        socket.on("getBetLimits", (betAmounts: { max: number; min: number }) => {
-          setBetLimit({ maxBet: betAmounts.max, minBet: betAmounts.min });
-        });
-
-        socket.on("deny", (data: any) => {
-          toast.error(data.message)
-        })
 
         // socket.on("myInfo", (user: UserType) => {
         //   localStorage.setItem("aviator-audio", "");
@@ -217,6 +197,38 @@ export const Provider = ({ children }: any) => {
       }
     });
   }, [])
+
+  useEffect(() => {
+    if (socketState) {
+      socket.on("sessionSecure", (data) => {
+        if (data.sessionStatus === true) {
+          updateUserInfo(data.user);
+          setHistory(data.history);
+          setSecure(true);
+          setBettedUsers(data.info);
+          setLoadState(true);
+          // socket.emit("enterRoom", { token, UserID, currency });
+        } else {
+          toast.error(data.message);
+          setErrorBackend(true);
+        }
+      });
+
+      socket.on("getBetLimits", (betAmounts: { max: number; min: number }) => {
+        setBetLimit({ maxBet: betAmounts.max, minBet: betAmounts.min });
+      });
+
+      socket.on("deny", (data: any) => {
+        toast.error(data.message)
+      })
+
+    }
+    return () => {
+      socket.off("sessionSecure");
+      socket.off("getBetLimits");
+      socket.off("deny");
+    }
+  }, [socketState])
 
   useEffect(
     function () {
