@@ -130,6 +130,7 @@ export interface ContextType extends GameBetLimit, UserStatusType, GameStatusTyp
     unityState: boolean;
     unityLoading: boolean;
     currentProgress: number;
+    globalUserInfo: UserType;
     bettedUsers: BettedUserType[];
     previousHand: UserType[];
     history: number[];

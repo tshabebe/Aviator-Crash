@@ -17,7 +17,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   const context = React.useContext(Context);
   const {
     state,
-    userInfo,
+    globalUserInfo,
     fbetState,
     sbetState,
     GameState,
@@ -34,15 +34,15 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     updateUserInfo,
     updateUserBetState,
   } = context;
-  const [cashOut, setCashOut] = React.useState(userInfo[index].target);
+  const [cashOut, setCashOut] = React.useState(globalUserInfo[index].target);
 
-  const auto = index === "f" ? userInfo.f.auto : userInfo.s.auto;
-  const betted = index === "f" ? userInfo.f.betted : userInfo.s.betted;
+  const auto = index === "f" ? globalUserInfo.f.auto : globalUserInfo.s.auto;
+  const betted = index === "f" ? globalUserInfo.f.betted : globalUserInfo.s.betted;
   const betState = index === "f" ? fbetState : sbetState;
   const betAmount =
-    index === "f" ? userInfo.f.betAmount : userInfo.s.betAmount;
+    index === "f" ? globalUserInfo.f.betAmount : globalUserInfo.s.betAmount;
   const autoCashoutState =
-    index === "f" ? userInfo.f.autocashout : userInfo.s.autocashout;
+    index === "f" ? globalUserInfo.f.autocashout : globalUserInfo.s.autocashout;
 
   const [gameType, setGameType] = React.useState<GameType>("manual");
   const [betOpt, setBetOpt] = React.useState<BetOptType>("20.00");
@@ -50,7 +50,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   const [targetAmount, setTargetAmount] = React.useState<number | string>(0);
 
   const minus = (type: FieldNameType) => {
-    let value = userInfo;
+    let value = globalUserInfo;
     if (type === "betAmount") {
       if (betAmount - 0.1 < minBet) {
         value[index][type] = minBet;
@@ -73,11 +73,11 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   };
 
   const plus = (type: FieldNameType) => {
-    let value = userInfo;
+    let value = globalUserInfo;
     if (type === "betAmount") {
-      if (value[index][type] + 1 > userInfo.balance) {
+      if (value[index][type] + 1 > globalUserInfo.balance) {
         value[index][type] =
-          Math.round(userInfo.balance * 100) / 100;
+          Math.round(globalUserInfo.balance * 100) / 100;
       } else {
         if (value[index][type] + 1 > maxBet) {
           value[index][type] = maxBet;
@@ -88,9 +88,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
         }
       }
     } else {
-      if (value[`${index + type}`] + 1 > userInfo.balance) {
+      if (value[`${index + type}`] + 1 > globalUserInfo.balance) {
         value[`${index + type}`] =
-          Math.round(userInfo.balance * 100) / 100;
+          Math.round(globalUserInfo.balance * 100) / 100;
       } else {
         value[`${index + type}`] = Number(
           (Number(value[`${index + type}`]) + 1).toFixed(2)
@@ -102,7 +102,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   };
 
   const manualPlus = (amount: number, btnNum: BetOptType) => {
-    let value = userInfo;
+    let value = globalUserInfo;
     if (betOpt === btnNum) {
       if (Number(betAmount + amount) > maxBet) {
         value[index].betAmount = maxBet;
@@ -134,9 +134,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     // if (Number(betAmount) >= minBet && Number(betAmount) <= maxBet && /^\d*\.?\d{0,2}$/.test(betAmount)) {
     setMyBetAmount(betAmount)
     updateUserInfo({
-      ...userInfo,
+      ...globalUserInfo,
       [`${index}`]: {
-        ...userInfo[`${index}`],
+        ...globalUserInfo[`${index}`],
         betAmount: Number(betAmount)
       },
     })
@@ -145,8 +145,8 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
   const onChangeBlurOfBetAmount = (amount: number) => {
     if (amount >= minBet && amount <= maxBet) {
-      if (amount >= Number(userInfo.balance)) {
-        amount = userInfo.balance
+      if (amount >= Number(globalUserInfo.balance)) {
+        amount = globalUserInfo.balance
       }
     } else {
       if (amount < minBet) amount = minBet;
@@ -154,9 +154,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     }
     setMyBetAmount(amount)
     updateUserInfo({
-      ...userInfo,
+      ...globalUserInfo,
       [`${index}`]: {
-        ...userInfo[`${index}`],
+        ...globalUserInfo[`${index}`],
         betAmount: Number(betAmount)
       },
     })
@@ -166,7 +166,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
     e: number,
     type: "cashOutAt" | "decrease" | "increase" | "singleAmount"
   ) => {
-    let value = userInfo;
+    let value = globalUserInfo;
     if (type === "cashOutAt") {
       if (e < 1.01) {
         value[index]["target"] = 1.01;
@@ -186,7 +186,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   };
 
   const onBetClick = (s: boolean) => {
-    if (userInfo[index].betAmount > userInfo.balance) {
+    if (globalUserInfo[index].betAmount > globalUserInfo.balance) {
       toast.error("Your balance is not enough");
     } else {
       if (secure) {
@@ -198,7 +198,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   };
 
   const onAutoBetClick = (_betState: boolean) => {
-    let attrs = userInfo;
+    let attrs = globalUserInfo;
     attrs[index].auto = _betState;
     updateUserInfo(attrs);
 
@@ -220,9 +220,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   }, [
     GameState,
     currentNum,
-    userInfo.f.betted,
+    globalUserInfo.f.betted,
     autoCashoutState,
-    userInfo.f.target,
+    globalUserInfo.f.target,
     fLoading
   ]);
 
@@ -236,9 +236,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
   }, [
     GameState,
     currentNum,
-    userInfo.s.betted,
+    globalUserInfo.s.betted,
     autoCashoutState,
-    userInfo.s.target,
+    globalUserInfo.s.target,
     sLoading,
   ]);
 
@@ -405,8 +405,8 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                       <span>
                         {targetAmount ? targetAmount : Number(betAmount * Number(currentTarget.toFixed(2))).toFixed(2)}
                       </span>
-                      <span className="currency">{`${userInfo?.currency
-                        ? userInfo?.currency
+                      <span className="currency">{`${globalUserInfo?.currency
+                        ? globalUserInfo?.currency
                         : "INR"
                         }`}</span>
                     </label>
@@ -424,12 +424,12 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                       } else {
                         setSLoading(true);
                       }
-                      callCancelBet(userInfo.userId, userInfo[index].betid, userInfo[index].betAmount, userInfo.currency, userInfo.Session_Token, index);
+                      callCancelBet(globalUserInfo.userId, globalUserInfo[index].betid, globalUserInfo[index].betAmount, globalUserInfo.currency, globalUserInfo.Session_Token, index);
 
                       updateUserInfo(
                         {
-                          ...userInfo,
-                          [index]: { ...userInfo[index], auto: false },
+                          ...globalUserInfo,
+                          [index]: { ...globalUserInfo[index], auto: false },
                         },
                       )
                     }}
@@ -449,8 +449,8 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
                     updateUserInfo(
                       {
-                        ...userInfo,
-                        [index]: { ...userInfo[index], auto: false },
+                        ...globalUserInfo,
+                        [index]: { ...globalUserInfo[index], auto: false },
                       }
                     )
                   }}
@@ -464,8 +464,8 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                   <label>BET</label>
                   <label className="amount">
                     <span>{Number(betAmount).toFixed(2)}&nbsp;</span>
-                    <span className="currency">{`${userInfo?.currency
-                      ? userInfo?.currency
+                    <span className="currency">{`${globalUserInfo?.currency
+                      ? globalUserInfo?.currency
                       : "INR"
                       }`}</span>
                   </label>
@@ -512,8 +512,8 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                       onClick={() => {
                         updateUserInfo(
                           {
-                            ...userInfo,
-                            [index]: { ...userInfo[index], autocashout: !autoCashoutState },
+                            ...globalUserInfo,
+                            [index]: { ...globalUserInfo[index], autocashout: !autoCashoutState },
                           }
                         )
                       }}
@@ -535,16 +535,16 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                             readOnly={betted}
                             onChange={(e) => {
                               updateUserInfo({
-                                ...userInfo,
+                                ...globalUserInfo,
                                 [`${index}`]: {
-                                  ...userInfo[index],
+                                  ...globalUserInfo[index],
                                   target: Number(e.target.value),
                                 },
                               },
                               );
                               setCashOut(Number(e.target.value));
                             }}
-                            value={userInfo[index].target}
+                            value={globalUserInfo[index].target}
                             onBlur={(e) =>
                               onChangeBlur(
                                 Number(e.target.value) || 0,
@@ -555,7 +555,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                         ) : (
                           <input
                             type="number"
-                            value={cashOut.toFixed(2)}
+                            value={globalUserInfo[index].target}
                             readOnly
                           />
                         )}

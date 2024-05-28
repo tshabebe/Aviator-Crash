@@ -30,7 +30,7 @@ const toaster = (
             <button
               type="button"
               className="close"
-              onClick={() => { toast.dismiss(t.id); console.log("Closing toast with ID:", t.id); }}
+              onClick={() => { toast.dismiss(t.id); }}
             >
               ×
             </button>

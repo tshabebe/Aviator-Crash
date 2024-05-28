@@ -62,8 +62,7 @@ const musicAudio = new Audio("/sound/main.wav");
 musicAudio.loop = true;
 musicAudio.volume = 0.2;
 
-
-let globalUserInfo: any = init_userInfo
+let globalUserInfo: UserType = init_userInfo;
 export const Provider = ({ children }: any) => {
   const token = new URLSearchParams(useLocation().search).get("token");
   const UserID = new URLSearchParams(useLocation().search).get("UserID");
@@ -254,11 +253,8 @@ export const Provider = ({ children }: any) => {
         }
       });
       return () => unityContext.removeAllEventListeners();
-      // if (secure) {
-      // }
     },
     []
-    // [secure]
   );
 
   useEffect(() => {
@@ -320,7 +316,7 @@ export const Provider = ({ children }: any) => {
       socket.on("cancelled", (data: { status: boolean, type: string, updatedBalance: number }) => {
         const { type, updatedBalance } = data;
         updateUserBetState({ [`${type}betState`]: false });
-        updateUserInfo({ ...userInfo, [type]: { ...userInfo[type], betted: false }, balance: updatedBalance });
+        updateUserInfo({ ...globalUserInfo, [type]: { ...globalUserInfo[type], betted: false }, balance: updatedBalance });
         if (type === 'f') {
           setFLoading(false)
         } else {
@@ -329,10 +325,9 @@ export const Provider = ({ children }: any) => {
       })
 
       socket.on("error", (data) => {
-        setUserInfo({
-          ...userInfo,
+        updateUserInfo({
           [data.index]: {
-            ...userInfo[data.index],
+            ...globalUserInfo[data.index],
             betted: false,
             auto: false
           }
@@ -392,7 +387,7 @@ export const Provider = ({ children }: any) => {
         takeOffAudio.play();
       }
       // let attrs = newState;
-      let newUserInfo = { ...userInfo };
+      let newUserInfo = { ...globalUserInfo };
       user.isMusicEnable = userInfo.isMusicEnable;
       user.isSoundEnable = userInfo.isSoundEnable;
       let fauto = userInfo.f.auto;
@@ -579,7 +574,7 @@ export const Provider = ({ children }: any) => {
       );
       if (response?.data?.status) {
         updateUserInfo({
-          ...userInfo,
+          ...globalUserInfo,
           ipAddress: res.data.ip,
           platform
         }
@@ -608,6 +603,7 @@ export const Provider = ({ children }: any) => {
         ...unity,
         ...gameState,
         userInfo,
+        globalUserInfo,
         socket,
         msgData,
         msgReceived,
