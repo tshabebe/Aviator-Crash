@@ -198,6 +198,7 @@ export const Provider = ({ children }: any) => {
 
   useEffect(() => {
     if (token) {
+      console.log("Here");
       socket.emit("sessionCheck", { token, UserID, currency, returnurl });
 
     }
