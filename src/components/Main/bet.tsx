@@ -157,7 +157,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
       ...globalUserInfo,
       [`${index}`]: {
         ...globalUserInfo[`${index}`],
-        betAmount: Number(betAmount)
+        betAmount: Number(amount)
       },
     })
   }

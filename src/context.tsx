@@ -184,9 +184,8 @@ export const Provider = ({ children }: any) => {
   useEffect(() => {
     socket.on("connect", () => {
       socketState = true;
+      socket.emit('getBetLimits');
       if (token && UserID && currency && returnurl) {
-        socket.emit('getBetLimits');
-        socket.emit("sessionCheck", { token, UserID, currency, returnurl });
 
         // socket.on("myInfo", (user: UserType) => {
         //   localStorage.setItem("aviator-audio", "");
@@ -195,7 +194,14 @@ export const Provider = ({ children }: any) => {
         // });
       }
     });
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      socket.emit("sessionCheck", { token, UserID, currency, returnurl });
+
+    }
+  }, [token])
 
   useEffect(() => {
     if (socketState) {

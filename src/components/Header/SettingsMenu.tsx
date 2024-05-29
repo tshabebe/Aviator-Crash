@@ -233,6 +233,7 @@ const Menu = ({ setHowto }) => {
     >
       <button
         className={`setting-button ${showDropDown ? "active" : ""}`}
+        aria-label="Setting menu"
         onClick={(): void => toggleDropDown()}
         onBlur={(e: React.FocusEvent<HTMLButtonElement>): void =>
           dismissHandler(e)
