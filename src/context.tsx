@@ -30,7 +30,7 @@ const Context = createContext<ContextType>(null!);
 let socket = io(
   process.env.REACT_APP_DEVELOPMENT === "true"
     ? config.development_wss
-    : config.production_wss
+    : config.production_wss, { reconnection: true }
 );
 
 let socketState = false;
