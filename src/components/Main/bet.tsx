@@ -565,7 +565,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                             ...globalUserInfo,
                             [`${index}`]: {
                               ...globalUserInfo[index],
-                              target: Number(1),
+                              target: Number(1.01),
                             },
                           })}>×</span>
                     </div>
