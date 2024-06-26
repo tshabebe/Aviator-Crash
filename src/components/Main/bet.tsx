@@ -540,8 +540,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                                   ...globalUserInfo[index],
                                   target: Number(e.target.value),
                                 },
-                              },
-                              );
+                              });
                               setCashOut(Number(e.target.value));
                             }}
                             value={globalUserInfo[index].target}
@@ -560,7 +559,15 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
                           />
                         )}
                       </div>
-                      <span className="text" onClick={() => autoCashoutState && setCashOut(1)}>×</span>
+                      <span className="text"
+                        onClick={() => autoCashoutState &&
+                          updateUserInfo({
+                            ...globalUserInfo,
+                            [`${index}`]: {
+                              ...globalUserInfo[index],
+                              target: Number(1),
+                            },
+                          })}>×</span>
                     </div>
                   </div>
                 </div>
