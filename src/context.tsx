@@ -420,7 +420,17 @@ export const Provider = ({ children }: any) => {
       updateUserBetState(betStatus);
     });
     return () => { socket.off("finishGame"); }
-  }, [socket, userInfo])
+  }, [socket, userInfo]);
+
+  useEffect(() => {
+    if (gameState.GameState === 'READY') {
+      setFLoading(true);
+      setSLoading(true);
+    } else {
+      setFLoading(false);
+      setSLoading(false);
+    }
+  }, [gameState.GameState])
 
   useEffect(() => {
     if (userInfo.isMusicEnable) {
