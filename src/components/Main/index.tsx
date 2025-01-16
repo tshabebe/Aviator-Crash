@@ -1,12 +1,10 @@
 import React from "react";
 import "./main.scss";
 import History from "./history";
-import Crash from "../Crash/index";
+import Crash from "../crash/index";
 import Bet from "./bet";
-import Context from "../../context";
 
 export default function Main() {
-  const { msgTab } = React.useContext(Context);
   const [addBetPanel, setAddBetPanel] = React.useState(true);
   return (
     <div className="game-play">
@@ -18,14 +16,17 @@ export default function Main() {
           <div className="stage-canvas">
             <Crash />
           </div>
+          <div className="dom-container">
+            <div className="fun-mode">FUN MODE</div>
+          </div>
         </div>
       </div>
       <div className="bet-controls">
-        <div className={`controls ${msgTab && "flex-wrap"}`}>
+        <div className="controls">
           <Bet index={"f"} add={addBetPanel} setAdd={setAddBetPanel} />
-          {addBetPanel && (
+          {addBetPanel &&
             <Bet index={"s"} add={addBetPanel} setAdd={setAddBetPanel} />
-          )}
+          }
         </div>
       </div>
     </div>
