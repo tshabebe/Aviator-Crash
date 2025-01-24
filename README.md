@@ -2,13 +2,11 @@
 
 **Aviator Crash Game** is an exciting and dynamic multiplayer betting game where players test their luck and timing to win big! With a sleek, responsive interface and real-time gameplay powered by cutting-edge technologies, this game offers an engaging experience for users.
 
-## 📞 Contact
+## 📩 Contact Me on Telegram
 
 For inquiries, collaborations, or support, feel free to reach out:
 
-- 🎮 Discord: `cashblaze127`
-- 📱 Telegram: @cashblaze127
-- 💼 LinkedIn: [Keyvel Bitcoin Solana](https://www.linkedin.com/in/keyvel-bitcoin-solana)
+[![Telegram Contact](https://img.shields.io/badge/Telegram-Contact%20Me-blue?logo=telegram&style=for-the-badge)](https://t.me/cashblaze127)
 
 ## 🌟 Features
 
