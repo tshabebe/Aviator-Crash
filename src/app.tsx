@@ -7,11 +7,26 @@ import propeller from "./assets/images/propeller.png";
 
 import Context from "./context";
 import { ContactMeTelegram } from "./components/cTelegram";
+import Login from "./components/Login";
+import { useLocation, useNavigate } from "react-router-dom";
 // import "./App.scss";
 
 function App() {
   const { unityLoading, currentProgress, rechargeState } =
     React.useContext(Context);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const token = new URLSearchParams(location.search).get("cert");
+
+  const handleLogin = (newToken: string) => {
+    navigate(`/?cert=${newToken}`);
+  };
+
+  // Show login if no token
+  if (!token) {
+    return <Login onLogin={handleLogin} />;
+  }
+
   return (
     <div className="main-container">
       <ContactMeTelegram />

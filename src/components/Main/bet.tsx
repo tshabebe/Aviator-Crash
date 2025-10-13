@@ -27,7 +27,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 	} = context;
 	const [cashOut, setCashOut] = React.useState(2);
 
-	const auto = index === 'f' ? state.userInfo.f.auto : state.userInfo.s.auto
+	const auto = index === 'f' ? (state.userInfo.f?.auto ?? false) : (state.userInfo.s?.auto ?? false)
 	const betted = index === 'f' ? fbetted : sbetted
 	const deState = index === 'f' ? state.fdeState : state.sdeState
 	const inState = index === 'f' ? state.finState : state.sinState
@@ -35,7 +35,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 	const decrease = index === 'f' ? state.fdecrease : state.sdecrease
 	const increase = index === 'f' ? state.fincrease : state.sincrease
 	const autoCound = index === 'f' ? state.fautoCound : state.sautoCound
-	const betAmount = index === 'f' ? state.userInfo.f.betAmount : state.userInfo.s.betAmount
+	const betAmount = index === 'f' ? (state.userInfo.f?.betAmount ?? 20) : (state.userInfo.s?.betAmount ?? 20)
 	const autoCashoutState = index === 'f' ? state.fautoCashoutState : state.sautoCashoutState
 	const single = index === 'f' ? state.fsingle : state.ssingle
 	const singleAmount = index === 'f' ? state.fsingleAmount : state.ssingleAmount
@@ -188,7 +188,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 				}
 			}
 		}
-	}, [currentSecondNum, fbetted, sbetted, state.fautoCashoutState, state.sautoCashoutState, state.userInfo.f.target, state.userInfo.s.target])
+	}, [currentSecondNum, fbetted, sbetted, state.fautoCashoutState, state.sautoCashoutState, state.userInfo.f?.target, state.userInfo.s?.target])
 
 	useEffect(() => {
 		setMyBetAmount(betAmount);

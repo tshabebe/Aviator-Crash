@@ -20,8 +20,20 @@ export interface UserType {
   userType: boolean;
   img: string;
   userName: string;
+  userId: string;
+  avatar: string;
+  currency: string;
+  token: string;
+  Session_Token: string;
+  ipAddress: string;
+  platform: string;
+  isSoundEnable: boolean;
+  isMusicEnable: boolean;
+  msgVisible: boolean;
   f: {
     auto: boolean;
+    autocashout: boolean;
+    betid: string;
     betted: boolean;
     cashouted: boolean;
     betAmount: number;
@@ -30,6 +42,8 @@ export interface UserType {
   };
   s: {
     auto: boolean;
+    autocashout: boolean;
+    betid: string;
     betted: boolean;
     cashouted: boolean;
     betAmount: number;
@@ -48,7 +62,7 @@ export interface PlayerType {
 }
 
 interface GameStatusType {
-  currentNum: number;
+  currentNum: string; // Backend sends as string with .toFixed(2)
   currentSecondNum: number;
   GameState: string;
   time: number;
@@ -66,6 +80,9 @@ declare interface GameHistory {
   cashoutAt: number;
   cashouted: boolean;
   date: number;
+  createdAt: string;
+  flyAway: number;
+  flyDetailID: number;
 }
 
 interface UserStatusType {
@@ -75,10 +92,24 @@ interface UserStatusType {
   sbetted: boolean;
 }
 
+export interface MsgUserType {
+  _id?: string;
+  userId: string;
+  userName: string;
+  avatar: string;
+  message: string;
+  img: string;
+  likes: number;
+  likesIDs: string[];
+  disLikes: number;
+  disLikesIDs: string[];
+}
+
 interface ContextDataType {
   myBets: GameHistory[];
   width: number;
   userInfo: UserType;
+  seed: string;
   fautoCashoutState: boolean;
   fautoCound: number;
   finState: boolean;
@@ -102,19 +133,41 @@ interface ContextDataType {
 
 interface ContextType extends GameBetLimit, UserStatusType, GameStatusType {
   state: ContextDataType;
+  userInfo: UserType;
+  socket: any;
   unityState: boolean;
   unityLoading: boolean;
   currentProgress: number;
   bettedUsers: BettedUserType[];
   previousHand: UserType[];
   history: number[];
+  msgData: MsgUserType[];
+  msgTab: boolean;
+  msgReceived: boolean;
+  platformLoading: boolean;
+  errorBackend: boolean;
+  secure: boolean;
+  globalUserInfo: UserType;
+  userSeedText: string;
+  fLoading: boolean;
+  sLoading: boolean;
   rechargeState: boolean;
   myUnityContext: UnityContext;
   currentTarget: number;
   setCurrentTarget(attrs: Partial<number>);
+  setFLoading(attrs: boolean);
+  setSLoading(attrs: boolean);
+  setMsgReceived(attrs: Partial<boolean>);
+  setMsgData(attrs: MsgUserType[]);
   update(attrs: Partial<ContextDataType>);
+  updateUserInfo(attrs: Partial<UserType>);
   getMyBets();
   updateUserBetState(attrs: Partial<UserStatusType>);
+  handleGetSeed();
+  handleGetSeedOfRound(roundId: Number);
+  handleChangeUserSeed(seed: Partial<string>);
+  handlePlaceBet();
+  toggleMsgTab();
 }
 
 const unityContext = new UnityContext({
@@ -127,13 +180,26 @@ const unityContext = new UnityContext({
 const init_state = {
   myBets: [],
   width: 1500,
+  seed: "",
   userInfo: {
     balance: 0,
     userType: false,
     img: "",
     userName: "",
+    userId: "",
+    avatar: "",
+    currency: "ETB",
+    token: "",
+    Session_Token: "",
+    ipAddress: "",
+    platform: "desktop",
+    isSoundEnable: false,
+    isMusicEnable: false,
+    msgVisible: false,
     f: {
       auto: false,
+      autocashout: false,
+      betid: "0",
       betted: false,
       cashouted: false,
       cashAmount: 0,
@@ -142,6 +208,8 @@ const init_state = {
     },
     s: {
       auto: false,
+      autocashout: false,
+      betid: "0",
       betted: false,
       cashouted: false,
       cashAmount: 0,
@@ -170,9 +238,48 @@ const init_state = {
   myUnityContext: unityContext,
 } as ContextDataType;
 
+const init_userInfo: UserType = {
+  balance: 0,
+  userType: false,
+  img: "/avatars/avatar1.png",
+  userName: "",
+  userId: "",
+  avatar: "/avatars/avatar1.png",
+  currency: "ETB",
+  token: "",
+  Session_Token: "",
+  ipAddress: "",
+  platform: "desktop",
+  isSoundEnable: false,
+  isMusicEnable: false,
+  msgVisible: false,
+  f: {
+    auto: false,
+    autocashout: false,
+    betid: "0",
+    betted: false,
+    cashouted: false,
+    cashAmount: 0,
+    betAmount: 20,
+    target: 2,
+  },
+  s: {
+    auto: false,
+    autocashout: false,
+    betid: "0",
+    betted: false,
+    cashouted: false,
+    cashAmount: 0,
+    betAmount: 20,
+    target: 2,
+  },
+};
+
 const Context = React.createContext<ContextType>(null!);
 
-const socket = io(config.wss);
+const socket = io(config.wss, {
+  autoConnect: false, // Don't connect until we have a token
+});
 
 export const callCashOut = (at: number, index: "f" | "s") => {
   let data = { type: index, endTarget: at };
@@ -198,15 +305,19 @@ export const Provider = ({ children }: any) => {
     currentProgress: 0,
   });
   const [gameState, setGameState] = React.useState({
-    currentNum: 0,
+    currentNum: "1.00", // Initialize as string to match backend format
     currentSecondNum: 0,
     GameState: "",
     time: 0,
   });
 
+  const [userInfo, setUserInfo] = React.useState<UserType>(init_userInfo);
   const [bettedUsers, setBettedUsers] = React.useState<BettedUserType[]>([]);
   const update = (attrs: Partial<ContextDataType>) => {
     setState({ ...state, ...attrs });
+  };
+  const updateUserInfo = (attrs: Partial<UserType>) => {
+    setUserInfo({ ...userInfo, ...attrs });
   };
   const [previousHand, setPreviousHand] = React.useState<UserType[]>([]);
   const [history, setHistory] = React.useState<number[]>([]);
@@ -227,6 +338,38 @@ export const Provider = ({ children }: any) => {
     maxBet: 1000,
     minBet: 1,
   });
+  
+  // Additional state for compatibility
+  const [msgData, setMsgData] = React.useState<MsgUserType[]>([]);
+  const [msgTab, setMsgTab] = React.useState(false);
+  const [msgReceived, setMsgReceived] = React.useState(false);
+  const [fLoading, setFLoading] = React.useState(false);
+  const [sLoading, setSLoading] = React.useState(false);
+  const [platformLoading, setPlatformLoading] = React.useState(false);
+  const [errorBackend, setErrorBackend] = React.useState(false);
+  const [secure, setSecure] = React.useState(false);
+  const [userSeedText, setUserSeedText] = React.useState("");
+  
+  // Stub functions for compatibility
+  const handleGetSeed = () => {
+    console.log("handleGetSeed called");
+  };
+  
+  const handleGetSeedOfRound = (roundId: Number) => {
+    console.log("handleGetSeedOfRound called with:", roundId);
+  };
+  
+  const handleChangeUserSeed = (seed: Partial<string>) => {
+    console.log("handleChangeUserSeed called with:", seed);
+  };
+  
+  const handlePlaceBet = () => {
+    console.log("handlePlaceBet called");
+  };
+  
+  const toggleMsgTab = () => {
+    setMsgTab(!msgTab);
+  };
   React.useEffect(function () {
     unityContext.on("GameController", function (message) {
       if (message === "Ready") {
@@ -249,7 +392,14 @@ export const Provider = ({ children }: any) => {
   }, []);
 
   React.useEffect(() => {
+    // Only connect if we have a token
+    if (token) {
+      console.log("Connecting to backend with token...");
+      socket.connect();
+    }
+
     socket.on("connect", () => {
+      console.log("✅ Socket connected, joining room...");
       socket.emit("enterRoom", { token });
     });
 
@@ -257,25 +407,36 @@ export const Provider = ({ children }: any) => {
       setBettedUsers(bettedUsers);
     });
 
-    socket.on("connect", () => {
-      console.log(socket.connected);
-    });
-
     socket.on("myBetState", (user: UserType) => {
       const attrs = userBetState;
       attrs.fbetState = false;
-      attrs.fbetted = user.f.betted;
+      attrs.fbetted = user.f?.betted || false;
       attrs.sbetState = false;
-      attrs.sbetted = user.s.betted;
+      attrs.sbetted = user.s?.betted || false;
       setUserBetState(attrs);
     });
 
-    socket.on("myInfo", (user: UserType) => {
-      let attrs = state;
-      attrs.userInfo.balance = user.balance;
-      attrs.userInfo.userType = user.userType;
-      attrs.userInfo.userName = user.userName;
-      update(attrs);
+    socket.on("myInfo", (user: any) => {
+      // Update userInfo state with data from backend
+      setUserInfo({
+        ...userInfo,
+        balance: user.balance,
+        userType: user.userType,
+        userName: user.userName,
+        userId: user.userId || "",
+        avatar: user.avatar || "/avatars/avatar1.png",
+        currency: user.currency || "ETB",
+        token: user.token || token || "",
+        Session_Token: user.Session_Token || "",
+        ipAddress: user.ipAddress || "",
+        platform: user.platform || "desktop",
+        isSoundEnable: user.isSoundEnable || false,
+        isMusicEnable: user.isMusicEnable || false,
+        msgVisible: user.msgVisible || false,
+        f: user.f || userInfo.f,
+        s: user.s || userInfo.s,
+        img: user.avatar || "/avatars/avatar1.png",
+      });
     });
 
     socket.on("history", (history: any) => {
@@ -297,23 +458,33 @@ export const Provider = ({ children }: any) => {
       let fbetAmount = attrs.userInfo.f.betAmount;
       let sbetAmount = attrs.userInfo.s.betAmount;
       let betStatus = newBetState;
-      attrs.userInfo = user;
-      attrs.userInfo.f.betAmount = fbetAmount;
-      attrs.userInfo.s.betAmount = sbetAmount;
-      attrs.userInfo.f.auto = fauto;
-      attrs.userInfo.s.auto = sauto;
-      if (!user.f.betted) {
+      
+      // Merge user data while preserving local state
+      attrs.userInfo = {
+        ...user,
+        f: {
+          ...user.f,
+          betAmount: fbetAmount,
+          auto: fauto,
+        },
+        s: {
+          ...user.s,
+          betAmount: sbetAmount,
+          auto: sauto,
+        },
+      };
+      if (!user.f?.betted) {
         betStatus.fbetted = false;
         if (attrs.userInfo.f.auto) {
-          if (user.f.cashouted) {
-            fIncreaseAmount += user.f.cashAmount;
+          if (user.f?.cashouted) {
+            fIncreaseAmount += user.f?.cashAmount || 0;
             if (attrs.finState && attrs.fincrease - fIncreaseAmount <= 0) {
               attrs.userInfo.f.auto = false;
               betStatus.fbetState = false;
               fIncreaseAmount = 0;
             } else if (
               attrs.fsingle &&
-              attrs.fsingleAmount <= user.f.cashAmount
+              attrs.fsingleAmount <= (user.f?.cashAmount || 0)
             ) {
               attrs.userInfo.f.auto = false;
               betStatus.fbetState = false;
@@ -322,7 +493,7 @@ export const Provider = ({ children }: any) => {
               betStatus.fbetState = true;
             }
           } else {
-            fDecreaseAmount += user.f.betAmount;
+            fDecreaseAmount += user.f?.betAmount || 0;
             if (attrs.fdeState && attrs.fdecrease - fDecreaseAmount <= 0) {
               attrs.userInfo.f.auto = false;
               betStatus.fbetState = false;
@@ -334,18 +505,18 @@ export const Provider = ({ children }: any) => {
           }
         }
       }
-      if (!user.s.betted) {
+      if (!user.s?.betted) {
         betStatus.sbetted = false;
-        if (user.s.auto) {
-          if (user.s.cashouted) {
-            sIncreaseAmount += user.s.cashAmount;
+        if (user.s?.auto) {
+          if (user.s?.cashouted) {
+            sIncreaseAmount += user.s?.cashAmount || 0;
             if (attrs.sinState && attrs.sincrease - sIncreaseAmount <= 0) {
               attrs.userInfo.s.auto = false;
               betStatus.sbetState = false;
               sIncreaseAmount = 0;
             } else if (
               attrs.ssingle &&
-              attrs.ssingleAmount <= user.s.cashAmount
+              attrs.ssingleAmount <= (user.s?.cashAmount || 0)
             ) {
               attrs.userInfo.s.auto = false;
               betStatus.sbetState = false;
@@ -354,7 +525,7 @@ export const Provider = ({ children }: any) => {
               betStatus.sbetState = true;
             }
           } else {
-            sDecreaseAmount += user.s.betAmount;
+            sDecreaseAmount += user.s?.betAmount || 0;
             if (attrs.sdeState && attrs.sdecrease - sDecreaseAmount <= 0) {
               attrs.userInfo.s.auto = false;
               betStatus.sbetState = false;
@@ -403,14 +574,14 @@ export const Provider = ({ children }: any) => {
       socket.off("error");
       socket.off("success");
     };
-  }, [socket]);
+  }, [token]); // Reconnect when token changes
 
   React.useEffect(() => {
     let attrs = state;
     let betStatus = userBetState;
     if (gameState.GameState === "BET") {
       if (betStatus.fbetState) {
-        if (state.userInfo.f.auto) {
+        if (state.userInfo.f?.auto) {
           if (state.fautoCound > 0) attrs.fautoCound -= 1;
           else {
             attrs.userInfo.f.auto = false;
@@ -419,18 +590,18 @@ export const Provider = ({ children }: any) => {
           }
         }
         let data = {
-          betAmount: state.userInfo.f.betAmount,
-          target: state.userInfo.f.target,
+          betAmount: state.userInfo.f?.betAmount || 20,
+          target: state.userInfo.f?.target || 2,
           type: "f",
-          auto: state.userInfo.f.auto,
+          auto: state.userInfo.f?.auto || false,
         };
-        if (attrs.userInfo.balance - state.userInfo.f.betAmount < 0) {
+        if (attrs.userInfo.balance - (state.userInfo.f?.betAmount || 0) < 0) {
           toast.error("Your balance is not enough");
           betStatus.fbetState = false;
           betStatus.fbetted = false;
           return;
         }
-        attrs.userInfo.balance -= state.userInfo.f.betAmount;
+        attrs.userInfo.balance -= (state.userInfo.f?.betAmount || 0);
         socket.emit("playBet", data);
         betStatus.fbetState = false;
         betStatus.fbetted = true;
@@ -438,7 +609,7 @@ export const Provider = ({ children }: any) => {
         setUserBetState(betStatus);
       }
       if (betStatus.sbetState) {
-        if (state.userInfo.s.auto) {
+        if (state.userInfo.s?.auto) {
           if (state.sautoCound > 0) attrs.sautoCound -= 1;
           else {
             attrs.userInfo.s.auto = false;
@@ -447,18 +618,18 @@ export const Provider = ({ children }: any) => {
           }
         }
         let data = {
-          betAmount: state.userInfo.s.betAmount,
-          target: state.userInfo.s.target,
+          betAmount: state.userInfo.s?.betAmount || 20,
+          target: state.userInfo.s?.target || 2,
           type: "s",
-          auto: state.userInfo.s.auto,
+          auto: state.userInfo.s?.auto || false,
         };
-        if (attrs.userInfo.balance - state.userInfo.s.betAmount < 0) {
+        if (attrs.userInfo.balance - (state.userInfo.s?.betAmount || 0) < 0) {
           toast.error("Your balance is not enough");
           betStatus.sbetState = false;
           betStatus.sbetted = false;
           return;
         }
-        attrs.userInfo.balance -= state.userInfo.s.betAmount;
+        attrs.userInfo.balance -= (state.userInfo.s?.betAmount || 0);
         socket.emit("playBet", data);
         betStatus.sbetState = false;
         betStatus.sbetted = true;
@@ -499,6 +670,8 @@ export const Provider = ({ children }: any) => {
     <Context.Provider
       value={{
         state: state,
+        userInfo: userInfo,
+        socket: socket,
         ...betLimit,
         ...userBetState,
         ...unity,
@@ -509,10 +682,30 @@ export const Provider = ({ children }: any) => {
         bettedUsers: [...bettedUsers],
         previousHand: [...previousHand],
         history: [...history],
+        msgData: msgData,
+        msgTab: msgTab,
+        msgReceived: msgReceived,
+        platformLoading: platformLoading,
+        errorBackend: errorBackend,
+        secure: secure,
+        globalUserInfo: userInfo,
+        userSeedText: userSeedText,
+        fLoading: fLoading,
+        sLoading: sLoading,
         setCurrentTarget,
+        setFLoading,
+        setSLoading,
+        setMsgReceived,
+        setMsgData,
         update,
+        updateUserInfo,
         getMyBets,
         updateUserBetState,
+        handleGetSeed,
+        handleGetSeedOfRound,
+        handleChangeUserSeed,
+        handlePlaceBet,
+        toggleMsgTab,
       }}
     >
       {children}
