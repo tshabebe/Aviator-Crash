@@ -2,6 +2,7 @@ import React from "react";
 import Header from "./components/header";
 import BetsUsers from "./components/bet-users";
 import Main from "./components/Main";
+import Chat from "./components/Chat";
 // import { useCrashContext } from "./components/Main/context";
 import propeller from "./assets/images/propeller.png";
 
@@ -59,6 +60,7 @@ function App() {
       <div className="game-container">
         <BetsUsers />
         <Main />
+        <Chat />
       </div>
     </div>
   );
