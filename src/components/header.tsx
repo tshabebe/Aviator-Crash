@@ -7,9 +7,6 @@ import Context from "../context";
 export default function Header() {
   const { state, userInfo } = React.useContext(Context)
 
-  console.log("🏦 Header - userInfo:", userInfo);
-  console.log("💰 Header - Balance:", userInfo?.balance, "Currency:", userInfo?.currency);
-
   const [howto, setHowto] = React.useState<'howto' | 'short' | 'more' | ''>("howto");
   const [, setFireSystem] = React.useState(false);
 
@@ -26,7 +23,7 @@ export default function Header() {
           <img src={logo} alt="logo" className="logo"></img>
         </div>
         <div className="second-block">
-          {state.userInfo.userType &&
+          {userInfo.userType &&
             <div className="center" onClick={Refound}>
             REBACK&nbsp;
             <button className="refound">
@@ -40,8 +37,8 @@ export default function Header() {
           </button>
           <div className="d-flex">
             <div className="balance">
-              <span className="amount">{Number(userInfo?.balance || 0).toFixed(2)} </span>
-              <span className="currency">&nbsp;{userInfo?.currency || "INR"}</span>
+              <span className="amount">{Number(userInfo.balance).toFixed(2)} </span>
+              <span className="currency">&nbsp;INR</span>
             </div>
           </div>
         </div>
@@ -65,16 +62,24 @@ export default function Header() {
               </div>
               <div className="step">
                 <div className="bullet">01</div>
-                <p>Make a bet, or even two at same time and wait for the round to start.</p>
+                <p>Make a bet, or even two at same time and wait for the round to start.<br />
+                  ஒரு பந்தயம் அல்லது ஒரே நேரத்தில் இரண்டு பந்தயம் கட்டலாம் ,  மற்றும் சுற்று தொடங்கும் வரை காத்திருக்கவும்.
+                  एक बेट लगाए , या एक साथ 2 बेट लगाए  और खेल शुरू होने का इंतज़ार करें  </p>
               </div>
               <div className="step">
                 <div className="bullet bullet-2">02</div>
                 <p>Look after the luck plane, Your win is bet multiply by a coefficient of lucky plane
-                  Cash out before plane files away and money is yours!</p>
+                  Cash out  before plane files away and money is yours! <br />
+
+                  அதிர்ஷ்ட விமானத்தை கவனியுங்கள், விமானம் பறக்கும் உயரம் பொறுத்து உங்கள் பணம் இரட்டிப்பு ஆகும். ( நீங்கள் 100 ரூபாய் பெட் கட்டினால் , விமானம் 2X பறந்தால், உங்களுக்கு 200 ரூபாய் கிடைக்கும்.
+
+                  लकी प्लेन को देखें, आपकी जीती हुई राशि आपकी बेट अमाउंट और प्लेन की उड़ान संख्या का गुणा करके आएगी</p>
               </div>
               <div className="step">
                 <div className="bullet bullet-3">03</div>
-                <p>Cash out before plane files away and money is yours!</p>
+                <p>Cash out before plane files away and money is yours!<br />
+                  விமானம் பறந்து செல்லும் முன்பு பணத்தை கேஷ் அவுட் செயுங்கள். வெற்றி உங்களுடையது!
+                  प्लेन क्रेश होने से पहले कैशऑउट करें और अपनी बेट अमाउंट के साथ जीता हुआ अमाउंट भी आपका</p>
               </div>
             </div>
             <div className="modal-footer m-f-bg">

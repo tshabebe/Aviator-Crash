@@ -14,7 +14,7 @@ type GameType = 'manual' | 'auto'
 
 const Bet = ({ index, add, setAdd }: BetProps) => {
 	const context = React.useContext(Context)
-	const { state,
+	const { state, userInfo,
 		fbetted, sbetted,
 		fbetState, sbetState,
 		GameState,
@@ -67,9 +67,8 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 	const plus = (type: FieldNameType) => {
 		let value = state;
 		if (type === "betAmount") {
-			const currentBalance = Number(state.userInfo?.balance || 0);
-			if (value.userInfo[index][type] + 0.1 > currentBalance) {
-				value.userInfo[index][type] = Math.round(currentBalance * 100) / 100
+			if (value.userInfo[index][type] + 0.1 > userInfo.balance) {
+				value.userInfo[index][type] = Math.round(userInfo.balance * 100) / 100
 			} else {
 				if (value.userInfo[index][type] + 0.1 > maxBet) {
 					value.userInfo[index][type] = maxBet;
@@ -78,9 +77,8 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 				}
 			}
 		} else {
-			const currentBalance = Number(state.userInfo?.balance || 0);
-			if (value[`${index + type}`] + 0.1 > currentBalance) {
-				value[`${index + type}`] = Math.round(currentBalance * 100) / 100
+			if (value[`${index + type}`] + 0.1 > userInfo.balance) {
+				value[`${index + type}`] = Math.round(userInfo.balance * 100) / 100
 			} else {
 				value[`${index + type}`] = Number((Number(value[`${index + type}`]) + 0.1).toFixed(2))
 			}

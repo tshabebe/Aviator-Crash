@@ -417,13 +417,10 @@ export const Provider = ({ children }: any) => {
     });
 
     socket.on("myInfo", (user: any) => {
-      console.log("📨 Received myInfo from backend:", user);
-      console.log("💰 Balance received:", user.balance, "Type:", typeof user.balance);
-      
       // Update userInfo state with data from backend
       setUserInfo({
         ...userInfo,
-        balance: Number(user.balance || 0),
+        balance: user.balance,
         userType: user.userType,
         userName: user.userName,
         userId: user.userId || "",
@@ -598,15 +595,13 @@ export const Provider = ({ children }: any) => {
           type: "f",
           auto: state.userInfo.f?.auto || false,
         };
-        const currentBalance = Number(attrs.userInfo?.balance || 0);
-        const betAmount = Number(state.userInfo.f?.betAmount || 0);
-        if (currentBalance - betAmount < 0) {
+        if (attrs.userInfo.balance - (state.userInfo.f?.betAmount || 0) < 0) {
           toast.error("Your balance is not enough");
           betStatus.fbetState = false;
           betStatus.fbetted = false;
           return;
         }
-        attrs.userInfo.balance = currentBalance - betAmount;
+        attrs.userInfo.balance -= (state.userInfo.f?.betAmount || 0);
         socket.emit("playBet", data);
         betStatus.fbetState = false;
         betStatus.fbetted = true;
@@ -628,15 +623,13 @@ export const Provider = ({ children }: any) => {
           type: "s",
           auto: state.userInfo.s?.auto || false,
         };
-        const currentBalance = Number(attrs.userInfo?.balance || 0);
-        const betAmount = Number(state.userInfo.s?.betAmount || 0);
-        if (currentBalance - betAmount < 0) {
+        if (attrs.userInfo.balance - (state.userInfo.s?.betAmount || 0) < 0) {
           toast.error("Your balance is not enough");
           betStatus.sbetState = false;
           betStatus.sbetted = false;
           return;
         }
-        attrs.userInfo.balance = currentBalance - betAmount;
+        attrs.userInfo.balance -= (state.userInfo.s?.betAmount || 0);
         socket.emit("playBet", data);
         betStatus.sbetState = false;
         betStatus.sbetted = true;
