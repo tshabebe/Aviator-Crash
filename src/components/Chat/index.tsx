@@ -7,7 +7,7 @@ import axios from "axios";
 
 import Context from "../../context";
 import "./chat.scss";
-import config from "../../config";
+import { config } from "../../config";
 import { displayName } from "../utils";
 
 export default function PerfectLiveChat() {

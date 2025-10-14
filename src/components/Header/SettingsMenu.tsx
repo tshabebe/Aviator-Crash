@@ -16,7 +16,7 @@ import copy from "copy-to-clipboard";
 
 import Context from "../../context";
 import axios from "axios";
-import config from "../../config";
+import { config } from "../../config";
 import ChatImg from "../../assets/images/chat.svg";
 import { displayName, generateRandomString } from "../utils";
 
