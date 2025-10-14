@@ -111,10 +111,7 @@ const Menu = ({ setHowto }) => {
       }
       try {
         await axios.post(
-          `${process.env.REACT_APP_DEVELOPMENT === "true"
-            ? config.development_api
-            : config.production_api
-          }/update-info`,
+          `${config.api}/api/update-info`,
           {
             userId: userInfo.userId,
             updateData: { isSoundEnable: checked },
@@ -137,10 +134,7 @@ const Menu = ({ setHowto }) => {
     async (checked) => {
       try {
         await axios.post(
-          `${process.env.REACT_APP_DEVELOPMENT === "true"
-            ? config.development_api
-            : config.production_api
-          }/update-info`,
+          `${config.api}/api/update-info`,
           {
             userId: userInfo.userId,
             updateData: { isMusicEnable: checked },
@@ -174,10 +168,7 @@ const Menu = ({ setHowto }) => {
 
   const handleImgClick = async (avatar: string) => {
     const response: any = await axios.post(
-      `${process.env.REACT_APP_DEVELOPMENT === "true"
-        ? config.development_api
-        : config.production_api
-      }/update-info`,
+      `${config.api}/api/update-info`,
       {
         userId: userInfo.userId,
         updateData: { avatar },

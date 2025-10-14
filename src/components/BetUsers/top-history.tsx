@@ -23,10 +23,7 @@ const TopHistory = () => {
     try {
       setLoadingEffect(true);
       let response = await axios.get(
-        `${process.env.REACT_APP_DEVELOPMENT === "true"
-          ? config.development_api
-          : config.production_api
-        }/get-${date}-history`
+        `${config.api}/api/game/get-${date}-history`
       );
       if (response?.data?.status) {
         setHistory(response.data.data);

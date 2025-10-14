@@ -72,10 +72,7 @@ export default function PerfectLiveChat() {
 
   const getAllChats = async (flag: boolean) => {
     let response: any = await axios.post(
-      `${process.env.REACT_APP_DEVELOPMENT === "true"
-        ? config.development_api
-        : config.production_api
-      }/get-all-chat`
+      `${config.api}/api/chat/recent?limit=50`
     );
     setMsgData(response?.data?.data || []);
     if (flag === false) {
@@ -85,13 +82,11 @@ export default function PerfectLiveChat() {
 
   const handleLikeChat = async (chatItem: any) => {
     let response = await axios.post(
-      `${process.env.REACT_APP_DEVELOPMENT === "true"
-        ? config.development_api
-        : config.production_api
-      }/like-chat`,
+      `${config.api}/api/chat/like`,
       {
         chatID: chatItem._id,
         userId: userInfo.userId,
+        action: action,
       }
     );
     if (response?.data?.status) {
