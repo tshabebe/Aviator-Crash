@@ -420,7 +420,7 @@ export const Provider = ({ children }: any) => {
       // Update userInfo state with data from backend
       setUserInfo({
         ...userInfo,
-        balance: user.balance,
+        balance: Number(user.balance || 0),
         userType: user.userType,
         userName: user.userName,
         userId: user.userId || "",
@@ -595,13 +595,15 @@ export const Provider = ({ children }: any) => {
           type: "f",
           auto: state.userInfo.f?.auto || false,
         };
-        if (attrs.userInfo.balance - (state.userInfo.f?.betAmount || 0) < 0) {
+        const currentBalance = Number(attrs.userInfo?.balance || 0);
+        const betAmount = Number(state.userInfo.f?.betAmount || 0);
+        if (currentBalance - betAmount < 0) {
           toast.error("Your balance is not enough");
           betStatus.fbetState = false;
           betStatus.fbetted = false;
           return;
         }
-        attrs.userInfo.balance -= (state.userInfo.f?.betAmount || 0);
+        attrs.userInfo.balance = currentBalance - betAmount;
         socket.emit("playBet", data);
         betStatus.fbetState = false;
         betStatus.fbetted = true;
@@ -623,13 +625,15 @@ export const Provider = ({ children }: any) => {
           type: "s",
           auto: state.userInfo.s?.auto || false,
         };
-        if (attrs.userInfo.balance - (state.userInfo.s?.betAmount || 0) < 0) {
+        const currentBalance = Number(attrs.userInfo?.balance || 0);
+        const betAmount = Number(state.userInfo.s?.betAmount || 0);
+        if (currentBalance - betAmount < 0) {
           toast.error("Your balance is not enough");
           betStatus.sbetState = false;
           betStatus.sbetted = false;
           return;
         }
-        attrs.userInfo.balance -= (state.userInfo.s?.betAmount || 0);
+        attrs.userInfo.balance = currentBalance - betAmount;
         socket.emit("playBet", data);
         betStatus.sbetState = false;
         betStatus.sbetted = true;

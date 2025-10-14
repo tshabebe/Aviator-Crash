@@ -37,8 +37,8 @@ export default function Header() {
           </button>
           <div className="d-flex">
             <div className="balance">
-              <span className="amount">{Number(state.userInfo.balance).toFixed(2)} </span>
-              <span className="currency">&nbsp;INR</span>
+              <span className="amount">{Number(state.userInfo?.balance || 0).toFixed(2)} </span>
+              <span className="currency">&nbsp;{state.userInfo?.currency || "INR"}</span>
             </div>
           </div>
         </div>

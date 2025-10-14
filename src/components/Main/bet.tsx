@@ -67,8 +67,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 	const plus = (type: FieldNameType) => {
 		let value = state;
 		if (type === "betAmount") {
-			if (value.userInfo[index][type] + 0.1 > state.userInfo.balance) {
-				value.userInfo[index][type] = Math.round(state.userInfo.balance * 100) / 100
+			const currentBalance = Number(state.userInfo?.balance || 0);
+			if (value.userInfo[index][type] + 0.1 > currentBalance) {
+				value.userInfo[index][type] = Math.round(currentBalance * 100) / 100
 			} else {
 				if (value.userInfo[index][type] + 0.1 > maxBet) {
 					value.userInfo[index][type] = maxBet;
@@ -77,8 +78,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 				}
 			}
 		} else {
-			if (value[`${index + type}`] + 0.1 > state.userInfo.balance) {
-				value[`${index + type}`] = Math.round(state.userInfo.balance * 100) / 100
+			const currentBalance = Number(state.userInfo?.balance || 0);
+			if (value[`${index + type}`] + 0.1 > currentBalance) {
+				value[`${index + type}`] = Math.round(currentBalance * 100) / 100
 			} else {
 				value[`${index + type}`] = Number((Number(value[`${index + type}`]) + 0.1).toFixed(2))
 			}

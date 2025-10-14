@@ -32,12 +32,11 @@ export default function Header() {
           <div className="d-flex">
             <div className="balance">
               <span className="amount">
-                {Number(userInfo.balance).toFixed(2)}{" "}
+                {Number(userInfo?.balance || 0).toFixed(2)}{" "}
               </span>
               <span className="currency">
                 &nbsp;
-                {`${userInfo?.currency ? userInfo?.currency : "INR"
-                  }`}
+                {userInfo?.currency || "INR"}
               </span>
             </div>
             <div>

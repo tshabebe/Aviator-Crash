@@ -6,7 +6,6 @@ import Main from "./components/Main";
 import propeller from "./assets/images/propeller.png";
 
 import Context from "./context";
-import { ContactMeTelegram } from "./components/cTelegram";
 import Login from "./components/Login";
 import { useLocation, useNavigate } from "react-router-dom";
 // import "./App.scss";
@@ -29,7 +28,6 @@ function App() {
 
   return (
     <div className="main-container">
-      <ContactMeTelegram />
       {!unityLoading && (
         <div className="myloading">
           <div className="loading-container">
