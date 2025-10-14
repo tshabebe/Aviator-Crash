@@ -560,6 +560,25 @@ export const Provider = ({ children }: any) => {
     socket.on("success", (data) => {
       toast.success(data);
     });
+
+    // Chat event listeners
+    socket.on("chatHistory", (messages: any[]) => {
+      setMsgData(messages);
+    });
+
+    socket.on("newMessage", (message: any) => {
+      setMsgData((prev) => [...prev, message]);
+      setMsgReceived(true);
+    });
+
+    socket.on("updateMessage", (updatedMessage: any) => {
+      setMsgData((prev) =>
+        prev.map((msg: any) =>
+          msg._id === updatedMessage._id ? updatedMessage : msg
+        )
+      );
+    });
+
     return () => {
       socket.off("connect");
       socket.off("disconnect");
@@ -573,6 +592,9 @@ export const Provider = ({ children }: any) => {
       socket.off("recharge");
       socket.off("error");
       socket.off("success");
+      socket.off("chatHistory");
+      socket.off("newMessage");
+      socket.off("updateMessage");
     };
   }, [token]); // Reconnect when token changes
 
