@@ -417,6 +417,9 @@ export const Provider = ({ children }: any) => {
     });
 
     socket.on("myInfo", (user: any) => {
+      console.log("📨 Received myInfo from backend:", user);
+      console.log("💰 Balance received:", user.balance, "Type:", typeof user.balance);
+      
       // Update userInfo state with data from backend
       setUserInfo({
         ...userInfo,

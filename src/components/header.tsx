@@ -5,7 +5,10 @@ import refound from "../assets/images/refund.png";
 import "../index.scss";
 import Context from "../context";
 export default function Header() {
-  const { state } = React.useContext(Context)
+  const { state, userInfo } = React.useContext(Context)
+
+  console.log("🏦 Header - userInfo:", userInfo);
+  console.log("💰 Header - Balance:", userInfo?.balance, "Currency:", userInfo?.currency);
 
   const [howto, setHowto] = React.useState<'howto' | 'short' | 'more' | ''>("howto");
   const [, setFireSystem] = React.useState(false);
@@ -37,8 +40,8 @@ export default function Header() {
           </button>
           <div className="d-flex">
             <div className="balance">
-              <span className="amount">{Number(state.userInfo?.balance || 0).toFixed(2)} </span>
-              <span className="currency">&nbsp;{state.userInfo?.currency || "INR"}</span>
+              <span className="amount">{Number(userInfo?.balance || 0).toFixed(2)} </span>
+              <span className="currency">&nbsp;{userInfo?.currency || "INR"}</span>
             </div>
           </div>
         </div>
