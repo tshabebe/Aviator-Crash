@@ -36,7 +36,7 @@ export default function Header() {
               </span>
               <span className="currency">
                 &nbsp;
-                {`${userInfo?.currency ? userInfo?.currency : "INR"
+                {`${userInfo?.currency ? userInfo?.currency : "ETB"
                   }`}
               </span>
             </div>

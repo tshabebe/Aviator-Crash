@@ -213,7 +213,7 @@ export const init_userInfo = {
     platform: "desktop",
     token: '',
     Session_Token: '',
-    currency: "INR",
+    currency: "ETB",
     isSoundEnable: false,
     isMusicEnable: false,
     msgVisible: false,
