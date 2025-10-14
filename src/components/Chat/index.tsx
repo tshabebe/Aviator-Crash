@@ -80,7 +80,7 @@ export default function PerfectLiveChat() {
     }
   };
 
-  const handleLikeChat = async (chatItem: any) => {
+  const handleLikeChat = async (chatItem: any, action: 'like' | 'dislike' = 'like') => {
     let response = await axios.post(
       `${config.api}/api/chat/like`,
       {
