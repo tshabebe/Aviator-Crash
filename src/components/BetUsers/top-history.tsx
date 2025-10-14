@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { Oval } from "react-loader-spinner";
 import "./bets.scss";
-import config from "../../config.json";
+import config from "../../config";
 import Context from "../../context";
 import { displayName } from "../utils";
 
