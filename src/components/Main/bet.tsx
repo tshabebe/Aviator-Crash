@@ -273,6 +273,17 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 					</div>
 					<div className="buttons-block">
 						{betted ? GameState === "PLAYING" ?
+							userInfo[index]?.cashouted ?
+							<button className="btn-success">
+								<span>
+									<label>CASHED OUT</label>
+									<label className="amount">
+										<span>{Number(userInfo[index]?.cashAmount || 0).toFixed(2)}</span>
+										<span className="currency">{userInfo.currency || "ETB"}</span>
+									</label>
+								</span>
+							</button>
+							:
 							<button className="btn-waiting" onClick={() => { callCashOut(currentTarget, index) }}>
 								<span>
 									<label>CASHOUT</label>

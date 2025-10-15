@@ -419,13 +419,28 @@ export const Provider = ({ children }: any) => {
       setBettedUsers(bettedUsers);
     });
 
-    socket.on("myBetState", (user: UserType) => {
-      const attrs = userBetState;
-      attrs.fbetState = false;
-      attrs.fbetted = user.f?.betted || false;
-      attrs.sbetState = false;
-      attrs.sbetted = user.s?.betted || false;
-      setUserBetState(attrs);
+    socket.on("myBetState", (data: any) => {
+      // Don't modify fbetState/sbetState here - they represent "waiting to bet next round"
+      // Only update fbetted/sbetted which represent "has active bet"
+      setUserBetState(prev => ({
+        ...prev,
+        fbetted: data.f?.betted || false,
+        sbetted: data.s?.betted || false,
+      }));
+      
+      // Update user info with bet data (cashouted status, cashAmount, etc)
+      if (data.f || data.s) {
+        setUserInfo(prev => ({
+          ...prev,
+          f: data.f ? { ...prev.f, ...data.f } : prev.f,
+          s: data.s ? { ...prev.s, ...data.s } : prev.s,
+        }));
+      }
+      
+      // Update balance if provided by backend
+      if (data.balance !== undefined) {
+        setUserInfo(prev => ({ ...prev, balance: data.balance }));
+      }
     });
 
     socket.on("myInfo", (user: any) => {
@@ -633,17 +648,17 @@ export const Provider = ({ children }: any) => {
           type: "f",
           auto: state.userInfo.f?.auto || false,
         };
-        if (attrs.userInfo.balance - (state.userInfo.f?.betAmount || 0) < 0) {
+        if (userInfo.balance < (state.userInfo.f?.betAmount || 0)) {
           toast.error("Your balance is not enough");
           betStatus.fbetState = false;
           betStatus.fbetted = false;
           return;
         }
-        attrs.userInfo.balance -= (state.userInfo.f?.betAmount || 0);
+        // Balance will be deducted on backend and synced via myBetState event
         socket.emit("playBet", data);
         betStatus.fbetState = false;
         betStatus.fbetted = true;
-        // update(attrs);
+        update(attrs);
         setUserBetState(betStatus);
       }
       if (betStatus.sbetState) {
@@ -661,17 +676,17 @@ export const Provider = ({ children }: any) => {
           type: "s",
           auto: state.userInfo.s?.auto || false,
         };
-        if (attrs.userInfo.balance - (state.userInfo.s?.betAmount || 0) < 0) {
+        if (userInfo.balance < (state.userInfo.s?.betAmount || 0)) {
           toast.error("Your balance is not enough");
           betStatus.sbetState = false;
           betStatus.sbetted = false;
           return;
         }
-        attrs.userInfo.balance -= (state.userInfo.s?.betAmount || 0);
+        // Balance will be deducted on backend and synced via myBetState event
         socket.emit("playBet", data);
         betStatus.sbetState = false;
         betStatus.sbetted = true;
-        // update(attrs);
+        update(attrs);
         setUserBetState(betStatus);
       }
     }
