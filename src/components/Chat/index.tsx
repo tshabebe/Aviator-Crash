@@ -38,12 +38,14 @@ export default function PerfectLiveChat() {
     scrollToLastFruit();
   }, [msgTab, msgReceived]);
 
+  // Note: Real-time chat listeners are handled in context.tsx
+  // No need to duplicate them here
+
   const handleSendMsg = () => {
     if (msgContent.trim() !== '') {
       socket.emit("sendMsg", { msgType: "normal", msgContent, userInfo: userInfo });
       setMsgContent("");
     } else {
-      console.log("message empty");
     }
     setEmojiPicker(false);
   };
@@ -61,7 +63,6 @@ export default function PerfectLiveChat() {
       socket.emit("sendMsg", { msgType: "gif", msgContent: gif.url, userInfo: userInfo });
       setMsgContent("");
     } else {
-      console.log("message empty");
     }
     setGifPicker(false);
   };
@@ -114,9 +115,15 @@ export default function PerfectLiveChat() {
   };
 
   useEffect(() => {
+    // Load chat history when component mounts
     getAllChats(false);
+    
+    // Also request chat history via socket for real-time updates
+    if (socket && msgTab) {
+      socket.emit('getChatHistory', { limit: 50 });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [msgTab]);
 
   // Don't render if msgTab is false
   if (!msgTab) {

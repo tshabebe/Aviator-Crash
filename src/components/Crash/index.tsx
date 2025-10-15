@@ -13,14 +13,12 @@ export default function WebGLStarter() {
 	
 	// Debug logging
 	React.useEffect(() => {
-		console.log("Crash component - GameState:", GameState, "currentNum:", currentNum, "type:", typeof currentNum);
 	}, [GameState, currentNum]);
 	
 	const [target, setTarget] = React.useState(1);
 	
 	// Debug target changes
 	React.useEffect(() => {
-		console.log("Target state changed to:", target, "type:", typeof target);
 	}, [target]);
 	const [waiting, setWaiting] = React.useState(0);
 	const [flag, setFlag] = React.useState(1);
@@ -31,7 +29,6 @@ export default function WebGLStarter() {
 			setFlag(2);
 			// Use backend's currentNum instead of local calculation
 			const backendMultiplier = parseFloat(currentNum.toString());
-			console.log("PLAYING - Using backend currentNum:", currentNum, "parsed:", backendMultiplier);
 			
 			if (!isNaN(backendMultiplier) && backendMultiplier >= 1.0 && backendMultiplier <= 1000.0) {
 				setTarget(backendMultiplier);

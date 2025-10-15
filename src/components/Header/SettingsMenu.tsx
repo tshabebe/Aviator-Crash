@@ -112,7 +112,7 @@ const Menu = ({ setHowto }) => {
       }
       try {
         await axios.post(
-          `${config.api}/api/update-info`,
+          `${config.api}/update-info`,
           {
             userId: userInfo.userId,
             updateData: { isSoundEnable: checked },
@@ -124,7 +124,6 @@ const Menu = ({ setHowto }) => {
         },
         );
       } catch (error) {
-        console.log("Failed to update Sound state");
       }
     },
     // eslint-disable-next-line
@@ -135,7 +134,7 @@ const Menu = ({ setHowto }) => {
     async (checked) => {
       try {
         await axios.post(
-          `${config.api}/api/update-info`,
+          `${config.api}/update-info`,
           {
             userId: userInfo.userId,
             updateData: { isMusicEnable: checked },
@@ -147,7 +146,6 @@ const Menu = ({ setHowto }) => {
         },
         );
       } catch (error) {
-        console.log("Failed to update music state");
       }
     },
     // eslint-disable-next-line
@@ -169,7 +167,7 @@ const Menu = ({ setHowto }) => {
 
   const handleImgClick = async (avatar: string) => {
     const response: any = await axios.post(
-      `${config.api}/api/update-info`,
+      `${config.api}/update-info`,
       {
         userId: userInfo.userId,
         updateData: { avatar },
@@ -180,8 +178,8 @@ const Menu = ({ setHowto }) => {
       updateUserInfo({
         ...userInfo,
         avatar,
-      },
-      );
+      });
+    } else {
     }
   };
 

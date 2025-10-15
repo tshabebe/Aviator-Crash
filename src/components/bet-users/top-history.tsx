@@ -19,10 +19,8 @@ const TopHistory = () => {
           setLoadingEffect(false);
         }, 500);
       } else {
-        console.log(`HTTP error! status: ${response.status}`);
       }
     } catch (error: any) {
-      console.log("callDate", error);
     }
   };
   useEffect(() => {

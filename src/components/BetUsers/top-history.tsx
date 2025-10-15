@@ -32,7 +32,6 @@ const TopHistory = () => {
         }, 500);
       }
     } catch (error: any) {
-      console.log("callDate", error);
     }
   };
   useEffect(() => {

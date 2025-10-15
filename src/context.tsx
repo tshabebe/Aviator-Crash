@@ -352,19 +352,15 @@ export const Provider = ({ children }: any) => {
   
   // Stub functions for compatibility
   const handleGetSeed = () => {
-    console.log("handleGetSeed called");
   };
   
   const handleGetSeedOfRound = (roundId: Number) => {
-    console.log("handleGetSeedOfRound called with:", roundId);
   };
   
   const handleChangeUserSeed = (seed: Partial<string>) => {
-    console.log("handleChangeUserSeed called with:", seed);
   };
   
   const handlePlaceBet = () => {
-    console.log("handlePlaceBet called");
   };
   
   const toggleMsgTab = () => {
@@ -412,12 +408,10 @@ export const Provider = ({ children }: any) => {
   React.useEffect(() => {
     // Only connect if we have a token
     if (token) {
-      console.log("Connecting to backend with token...");
       socket.connect();
     }
 
     socket.on("connect", () => {
-      console.log("✅ Socket connected, joining room...");
       socket.emit("enterRoom", { token });
     });
 
@@ -597,6 +591,10 @@ export const Provider = ({ children }: any) => {
       );
     });
 
+    socket.on("chatHistory", (messages: any[]) => {
+      setMsgData(messages);
+    });
+
     return () => {
       socket.off("connect");
       socket.off("disconnect");
@@ -700,7 +698,6 @@ export const Provider = ({ children }: any) => {
         console.error("Error:", response.statusText);
       }
     } catch (error) {
-      console.log("getMyBets", error);
     }
   };
 
