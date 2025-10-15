@@ -1,6 +1,13 @@
 import { UnityContext } from "react-unity-webgl";
 import { Socket } from "socket.io-client";
 
+// Unity context definition (shared with context.tsx)
+const unityContext = new UnityContext({
+  loaderUrl: "unity/AirCrash.loader.js",
+  dataUrl: "unity/AirCrash.data.unityweb",
+  frameworkUrl: "unity/AirCrash.framework.js.unityweb",
+  codeUrl: "unity/AirCrash.wasm.unityweb",
+});
 
 export interface BettedUserType {
     name: string;
@@ -171,12 +178,6 @@ export interface MsgUserType {
     disLikesIDs: string[];
 }
 
-export const unityContext = new UnityContext({
-    loaderUrl: "unity/WebGL.loader.js",
-    dataUrl: "unity/WebGL.data.unityweb",
-    frameworkUrl: "unity/WebGL.framework.js.unityweb",
-    codeUrl: "unity/WebGL.wasm.unityweb",
-});
 
 export const init_state = {
     myBets: [],

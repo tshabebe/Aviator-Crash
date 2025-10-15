@@ -71,26 +71,45 @@ export default function PerfectLiveChat() {
   };
 
   const getAllChats = async (flag: boolean) => {
-    let response: any = await axios.post(
-      `${config.api}/api/chat/recent?limit=50`
-    );
-    setMsgData(response?.data?.data || []);
-    if (flag === false) {
-      setMsgReceived(!msgReceived);
+    try {
+      const token = localStorage.getItem("token");
+      let response: any = await axios.get(
+        `${config.api}/chat/recent?limit=50`,
+        {
+          headers: {
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+        }
+      );
+      setMsgData(response?.data?.data || []);
+      if (flag === false) {
+        setMsgReceived(!msgReceived);
+      }
+    } catch (error) {
+      console.error('Error fetching chat messages:', error);
     }
   };
 
   const handleLikeChat = async (chatItem: any, action: 'like' | 'dislike' = 'like') => {
-    let response = await axios.post(
-      `${config.api}/api/chat/like`,
-      {
-        chatID: chatItem._id,
-        userId: userInfo.userId,
-        action: action,
+    try {
+      const token = localStorage.getItem("token");
+      let response = await axios.post(
+        `${config.api}/chat/like`,
+        {
+          chatID: chatItem._id,
+          action: action,
+        },
+        {
+          headers: {
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+        }
+      );
+      if (response?.data?.success) {
+        getAllChats(true);
       }
-    );
-    if (response?.data?.status) {
-      getAllChats(true);
+    } catch (error) {
+      console.error('Error liking message:', error);
     }
   };
 
@@ -167,7 +186,7 @@ export default function PerfectLiveChat() {
                     <div className="likes-block">
                       <div
                         className="btn-block"
-                        onClick={() => handleLikeChat(item)}
+                        onClick={() => handleLikeChat(item, 'like')}
                       >
                         {item?.likesIDs?.length > 0 && (
                           <div className="font-weight-bold likes-number ng-star-inserted">
@@ -175,6 +194,17 @@ export default function PerfectLiveChat() {
                           </div>
                         )}
                         <div className={`btn-like ${active && "active"}`}></div>
+                      </div>
+                      <div
+                        className="btn-block"
+                        onClick={() => handleLikeChat(item, 'dislike')}
+                      >
+                        {item?.disLikesIDs?.length > 0 && (
+                          <div className="font-weight-bold dislikes-number ng-star-inserted">
+                            {` ${item.disLikesIDs.length} `}
+                          </div>
+                        )}
+                        <div className={`btn-dislike ${active && "active"}`}></div>
                       </div>
                     </div>
                   </div>

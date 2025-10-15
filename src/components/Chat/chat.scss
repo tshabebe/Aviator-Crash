@@ -433,6 +433,10 @@
     position: relative;
   }
 
+  .dislikes-number {
+    position: relative;
+  }
+
   .btn-like {
     height: 100%;
     width: 12px;
@@ -454,8 +458,31 @@
     background-image: var(--urlImgLikeH);
   }
 
+  .btn-dislike {
+    height: 100%;
+    width: 12px;
+    padding: 0;
+    margin: 0 2px;
+    cursor: pointer;
+    background-image: var(--urlImgLike);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    transform: rotate(180deg);
+  }
+  .btn-dislike.active {
+    background-image: var(--urlImgLikeH);
+  }
+  .btn-dislike:active {
+    transform: rotate(180deg) translateY(-1px);
+    background-image: var(--urlImgLikeH);
+  }
+
   @media (pointer: fine) and (hover: hover) {
     .btn-like:hover {
+      background-image: var(--urlImgLikeH);
+    }
+    .btn-dislike:hover {
       background-image: var(--urlImgLikeH);
     }
   }

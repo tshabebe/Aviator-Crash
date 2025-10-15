@@ -371,24 +371,42 @@ export const Provider = ({ children }: any) => {
     setMsgTab(!msgTab);
   };
   React.useEffect(function () {
-    unityContext.on("GameController", function (message) {
-      if (message === "Ready") {
-        setUnity({
-          currentProgress: 100,
-          unityLoading: true,
-          unityState: true,
-        });
+    // Add error handling for Unity context
+    try {
+      unityContext.on("GameController", function (message) {
+        if (message === "Ready") {
+          setUnity({
+            currentProgress: 100,
+            unityLoading: true,
+            unityState: true,
+          });
+        }
+      });
+      
+      unityContext.on("progress", (progression) => {
+        const currentProgress = progression * 100;
+        if (progression === 1) {
+          setUnity({ currentProgress, unityLoading: true, unityState: true });
+        } else {
+          setUnity({ currentProgress, unityLoading: false, unityState: false });
+        }
+      });
+
+      // Add error event listener
+      unityContext.on("error", (error) => {
+        console.error("Unity WebGL error:", error);
+      });
+    } catch (error) {
+      console.error("Error setting up Unity event listeners:", error);
+    }
+    
+    return () => {
+      try {
+        unityContext.removeAllEventListeners();
+      } catch (error) {
+        console.error("Error removing Unity event listeners:", error);
       }
-    });
-    unityContext.on("progress", (progression) => {
-      const currentProgress = progression * 100;
-      if (progression === 1) {
-        setUnity({ currentProgress, unityLoading: true, unityState: true });
-      } else {
-        setUnity({ currentProgress, unityLoading: false, unityState: false });
-      }
-    });
-    return () => unityContext.removeAllEventListeners();
+    };
   }, []);
 
   React.useEffect(() => {
@@ -663,12 +681,14 @@ export const Provider = ({ children }: any) => {
 
   const getMyBets = async () => {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(`${config.api}/my-info`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
-        body: JSON.stringify({ name: state.userInfo.userName }),
+        body: JSON.stringify({}),
       });
 
       if (response.ok) {

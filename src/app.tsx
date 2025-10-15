@@ -18,7 +18,16 @@ function App() {
   const navigate = useNavigate();
   const token = new URLSearchParams(location.search).get("cert");
 
+  // Store token in localStorage if it exists in URL but not in localStorage
+  React.useEffect(() => {
+    if (token && !localStorage.getItem('token')) {
+      localStorage.setItem('token', token);
+    }
+  }, [token]);
+
   const handleLogin = (newToken: string) => {
+    // Store token in localStorage for API calls
+    localStorage.setItem('token', newToken);
     navigate(`/?cert=${newToken}`);
   };
 

@@ -4,6 +4,7 @@ import logo from "../assets/images/logo.svg";
 import refound from "../assets/images/refund.png";
 import "../index.scss";
 import Context from "../context";
+import Menu from "./Header/SettingsMenu";
 export default function Header() {
   const { state, userInfo } = React.useContext(Context)
 
@@ -40,6 +41,7 @@ export default function Header() {
               <span className="amount">{Number(userInfo.balance).toFixed(2)} </span>
               <span className="currency">&nbsp;{userInfo.currency || "ETB"}</span>
             </div>
+            <Menu setHowto={setHowto} />
           </div>
         </div>
       </div>

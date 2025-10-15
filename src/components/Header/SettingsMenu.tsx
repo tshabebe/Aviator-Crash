@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { PiListBold } from "react-icons/pi";
 import { GiServerRack } from "react-icons/gi";
+import "./header.scss";
 
 import {
   HiOutlineSpeakerWave,
