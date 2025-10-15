@@ -11,7 +11,7 @@ const TopHistory = () => {
   const callDate = async (date: string) => {
     try {
       setLoadingEffect(true);
-      const response = await fetch(`${config.api}/get-${date}-history`);
+      const response = await fetch(`${config.api}/game/get-${date}-history`);
       if (response.ok) {
         const data = await response.json();
         setHistory(data.data);
@@ -96,7 +96,7 @@ const TopHistory = () => {
                           <span></span>
                         </div>
                         <span className="amount">
-                          {item.betAmount.toFixed(2)}
+                          {item.betAmount ? Number(item.betAmount).toFixed(2) : "0.00"}
                         </span>
                       </div>
                       <div className="flex">
@@ -104,7 +104,7 @@ const TopHistory = () => {
                           <span>Cashed out:&nbsp;</span>
                         </div>
                         <span className="amount cashout">
-                          {item.cashoutAt.toFixed(2)}x
+                          {item.cashoutAt ? Number(item.cashoutAt).toFixed(2) : "0.00"}x
                         </span>
                       </div>
                       <div className="flex">
@@ -112,7 +112,7 @@ const TopHistory = () => {
                           <span>Win, ETB: &nbsp;</span>
                         </div>
                         <span className="amount">
-                          {(item.cashoutAt * item.betAmount).toFixed(2)}
+                          {item.cashoutAt && item.betAmount ? (Number(item.cashoutAt) * Number(item.betAmount)).toFixed(2) : "0.00"}
                         </span>
                       </div>
                     </div>

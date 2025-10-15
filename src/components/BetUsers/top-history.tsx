@@ -23,7 +23,7 @@ const TopHistory = () => {
     try {
       setLoadingEffect(true);
       let response = await axios.get(
-        `${config.api}/api/game/get-${date}-history`
+        `${config.api}/game/get-${date}-history`
       );
       if (response?.data?.status) {
         setHistory(response.data.data);
@@ -119,7 +119,7 @@ const TopHistory = () => {
                           <span></span>
                         </div>
                         <span className="amount">
-                          {item.betAmount.toFixed(2)}
+                          {item.betAmount ? Number(item.betAmount).toFixed(2) : "0.00"}
                         </span>
                       </div>
                       <div className="flex">
@@ -134,10 +134,10 @@ const TopHistory = () => {
                                 : "big"
                             }`}
                         >
-                          {Number(item.cashoutAt).toFixed(2)}x
+                          {item.cashoutAt ? Number(item.cashoutAt).toFixed(2) : "0.00"}x
                         </span>
                         {/* <span className="amount cashout">
-                          {item.cashoutAt.toFixed(2)}x
+                          {item.cashoutAt ? Number(item.cashoutAt).toFixed(2) : "0.00"}x
                         </span> */}
                       </div>
                       <div className="flex">
@@ -152,7 +152,7 @@ const TopHistory = () => {
                           </span>
                         </div>
                         <span className="amount">
-                          {(item.cashoutAt * item.betAmount).toFixed(2)}
+                          {item.cashoutAt && item.betAmount ? (Number(item.cashoutAt) * Number(item.betAmount)).toFixed(2) : "0.00"}
                         </span>
                       </div>
                     </div>

@@ -17,7 +17,7 @@ export default function Main() {
             <Crash />
           </div>
           <div className="dom-container">
-            <div className="fun-mode">FUN MODE</div>
+            <div className="fun-mode">NEXT GAMES</div>
           </div>
         </div>
       </div>

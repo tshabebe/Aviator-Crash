@@ -118,6 +118,11 @@ export default function PerfectLiveChat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Don't render if msgTab is false
+  if (!msgTab) {
+    return null;
+  }
+
   return (
     <div className="chat-info-board">
       <div className="chat-block">
