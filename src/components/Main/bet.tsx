@@ -27,6 +27,14 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 	} = context;
 	const [cashOut, setCashOut] = React.useState(2);
 
+	// Sync cashOut local state with actual target from state
+	useEffect(() => {
+		const target = index === 'f' ? state.userInfo.f?.target : state.userInfo.s?.target;
+		if (target && target !== cashOut) {
+			setCashOut(target);
+		}
+	}, [state.userInfo.f?.target, state.userInfo.s?.target, index]);
+
 	const auto = index === 'f' ? (state.userInfo.f?.auto ?? false) : (state.userInfo.s?.auto ?? false)
 	const betted = index === 'f' ? fbetted : sbetted
 	const deState = index === 'f' ? state.fdeState : state.sdeState
@@ -150,6 +158,17 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 	const onAutoBetClick = (_betState: boolean) => {
 		let attrs = state;
 		attrs.userInfo[index].auto = _betState;
+		
+		// Enable auto cashout when enabling autobet
+		if (_betState) {
+			attrs[`${index}autoCashoutState`] = true;
+			attrs.userInfo[index].autocashout = true;
+			// Ensure target is set (use current cashOut value or default to 2)
+			if (!attrs.userInfo[index].target || attrs.userInfo[index].target < 1.01) {
+				attrs.userInfo[index].target = cashOut || 2;
+			}
+		}
+		
 		update(attrs);
 
 		updateUserBetState({ [`${index}betState`]: _betState });
@@ -180,14 +199,8 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 		}
 	}
 	useEffect(() => {
-		if (betted) {
-			if (autoCashoutState) {
-				if (cashOut < currentSecondNum) {
-					updateUserBetState({ [`${index}betted`]: false });
-					callCashOut(cashOut, index);
-				}
-			}
-		}
+		// Auto-cashout is handled by the backend, no need for frontend logic
+		// Backend checks target <= currentMultiplier and processes automatically
 	}, [currentSecondNum, fbetted, sbetted, state.fautoCashoutState, state.sautoCashoutState, state.userInfo.f?.target, state.userInfo.s?.target])
 
 	useEffect(() => {
