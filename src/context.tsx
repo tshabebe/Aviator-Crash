@@ -530,6 +530,9 @@ export const Provider = ({ children }: any) => {
               betStatus.fbetState = true;
             }
           }
+        } else {
+          // Clear fbetState for manual bets when round ends
+          betStatus.fbetState = false;
         }
       }
       if (!user.s?.betted) {
@@ -562,6 +565,9 @@ export const Provider = ({ children }: any) => {
               betStatus.sbetState = true;
             }
           }
+        } else {
+          // Clear sbetState for manual bets when round ends
+          betStatus.sbetState = false;
         }
       }
       update(attrs);
