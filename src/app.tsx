@@ -5,6 +5,9 @@ import Main from "./components/Main";
 import Chat from "./components/Chat";
 // import { useCrashContext } from "./components/Main/context";
 import propeller from "./assets/images/propeller.png";
+import mainAudio from "./assets/audio/main.wav";
+import takeOffAudio from "./assets/audio/take_off.mp3";
+import flewAwayAudio from "./assets/audio/flew_away.mp3";
 
 import Context from "./context";
 import Login from "./components/Login";
@@ -38,6 +41,17 @@ function App() {
 
   return (
     <div className="main-container">
+      {/* Audio elements */}
+      <audio id="mainAudio" loop>
+        <source src={mainAudio} type="audio/wav" />
+      </audio>
+      <audio id="takeOffAudio">
+        <source src={takeOffAudio} type="audio/mpeg" />
+      </audio>
+      <audio id="flewAwayAudio">
+        <source src={flewAwayAudio} type="audio/mpeg" />
+      </audio>
+
       {!unityLoading && (
         <div className="myloading">
           <div className="loading-container">

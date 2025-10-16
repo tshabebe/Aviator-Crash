@@ -107,8 +107,8 @@ const Menu = ({ setHowto }) => {
       let takeOffAudioEle: any = document.getElementById("takeOffAudio");
       let flewAwayAudioEle: any = document.getElementById("flewAwayAudio");
       if (checked === false) {
-        takeOffAudioEle.pause();
-        flewAwayAudioEle.pause();
+        takeOffAudioEle?.pause();
+        flewAwayAudioEle?.pause();
       }
       try {
         await axios.post(
@@ -132,6 +132,15 @@ const Menu = ({ setHowto }) => {
 
   const handleToggleMusic = useCallback(
     async (checked) => {
+      let mainAudioEle: any = document.getElementById("mainAudio");
+      if (checked === false) {
+        mainAudioEle?.pause();
+      } else {
+        if (mainAudioEle) {
+          mainAudioEle.volume = 0.2;
+          mainAudioEle.play();
+        }
+      }
       try {
         await axios.post(
           `${config.api}/update-info`,
@@ -291,15 +300,12 @@ const Menu = ({ setHowto }) => {
                     <span className="setting-title-text">Sound</span>
                   </div>
                   <div className="aviator-main-audio">
-                    <label className="aviator-switch">
-                      <input
-                        className="aviator-input"
-                        type="checkbox"
-                        checked={userInfo.isSoundEnable || false}
-                        onChange={(e) => handleToggleSound(e.target.checked)}
-                      />
-                      <span className="aviator-slider round"></span>
-                    </label>
+                    <div 
+                      className={`input-switch ${userInfo.isSoundEnable ? "" : "off"}`}
+                      onClick={() => handleToggleSound(!userInfo.isSoundEnable)}
+                    >
+                      <span className="oval"></span>
+                    </div>
                   </div>
                 </div>
                 <div className="setting-dropdown-item">
@@ -308,15 +314,12 @@ const Menu = ({ setHowto }) => {
                     <span className="setting-title-text">Music</span>
                   </div>
                   <div className="aviator-main-audio">
-                    <label className="aviator-switch">
-                      <input
-                        className="aviator-input"
-                        type="checkbox"
-                        checked={userInfo.isMusicEnable || false}
-                        onChange={(e) => handleToggleMusic(e.target.checked)}
-                      />
-                      <span className="aviator-slider round"></span>
-                    </label>
+                    <div 
+                      className={`input-switch ${userInfo.isMusicEnable ? "" : "off"}`}
+                      onClick={() => handleToggleMusic(!userInfo.isMusicEnable)}
+                    >
+                      <span className="oval"></span>
+                    </div>
                   </div>
                 </div>
                 <div className="devider"></div>

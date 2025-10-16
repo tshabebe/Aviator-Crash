@@ -7,9 +7,10 @@ import propeller from "../../assets/images/propeller.png"
 import Context from "../../context";
 
 let currentFlag = 0;
+let lastGameState = "";
 
 export default function WebGLStarter() {
-	const { GameState, currentNum, time, unityState, myUnityContext,setCurrentTarget } = React.useContext(Context)
+	const { GameState, currentNum, time, unityState, myUnityContext, setCurrentTarget, userInfo } = React.useContext(Context)
 	
 	// Debug logging
 	React.useEffect(() => {
@@ -27,6 +28,16 @@ export default function WebGLStarter() {
 		let myInterval;
 		if (GameState === "PLAYING") {
 			setFlag(2);
+			
+			// Play takeoff sound ONCE when transitioning to PLAYING
+			if (userInfo?.isSoundEnable && lastGameState !== "PLAYING") {
+				const takeOffAudio = document.getElementById("takeOffAudio") as HTMLAudioElement;
+				if (takeOffAudio) {
+					takeOffAudio.currentTime = 0;
+					takeOffAudio.play().catch(err => console.log("Audio play prevented:", err));
+				}
+			}
+			
 			// Use backend's currentNum instead of local calculation
 			const backendMultiplier = parseFloat(currentNum.toString());
 			
@@ -47,6 +58,16 @@ export default function WebGLStarter() {
 			}
 		} else if (GameState === "GAMEEND") {
 			setFlag(5);
+			
+			// Play flew away sound ONCE when transitioning to GAMEEND
+			if (userInfo?.isSoundEnable && lastGameState !== "GAMEEND") {
+				const flewAwayAudio = document.getElementById("flewAwayAudio") as HTMLAudioElement;
+				if (flewAwayAudio) {
+					flewAwayAudio.currentTime = 0;
+					flewAwayAudio.play().catch(err => console.log("Audio play prevented:", err));
+				}
+			}
+			
 			// Parse and validate the currentNum from backend
 			let formattedNum = 1.0;
 			try {
@@ -70,6 +91,10 @@ export default function WebGLStarter() {
 				setWaiting(Date.now() - startWaiting);
 			}, 20);
 		}
+		
+		// Update last game state
+		lastGameState = GameState;
+		
 		return () => clearInterval(myInterval);
 	}, [GameState, unityState, currentNum]) // Added currentNum to dependencies
 
