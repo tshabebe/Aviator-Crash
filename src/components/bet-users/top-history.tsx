@@ -85,7 +85,7 @@ const TopHistory = () => {
                         alt="avatar"
                         src="/avatars/av-5.png"
                       ></img>
-                      <div className="username">d***3</div>
+                      <div className="username">{item.userName || "Anonymous"}</div>
                     </div>
                     <div className="score">
                       <div className="flex">
@@ -101,7 +101,7 @@ const TopHistory = () => {
                         <div className="">
                           <span>Cashed out:&nbsp;</span>
                         </div>
-                        <span className="amount cashout">
+                        <span className={`amount cashout ${Number(item.cashoutAt) >= 2 ? 'green' : 'red'}`}>
                           {item.cashoutAt ? Number(item.cashoutAt).toFixed(2) : "0.00"}x
                         </span>
                       </div>
@@ -110,7 +110,7 @@ const TopHistory = () => {
                           <span>Win, ETB: &nbsp;</span>
                         </div>
                         <span className="amount">
-                          {item.cashoutAt && item.betAmount ? (Number(item.cashoutAt) * Number(item.betAmount)).toFixed(2) : "0.00"}
+                          {item.cashAmount ? Number(item.cashAmount).toFixed(2) : "0.00"}
                         </span>
                       </div>
                     </div>
