@@ -74,11 +74,13 @@ export default function PerfectLiveChat() {
   const getAllChats = async (flag: boolean) => {
     try {
       const token = localStorage.getItem("token");
+      const tenantId = typeof window !== 'undefined' ? localStorage.getItem('tenantId') : null;
       let response: any = await axios.get(
         `${config.api}/chat/recent?limit=50`,
         {
           headers: {
             ...(token && { Authorization: `Bearer ${token}` }),
+            ...(tenantId && { 'x-tenant-id': tenantId }),
           },
         }
       );
@@ -94,6 +96,7 @@ export default function PerfectLiveChat() {
   const handleLikeChat = async (chatItem: any, action: 'like' | 'dislike' = 'like') => {
     try {
       const token = localStorage.getItem("token");
+      const tenantId = typeof window !== 'undefined' ? localStorage.getItem('tenantId') : null;
       let response = await axios.post(
         `${config.api}/chat/like`,
         {
@@ -103,6 +106,7 @@ export default function PerfectLiveChat() {
         {
           headers: {
             ...(token && { Authorization: `Bearer ${token}` }),
+            ...(tenantId && { 'x-tenant-id': tenantId }),
           },
         }
       );

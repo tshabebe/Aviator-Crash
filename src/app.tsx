@@ -10,16 +10,14 @@ import takeOffAudio from "./assets/audio/take_off.mp3";
 import flewAwayAudio from "./assets/audio/flew_away.mp3";
 
 import Context from "./context";
-import Login from "./components/Login";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 // import "./App.scss";
 
 function App() {
   const { unityLoading, currentProgress, rechargeState } =
     React.useContext(Context);
   const location = useLocation();
-  const navigate = useNavigate();
-  const token = new URLSearchParams(location.search).get("cert");
+  const token = new URLSearchParams(location.search).get("token");
 
   // Store token in localStorage if it exists in URL but not in localStorage
   React.useEffect(() => {
@@ -28,16 +26,7 @@ function App() {
     }
   }, [token]);
 
-  const handleLogin = (newToken: string) => {
-    // Store token in localStorage for API calls
-    localStorage.setItem('token', newToken);
-    navigate(`/?cert=${newToken}`);
-  };
-
-  // Show login if no token
-  if (!token) {
-    return <Login onLogin={handleLogin} />;
-  }
+  // Removed login flow; app always renders
 
   return (
     <div className="main-container">

@@ -5,6 +5,7 @@ import { useLocation } from "react-router";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 import { config } from "./config";
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface BettedUserType {
   name: string;
@@ -241,10 +242,10 @@ const init_state = {
 const init_userInfo: UserType = {
   balance: 0,
   userType: false,
-  img: "/avatars/avatar1.png",
+  img: "/avatars/av-5.png",
   userName: "",
   userId: "",
-  avatar: "/avatars/avatar1.png",
+  avatar: "/avatars/av-5.png",
   currency: "ETB",
   token: "",
   Session_Token: "",
@@ -291,11 +292,15 @@ let fDecreaseAmount = 0;
 let sIncreaseAmount = 0;
 let sDecreaseAmount = 0;
 
-let newState;
-let newBetState;
+let newState: ContextDataType;
+let newBetState: UserStatusType;
 
 export const Provider = ({ children }: any) => {
-  const token = new URLSearchParams(useLocation().search).get("cert");
+  const queryClient = useQueryClient();
+  const token = new URLSearchParams(useLocation().search).get("token");
+  const tenantFromUrl = new URLSearchParams(useLocation().search).get("tenantId");
+  const storedTenant = typeof window !== 'undefined' ? localStorage.getItem('tenantId') : null;
+  const tenantId = tenantFromUrl || storedTenant || undefined;
   const [state, setState] = React.useState<ContextDataType>(init_state);
 
   newState = state;
@@ -408,11 +413,25 @@ export const Provider = ({ children }: any) => {
   React.useEffect(() => {
     // Only connect if we have a token
     if (token) {
+      // Persist token and tenantId
+      try {
+        // Always overwrite with URL token to avoid stale Authorization header
+        localStorage.setItem('token', token);
+        if (tenantFromUrl) localStorage.setItem('tenantId', tenantFromUrl);
+      } catch {}
+
+      // Attach tenantId to socket auth and query
+      if (tenantId) {
+        (socket as any).auth = { ...(socket as any).auth, tenantId };
+        try {
+          (socket.io as any).opts = { ...(socket.io as any).opts, query: { ...(socket.io as any).opts?.query, tenantId } };
+        } catch {}
+      }
       socket.connect();
     }
 
     socket.on("connect", () => {
-      socket.emit("enterRoom", { token });
+      socket.emit("enterRoom", { token, tenantId });
     });
 
     socket.on("bettedUserInfo", (bettedUsers: BettedUserType[]) => {
@@ -440,20 +459,29 @@ export const Provider = ({ children }: any) => {
       // Update balance if provided by backend
       if (data.balance !== undefined) {
         setUserInfo(prev => ({ ...prev, balance: data.balance }));
+        try {
+          queryClient.setQueryData(['balance'], { balance: data.balance, currency: userInfo.currency || 'ETB' });
+          queryClient.invalidateQueries({ queryKey: ['balance'] });
+        } catch {}
       }
     });
 
     socket.on("myInfo", (user: any) => {
       // Update userInfo state with data from backend
+      try {
+        console.log('🎮 Aviator join info:', { token: user.token, tenantId: user.tenantId });
+      } catch {}
       setUserInfo({
         ...userInfo,
         balance: user.balance,
         userType: user.userType,
         userName: user.userName,
         userId: user.userId || "",
-        avatar: user.avatar || "/avatars/avatar1.png",
+        avatar: user.avatar || "/avatars/av-5.png",
         currency: user.currency || "ETB",
         token: user.token || token || "",
+        // Persist tenantId from server if provided
+        ...(user.tenantId ? (() => { try { localStorage.setItem('tenantId', user.tenantId); } catch {} return {}; })() : {}),
         Session_Token: user.Session_Token || "",
         ipAddress: user.ipAddress || "",
         platform: user.platform || "desktop",
@@ -462,8 +490,13 @@ export const Provider = ({ children }: any) => {
         msgVisible: user.msgVisible || false,
         f: user.f || userInfo.f,
         s: user.s || userInfo.s,
-        img: user.avatar || "/avatars/avatar1.png",
+        img: user.avatar || "/avatars/av-5.png",
       });
+      try {
+        if (typeof user.balance === 'number') {
+          queryClient.setQueryData(['balance'], { balance: user.balance, currency: user.currency || 'ETB' });
+        }
+      } catch {}
     });
 
     socket.on("history", (history: any) => {
@@ -635,6 +668,18 @@ export const Provider = ({ children }: any) => {
     };
   }, [token]); // Reconnect when token changes
 
+  useEffect(() => {
+    // Optional: listen to iframe wallet messages and invalidate balance
+    const onMessage = (e: MessageEvent) => {
+      const payload = (e && (e as any).data) || null;
+      if (payload && payload.type === 'wallet:balance:update') {
+        try { queryClient.invalidateQueries({ queryKey: ['balance'] }); } catch {}
+      }
+    };
+    if (typeof window !== 'undefined') window.addEventListener('message', onMessage);
+    return () => { if (typeof window !== 'undefined') window.removeEventListener('message', onMessage); };
+  }, [queryClient]);
+
   React.useEffect(() => {
     let attrs = state;
     let betStatus = userBetState;
@@ -706,6 +751,7 @@ export const Provider = ({ children }: any) => {
         headers: {
           "Content-Type": "application/json",
           ...(token && { Authorization: `Bearer ${token}` }),
+          ...(tenantId && { 'x-tenant-id': tenantId }),
         },
         body: JSON.stringify({}),
       });

@@ -111,11 +111,19 @@ const Menu = ({ setHowto }) => {
         flewAwayAudioEle?.pause();
       }
       try {
+        const token = localStorage.getItem('token');
+        const tenantId = typeof window !== 'undefined' ? localStorage.getItem('tenantId') : null;
         await axios.post(
           `${config.api}/update-info`,
           {
             userId: userInfo.userId,
             updateData: { isSoundEnable: checked },
+          },
+          {
+            headers: {
+              ...(token && { Authorization: `Bearer ${token}` }),
+              ...(tenantId && { 'x-tenant-id': tenantId }),
+            }
           }
         );
         updateUserInfo({
@@ -142,11 +150,19 @@ const Menu = ({ setHowto }) => {
         }
       }
       try {
+        const token = localStorage.getItem('token');
+        const tenantId = typeof window !== 'undefined' ? localStorage.getItem('tenantId') : null;
         await axios.post(
           `${config.api}/update-info`,
           {
             userId: userInfo.userId,
             updateData: { isMusicEnable: checked },
+          },
+          {
+            headers: {
+              ...(token && { Authorization: `Bearer ${token}` }),
+              ...(tenantId && { 'x-tenant-id': tenantId }),
+            }
           }
         );
         updateUserInfo({
@@ -175,11 +191,19 @@ const Menu = ({ setHowto }) => {
   };
 
   const handleImgClick = async (avatar: string) => {
+    const token = localStorage.getItem('token');
+    const tenantId = typeof window !== 'undefined' ? localStorage.getItem('tenantId') : null;
     const response: any = await axios.post(
       `${config.api}/update-info`,
       {
         userId: userInfo.userId,
         updateData: { avatar },
+      },
+      {
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+          ...(tenantId && { 'x-tenant-id': tenantId }),
+        }
       }
     );
 
