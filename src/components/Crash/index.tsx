@@ -12,18 +12,11 @@ let lastGameState = "";
 export default function WebGLStarter() {
 	const { GameState, currentNum, time, unityState, myUnityContext, setCurrentTarget, userInfo } = React.useContext(Context)
 	
-	// Debug logging
-	React.useEffect(() => {
-	}, [GameState, currentNum]);
-	
 	const [target, setTarget] = React.useState(1);
-	
-	// Debug target changes
-	React.useEffect(() => {
-	}, [target]);
 	const [waiting, setWaiting] = React.useState(0);
 	const [flag, setFlag] = React.useState(1);
 
+	// Separate effect for game state transitions (runs only when GameState changes)
 	React.useEffect(() => {
 		let myInterval;
 		if (GameState === "PLAYING") {
@@ -36,25 +29,6 @@ export default function WebGLStarter() {
 					takeOffAudio.currentTime = 0;
 					takeOffAudio.play().catch(err => console.log("Audio play prevented:", err));
 				}
-			}
-			
-			// Use backend's currentNum instead of local calculation
-			const backendMultiplier = parseFloat(currentNum.toString());
-			
-			if (!isNaN(backendMultiplier) && backendMultiplier >= 1.0 && backendMultiplier <= 1000.0) {
-				setTarget(backendMultiplier);
-				setCurrentTarget(backendMultiplier);
-				
-				// Update flag based on multiplier
-				if (backendMultiplier > 2 && currentFlag === 2) {
-					setFlag(3);
-				} else if (backendMultiplier > 10 && currentFlag === 3) {
-					setFlag(4);
-				}
-			} else {
-				console.error("Invalid backend multiplier:", currentNum);
-				setTarget(1.0);
-				setCurrentTarget(1.0);
 			}
 		} else if (GameState === "GAMEEND") {
 			setFlag(5);
@@ -96,7 +70,30 @@ export default function WebGLStarter() {
 		lastGameState = GameState;
 		
 		return () => clearInterval(myInterval);
-	}, [GameState, unityState, currentNum]) // Added currentNum to dependencies
+	}, [GameState, unityState])
+
+	// Separate effect for multiplier updates during PLAYING (runs every 20ms but doesn't re-render the whole component)
+	React.useEffect(() => {
+		if (GameState === "PLAYING") {
+			const backendMultiplier = parseFloat(currentNum.toString());
+			
+			if (!isNaN(backendMultiplier) && backendMultiplier >= 1.0 && backendMultiplier <= 1000.0) {
+				setTarget(backendMultiplier);
+				setCurrentTarget(backendMultiplier);
+				
+				// Update flag based on multiplier
+				if (backendMultiplier > 2 && currentFlag === 2) {
+					setFlag(3);
+				} else if (backendMultiplier > 10 && currentFlag === 3) {
+					setFlag(4);
+				}
+			} else {
+				console.error("Invalid backend multiplier:", currentNum);
+				setTarget(1.0);
+				setCurrentTarget(1.0);
+			}
+		}
+	}, [currentNum, GameState])
 
 	React.useEffect(() => {
 		if (myUnityContext && unityState) {
@@ -110,6 +107,20 @@ export default function WebGLStarter() {
 			}
 		}
 	}, [flag, myUnityContext, unityState]);
+
+	// Memoize the display value to prevent recalculation on every render
+	const displayValue = React.useMemo(() => {
+		try {
+			const val = target - 0.01;
+			// Validate and clamp the display value
+			if (isNaN(val) || val < 1 || val > 1000) {
+				return "1.00";
+			}
+			return Number(val).toFixed(2);
+		} catch (error) {
+			return "1.00";
+		}
+	}, [target]);
 
 	return (
 		<div className="crash-container">
@@ -133,20 +144,7 @@ export default function WebGLStarter() {
 					<div className={`crashtext ${GameState === "GAMEEND" && "red"}`}>
 						{GameState === "GAMEEND" && <div className="flew-away">FLEW AWAY!</div>}
 						<div>
-							{(() => {
-								try {
-									const displayValue = target - 0.01;
-									// Validate and clamp the display value
-									if (isNaN(displayValue) || displayValue < 1 || displayValue > 1000) {
-										console.error("Invalid target value:", target, "displayValue:", displayValue);
-										return "1.00";
-									}
-									return Number(displayValue).toFixed(2);
-								} catch (error) {
-									console.error("Error formatting target:", target, error);
-									return "1.00";
-								}
-							})()} <span className="font-[900]">x</span>
+							{displayValue} <span className="font-[900]">x</span>
 						</div>
 					</div>
 				)}
