@@ -5,7 +5,7 @@ import Crash from "../Crash/index";
 import Bet from "./bet";
 
 export default function Main() {
-  const [addBetPanel, setAddBetPanel] = React.useState(false);
+  const [addBetPanel, setAddBetPanel] = React.useState(true);
   return (
     <div className="game-play">
       <div className="result-history">
