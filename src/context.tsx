@@ -732,6 +732,7 @@ export const Provider = ({ children }: any) => {
         // Don't clear fbetState here - let myBetState event handle transition
         // This prevents button from flashing back to BET while waiting for server
         update(attrs);
+        setUserBetState(betStatus);
       }
       if (betStatus.sbetState) {
         if (state.userInfo.s?.auto) {
@@ -759,6 +760,7 @@ export const Provider = ({ children }: any) => {
         // Don't clear sbetState here - let myBetState event handle transition
         // This prevents button from flashing back to BET while waiting for server
         update(attrs);
+        setUserBetState(betStatus);
       }
     }
   }, [gameState.GameState, userBetState.fbetState, userBetState.sbetState]);

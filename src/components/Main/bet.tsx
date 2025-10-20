@@ -292,39 +292,33 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 							update({ ...state, [`${index}autoCound`]: 0, userInfo: { ...state.userInfo, [index]: { ...state.userInfo[index], auto: false } } })
 						}}>
 							<span>
-								<label>CANCEL</label>
-								{GameState !== "BET" && <label className="amount" style={{ fontSize: '0.75em' }}>Waiting for next round</label>}
-							</span>
+							<label>CANCEL</label>
+							{(GameState === "PLAYING" || GameState === "GAMEEND") && <label className="amount" style={{ fontSize: '0.75em' }}>Waiting for next round</label>}
+						</span>
 						</button>
-					) : betted ? (
+					) : betted && !userInfo[index]?.cashouted ? (
 							// User has active bet in current round
 							GameState === "PLAYING" ? (
-								// Plane is flying - show CASHOUT or CASHED OUT
-								userInfo[index]?.cashouted ? (
-									<button className="btn-success">
-										<span>
-											<label>CASHED OUT</label>
-											<label className="amount">
-												<span>{Number(userInfo[index]?.cashAmount || 0).toFixed(2)}</span>
-												<span className="currency">{userInfo.currency || "ETB"}</span>
-											</label>
-										</span>
-									</button>
-								) : (
-									<button className="btn-waiting" onClick={() => { callCashOut(currentTarget, index) }}>
-										<span>
-											<label>CASHOUT</label>
-											<label className="amount">
-												<span>{Number(betAmount * currentTarget).toFixed(2)}</span>
-												<span className="currency">{userInfo.currency || "ETB"}</span>
-											</label>
-										</span>
-									</button>
-								)
+								// Plane is flying - show CASHOUT
+								<button className="btn-waiting" onClick={() => { callCashOut(currentTarget, index) }}>
+									<span>
+										<label>CASHOUT</label>
+										<label className="amount">
+											<span>{Number(betAmount * currentTarget).toFixed(2)}</span>
+											<span className="currency">{userInfo.currency || "ETB"}</span>
+										</label>
+									</span>
+								</button>
 							) : (
-								// Round ended - waiting for cleanup
-								<button className="btn-danger h-[70%]" disabled>
-									<label>CANCEL</label>
+								// Bet placed, waiting for plane to start - show disabled CASHOUT with current multiplier
+								<button className="btn-waiting" disabled style={{ opacity: 0.7 }}>
+									<span>
+										<label>CASHOUT</label>
+										<label className="amount">
+											<span>{Number(betAmount * currentTarget).toFixed(2)}</span>
+											<span className="currency">{userInfo.currency || "ETB"}</span>
+										</label>
+									</span>
 								</button>
 							)
 						) : (
