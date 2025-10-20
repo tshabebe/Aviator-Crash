@@ -48,22 +48,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 	const single = index === 'f' ? state.fsingle : state.ssingle
 	const singleAmount = index === 'f' ? state.fsingleAmount : state.ssingleAmount
 
-	const [gameType, setGameType] = React.useState<GameType>('manual');
-
-	// Auto cashout logic - triggers when currentTarget reaches configured target
-	useEffect(() => {
-		if (GameState === "PLAYING" && betted && !userInfo[index]?.cashouted) {
-			const configuredTarget = userInfo[index]?.target || 2;
-			const autocashoutEnabled = userInfo[index]?.autocashout || autoCashoutState;
-			
-			// Check if current multiplier has reached or exceeded the target
-			if (autocashoutEnabled && currentTarget >= configuredTarget) {
-				console.log(`Auto cashout triggered at ${currentTarget}x (target: ${configuredTarget}x)`);
-				callCashOut(currentTarget, index);
-			}
-		}
-	}, [currentTarget, GameState, betted, userInfo, index, autoCashoutState]);
-
+	const [gameType, setGameType] = React.useState<GameType>("manual");
 	const [betOpt, setBetOpt] = React.useState<BetOptType>("20");
 	const [showModal, setShowModal] = React.useState(false);
 	const [myBetAmount, setMyBetAmount] = React.useState(20);
@@ -308,9 +293,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 						}}>
 							<span>
 								<label>CANCEL</label>
-								<label className="amount" style={{ fontSize: '0.75em', opacity: 0.9 }}>
-									Waiting for next round
-								</label>
+								{GameState !== "BET" && <label className="amount" style={{ fontSize: '0.75em' }}>Waiting for next round</label>}
 							</span>
 						</button>
 					) : betted ? (
