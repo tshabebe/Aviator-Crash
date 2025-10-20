@@ -285,35 +285,53 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 						}
 					</div>
 					<div className="buttons-block">
-						{betted ? GameState === "PLAYING" ?
-							userInfo[index]?.cashouted ?
-							<button className="btn-success">
-								<span>
-									<label>CASHED OUT</label>
-									<label className="amount">
-										<span>{Number(userInfo[index]?.cashAmount || 0).toFixed(2)}</span>
-										<span className="currency">{userInfo.currency || "ETB"}</span>
-									</label>
-								</span>
+						{betState ? (
+						// User clicked BET - queued for next round
+						<>
+							{GameState !== "BET" && <div className="btn-tooltip">Next round</div>}
+							<button className="btn-danger h-[70%]" onClick={() => {
+								onBetClick(false);
+								update({ ...state, [`${index}autoCound`]: 0, userInfo: { ...state.userInfo, [index]: { ...state.userInfo[index], auto: false } } })
+							}}>
+								<label>CANCEL</label>
 							</button>
-							:
-							<button className="btn-waiting" onClick={() => { callCashOut(currentTarget, index) }}>
-								<span>
-									<label>CASHOUT</label>
-									<label className="amount">
-										<span>{Number(betAmount * currentTarget).toFixed(2)}</span>
-										<span className="currency">{userInfo.currency || "ETB"}</span>
-									</label>
-								</span>
-							</button>
-							: <button className="btn-danger">WAITING</button> : betState ?
-							<>
-								<div className="btn-tooltip">Waiting for next round</div>
-								<button className="btn-danger h-[70%]" onClick={() => {
-									onBetClick(false);
-									update({ ...state, [`${index}autoCound`]: 0, userInfo: { ...state.userInfo, [index]: { ...state.userInfo[index], auto: false } } })
-								}}><label>CANCEL</label></button>
-							</> :
+						</>
+					) : betted ? (
+							// User has active bet in current round
+							GameState === "PLAYING" ? (
+								// Plane is flying - show CASHOUT or CASHED OUT
+								userInfo[index]?.cashouted ? (
+									<button className="btn-success">
+										<span>
+											<label>CASHED OUT</label>
+											<label className="amount">
+												<span>{Number(userInfo[index]?.cashAmount || 0).toFixed(2)}</span>
+												<span className="currency">{userInfo.currency || "ETB"}</span>
+											</label>
+										</span>
+									</button>
+								) : (
+									<button className="btn-waiting" onClick={() => { callCashOut(currentTarget, index) }}>
+										<span>
+											<label>CASHOUT</label>
+											<label className="amount">
+												<span>{Number(betAmount * currentTarget).toFixed(2)}</span>
+												<span className="currency">{userInfo.currency || "ETB"}</span>
+											</label>
+										</span>
+									</button>
+								)
+							) : (
+								// Round ended - waiting for cleanup
+								<>
+									<div className="btn-tooltip">Next round</div>
+									<button className="btn-danger h-[70%]" disabled>
+										<label>CANCEL</label>
+									</button>
+								</>
+							)
+						) : (
+							// No bet - show BET button
 							<button onClick={() => onBetClick(true)} className="btn-success">
 								<span>
 									<label>BET</label>
@@ -323,7 +341,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 									</label>
 								</span>
 							</button>
-						}
+						)}
 					</div>
 				</div>
 				{/* Auto */}

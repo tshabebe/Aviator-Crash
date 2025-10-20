@@ -297,7 +297,9 @@ let newBetState: UserStatusType;
 
 export const Provider = ({ children }: any) => {
   const queryClient = useQueryClient();
-  const token = new URLSearchParams(useLocation().search).get("token");
+  const tokenFromUrl = new URLSearchParams(useLocation().search).get("token");
+  const storedToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const token = tokenFromUrl || storedToken || undefined;
   const tenantFromUrl = new URLSearchParams(useLocation().search).get("tenantId");
   const storedTenant = typeof window !== 'undefined' ? localStorage.getItem('tenantId') : null;
   const tenantId = tenantFromUrl || storedTenant || undefined;
@@ -415,8 +417,8 @@ export const Provider = ({ children }: any) => {
     if (token) {
       // Persist token and tenantId
       try {
-        // Always overwrite with URL token to avoid stale Authorization header
-        localStorage.setItem('token', token);
+        // Save token from URL or use existing localStorage token
+        if (tokenFromUrl) localStorage.setItem('token', tokenFromUrl);
         if (tenantFromUrl) localStorage.setItem('tenantId', tenantFromUrl);
       } catch {}
 
@@ -439,10 +441,11 @@ export const Provider = ({ children }: any) => {
     });
 
     socket.on("myBetState", (data: any) => {
-      // Don't modify fbetState/sbetState here - they represent "waiting to bet next round"
-      // Only update fbetted/sbetted which represent "has active bet"
+      // When server confirms bet, transition from betState to betted
       setUserBetState(prev => ({
         ...prev,
+        fbetState: data.f?.betted ? false : prev.fbetState,  // Clear if bet confirmed
+        sbetState: data.s?.betted ? false : prev.sbetState,  // Clear if bet confirmed
         fbetted: data.f?.betted || false,
         sbetted: data.s?.betted || false,
       }));
@@ -505,6 +508,22 @@ export const Provider = ({ children }: any) => {
 
     socket.on("gameState", (gameState: GameStatusType) => {
       setGameState(gameState);
+      
+      // Clear cashouted state when new BET round starts
+      if (gameState.GameState === "BET") {
+        setUserInfo(prev => ({
+          ...prev,
+          f: { ...prev.f, cashouted: false },
+          s: { ...prev.s, cashouted: false },
+        }));
+        
+        // Only clear betted if there's no queued bet (betState is false)
+        setUserBetState(prev => ({
+          ...prev,
+          fbetted: prev.fbetState ? prev.fbetted : false,  // Keep if queued
+          sbetted: prev.sbetState ? prev.sbetted : false,  // Keep if queued
+        }));
+      }
     });
 
     socket.on("previousHand", (previousHand: UserType[]) => {
@@ -534,7 +553,8 @@ export const Provider = ({ children }: any) => {
         },
       };
       if (!user.f?.betted) {
-        betStatus.fbetted = false;
+        // Don't clear fbetted here - let gameState BET event handle it
+        // This prevents UI flash when round ends
         if (attrs.userInfo.f.auto) {
           if (user.f?.cashouted) {
             fIncreaseAmount += user.f?.cashAmount || 0;
@@ -564,12 +584,13 @@ export const Provider = ({ children }: any) => {
             }
           }
         } else {
-          // Clear fbetState for manual bets when round ends
-          betStatus.fbetState = false;
+          // Don't clear fbetState - keep it if user queued bet for next round
+          // betStatus.fbetState remains unchanged
         }
       }
       if (!user.s?.betted) {
-        betStatus.sbetted = false;
+        // Don't clear sbetted here - let gameState BET event handle it
+        // This prevents UI flash when round ends
         if (user.s?.auto) {
           if (user.s?.cashouted) {
             sIncreaseAmount += user.s?.cashAmount || 0;
@@ -599,8 +620,8 @@ export const Provider = ({ children }: any) => {
             }
           }
         } else {
-          // Clear sbetState for manual bets when round ends
-          betStatus.sbetState = false;
+          // Don't clear sbetState - keep it if user queued bet for next round
+          // betStatus.sbetState remains unchanged
         }
       }
       update(attrs);
@@ -707,10 +728,9 @@ export const Provider = ({ children }: any) => {
         }
         // Balance will be deducted on backend and synced via myBetState event
         socket.emit("playBet", data);
-        betStatus.fbetState = false;
-        betStatus.fbetted = true;
+        // Don't clear fbetState here - let myBetState event handle transition
+        // This prevents button from flashing back to BET while waiting for server
         update(attrs);
-        setUserBetState(betStatus);
       }
       if (betStatus.sbetState) {
         if (state.userInfo.s?.auto) {
@@ -735,10 +755,9 @@ export const Provider = ({ children }: any) => {
         }
         // Balance will be deducted on backend and synced via myBetState event
         socket.emit("playBet", data);
-        betStatus.sbetState = false;
-        betStatus.sbetted = true;
+        // Don't clear sbetState here - let myBetState event handle transition
+        // This prevents button from flashing back to BET while waiting for server
         update(attrs);
-        setUserBetState(betStatus);
       }
     }
   }, [gameState.GameState, userBetState.fbetState, userBetState.sbetState]);

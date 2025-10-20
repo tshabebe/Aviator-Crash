@@ -111,12 +111,11 @@ export default function WebGLStarter() {
 	// Memoize the display value to prevent recalculation on every render
 	const displayValue = React.useMemo(() => {
 		try {
-			const val = target - 0.01;
-			// Validate and clamp the display value
-			if (isNaN(val) || val < 1 || val > 1000) {
+			// Display actual multiplier value without offset
+			if (isNaN(target) || target < 1 || target > 1000) {
 				return "1.00";
 			}
-			return Number(val).toFixed(2);
+			return Number(target).toFixed(2);
 		} catch (error) {
 			return "1.00";
 		}
