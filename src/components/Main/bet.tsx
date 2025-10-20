@@ -287,15 +287,17 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 					<div className="buttons-block">
 						{betState ? (
 						// User clicked BET - queued for next round
-						<>
-							{GameState !== "BET" && <div className="btn-tooltip">Next round</div>}
-							<button className="btn-danger h-[70%]" onClick={() => {
-								onBetClick(false);
-								update({ ...state, [`${index}autoCound`]: 0, userInfo: { ...state.userInfo, [index]: { ...state.userInfo[index], auto: false } } })
-							}}>
+						<button className="btn-danger h-[70%]" onClick={() => {
+							onBetClick(false);
+							update({ ...state, [`${index}autoCound`]: 0, userInfo: { ...state.userInfo, [index]: { ...state.userInfo[index], auto: false } } })
+						}}>
+							<span>
 								<label>CANCEL</label>
-							</button>
-						</>
+								<label className="amount" style={{ fontSize: '0.75em', opacity: 0.9 }}>
+									Waiting for next round
+								</label>
+							</span>
+						</button>
 					) : betted ? (
 							// User has active bet in current round
 							GameState === "PLAYING" ? (
