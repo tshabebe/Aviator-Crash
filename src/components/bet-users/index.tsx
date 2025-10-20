@@ -30,7 +30,7 @@ export default function BetsUsers() {
     if (pre) {
       setAllData(previousHand);
     } else {
-      if (!!bettedUsers.length) setAllData(bettedUsers);
+      setAllData(bettedUsers); // Update even when empty to clear UI
     }
   }, [pre, bettedUsers, previousHand]);
 

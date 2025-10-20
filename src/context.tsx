@@ -524,6 +524,9 @@ export const Provider = ({ children }: any) => {
           fbetted: prev.fbetState ? true : false,
           sbetted: prev.sbetState ? true : false,
         }));
+        
+        // Clear betted users list for new round
+        setBettedUsers([]);
       }
     });
 
