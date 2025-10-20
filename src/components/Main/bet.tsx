@@ -323,12 +323,9 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 								)
 							) : (
 								// Round ended - waiting for cleanup
-								<>
-									<div className="btn-tooltip">Next round</div>
-									<button className="btn-danger h-[70%]" disabled>
-										<label>CANCEL</label>
-									</button>
-								</>
+								<button className="btn-danger h-[70%]" disabled>
+									<label>CANCEL</label>
+								</button>
 							)
 						) : (
 							// No bet - show BET button

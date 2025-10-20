@@ -509,7 +509,7 @@ export const Provider = ({ children }: any) => {
     socket.on("gameState", (gameState: GameStatusType) => {
       setGameState(gameState);
       
-      // Clear cashouted state when new BET round starts
+      // Clear states when new BET round starts
       if (gameState.GameState === "BET") {
         setUserInfo(prev => ({
           ...prev,
@@ -517,11 +517,12 @@ export const Provider = ({ children }: any) => {
           s: { ...prev.s, cashouted: false },
         }));
         
-        // Only clear betted if there's no queued bet (betState is false)
+        // If queued bet, set betted=true immediately to prevent flash
+        // Otherwise clear betted from previous round
         setUserBetState(prev => ({
           ...prev,
-          fbetted: prev.fbetState ? prev.fbetted : false,  // Keep if queued
-          sbetted: prev.sbetState ? prev.sbetted : false,  // Keep if queued
+          fbetted: prev.fbetState ? true : false,
+          sbetted: prev.sbetState ? true : false,
         }));
       }
     });
