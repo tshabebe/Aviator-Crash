@@ -80,11 +80,6 @@ const TopHistory = () => {
                 <div key={index} className="bet-item">
                   <div className="main">
                     <div className="icon">
-                      <img
-                        className="avatar"
-                        alt="avatar"
-                        src="/avatars/av-5.png"
-                      ></img>
                       <div className="username">{item.userName || "Anonymous"}</div>
                     </div>
                     <div className="score">

@@ -242,10 +242,10 @@ const init_state = {
 const init_userInfo: UserType = {
   balance: 0,
   userType: false,
-  img: "/avatars/av-5.png",
+  img: "",
   userName: "",
   userId: "",
-  avatar: "/avatars/av-5.png",
+  avatar: "",
   currency: "ETB",
   token: "",
   Session_Token: "",
@@ -480,7 +480,7 @@ export const Provider = ({ children }: any) => {
         userType: user.userType,
         userName: user.userName,
         userId: user.userId || "",
-        avatar: user.avatar || "/avatars/av-5.png",
+        avatar: user.avatar || "",
         currency: user.currency || "ETB",
         token: user.token || token || "",
         // Persist tenantId from server if provided
@@ -493,7 +493,7 @@ export const Provider = ({ children }: any) => {
         msgVisible: user.msgVisible || false,
         f: user.f || userInfo.f,
         s: user.s || userInfo.s,
-        img: user.avatar || "/avatars/av-5.png",
+        img: user.avatar || "",
       });
       try {
         if (typeof user.balance === 'number') {

@@ -87,17 +87,11 @@ const TopHistory = () => {
                 <div key={index} className="bet-item">
                   <div className="main">
                     <div className="icon">
-                      {item.userinfo[0]?.avatar ? (
+                      {item.userinfo[0]?.avatar && (
                         <img
                           className="avatar"
                           alt={item.userinfo[0]?.avatar}
                           src={item.userinfo[0]?.avatar}
-                        ></img>
-                      ) : (
-                        <img
-                          className="avatar"
-                          alt="avatar"
-                          src="/avatars/av-5.png"
                         ></img>
                       )}
                       <div className="username">

@@ -168,11 +168,13 @@ export default function PerfectLiveChat() {
                 return (
                   <div key={index} className="message-wrapper ng-star-inserted">
                     <div className="avatar-block">
-                      <img
-                        className="avatar"
-                        src={item.avatar || "./avatars/av-5.png"}
-                        alt={item.avatar || "./avatars/av-5.png"}
-                      />
+                      {item.avatar && (
+                        <img
+                          className="avatar"
+                          src={item.avatar}
+                          alt={item.avatar}
+                        />
+                      )}
                     </div>
                     <div className="msg-block">
                       <div className="msg-data">

@@ -288,14 +288,13 @@ const Menu = ({ setHowto }) => {
               <div className="first-block">
                 <div className="user-info">
                   <div className="avatar">
-                    <img
-                      className="avatar"
-                      src={`${userInfo?.avatar
-                        ? userInfo?.avatar
-                        : "./avatars/av-5.png"
-                        }`}
-                      alt="avatar"
-                    />
+                    {userInfo?.avatar && (
+                      <img
+                        className="avatar"
+                        src={userInfo.avatar}
+                        alt="avatar"
+                      />
+                    )}
                   </div>
                   <div className="name">
                     {displayName(userInfo?.userName)}

@@ -72,15 +72,7 @@ const AllData = ({ pre, setPre, allData }: AllDataProps) => {
               key={key}
             >
               <div className="user">
-                {user.avatar ? (
-                  <img className="avatar" src={user.avatar} alt="avatar" />
-                ) : (
-                  <img
-                    className="avatar"
-                    src="./avatars/av-5.png"
-                    alt="avatar"
-                  />
-                )}
+                {user.avatar && <img className="avatar" src={user.avatar} alt="avatar" />}
                 <div className="username">{displayName(user.name)}</div>
               </div>
               <div className="bet">{binaryToFloat(user.betAmount).toFixed(2)}</div>
