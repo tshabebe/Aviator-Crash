@@ -56,18 +56,7 @@ function App() {
           </div>
         </div>
       )}
-      {rechargeState && (
-        <div className="recharge">
-          <div className="recharge-body">
-            <div className="recharge-body-font">
-              Insufficient balance amount
-            </div>
-            <a href="https://induswin.com/#/pages/recharge/recharge">
-              Induswin.com
-            </a>
-          </div>
-        </div>
-      )}
+      {/* rechargeState modal removed; insufficient balance is handled via toast */}
       <Header />
       <div className="game-container">
         <BetsUsers />
