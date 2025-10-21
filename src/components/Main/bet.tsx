@@ -52,7 +52,14 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 	const [betOpt, setBetOpt] = React.useState<BetOptType>("20");
 	const [showModal, setShowModal] = React.useState(false);
 	const [myBetAmount, setMyBetAmount] = React.useState(20);
+	const [queuedForNextRound, setQueuedForNextRound] = React.useState(false);
 	// const { index } = props;
+
+	React.useEffect(() => {
+		if (!betState || betted || GameState === "BET") {
+			setQueuedForNextRound(false);
+		}
+	}, [betState, betted, GameState]);
 
 	const minus = (type: FieldNameType) => {
 		let value = state;
@@ -136,6 +143,11 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
 	const onBetClick = (s: boolean) => {
 		updateUserBetState({ [`${index}betState`]: s })
+		if (s) {
+			setQueuedForNextRound(GameState !== "BET");
+		} else {
+			setQueuedForNextRound(false);
+		}
 	}
 	const setCount = (amount: number) => {
 		let attrs = state;
@@ -293,7 +305,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 						}}>
 							<span>
 							<label>CANCEL</label>
-							{(GameState === "PLAYING" || GameState === "GAMEEND") && <label className="amount" style={{ fontSize: '0.75em' }}>Waiting for next round</label>}
+							{queuedForNextRound && <label className="amount" style={{ fontSize: '0.75em' }}>Waiting for next round</label>}
 						</span>
 						</button>
 					) : betted && !userInfo[index]?.cashouted ? (
