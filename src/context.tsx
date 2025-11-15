@@ -155,7 +155,7 @@ interface ContextType extends GameBetLimit, UserStatusType, GameStatusType {
   rechargeState: boolean;
   myUnityContext: UnityContext;
   currentTarget: number;
-  setCurrentTarget(attrs: Partial<number>);
+  setCurrentTarget(value: number);
   setFLoading(attrs: boolean);
   setSLoading(attrs: boolean);
   setMsgReceived(attrs: Partial<boolean>);
@@ -337,6 +337,23 @@ export const Provider = ({ children }: any) => {
   newBetState = userBetState;
   const [rechargeState, setRechargeState] = React.useState(false);
   const [currentTarget, setCurrentTarget] = React.useState(0);
+  const currentTargetRef = React.useRef(currentTarget);
+  const lastTargetUpdateRef = React.useRef(0);
+  const throttledSetCurrentTarget = React.useCallback((value: number) => {
+    currentTargetRef.current = value;
+    const now =
+      typeof performance !== "undefined" && performance.now
+        ? performance.now()
+        : Date.now();
+    const timeSinceLast = now - lastTargetUpdateRef.current;
+    // Only update React state (and re-render consumers) if enough time passed
+    // or the displayed value would noticeably change.
+    if (timeSinceLast < 75 && Math.abs(value - currentTargetRef.current) < 0.01) {
+      return;
+    }
+    lastTargetUpdateRef.current = now;
+    setCurrentTarget(value);
+  }, []);
   const updateUserBetState = (attrs: Partial<UserStatusType>) => {
     setUserBetState({ ...userBetState, ...attrs });
   };
@@ -810,9 +827,9 @@ export const Provider = ({ children }: any) => {
         currentTarget,
         rechargeState,
         myUnityContext: unityContext,
-        bettedUsers: [...bettedUsers],
-        previousHand: [...previousHand],
-        history: [...history],
+        bettedUsers,
+        previousHand,
+        history,
         msgData: msgData,
         msgTab: msgTab,
         msgReceived: msgReceived,
@@ -823,7 +840,7 @@ export const Provider = ({ children }: any) => {
         userSeedText: userSeedText,
         fLoading: fLoading,
         sLoading: sLoading,
-        setCurrentTarget,
+        setCurrentTarget: throttledSetCurrentTarget,
         setFLoading,
         setSLoading,
         setMsgReceived,

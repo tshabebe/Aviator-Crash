@@ -151,7 +151,7 @@ export interface ContextType extends GameBetLimit, UserStatusType, GameStatusTyp
     setFLoading(attrs: Boolean);
     sLoading: Boolean;
     setSLoading(attrs: Boolean);
-    setCurrentTarget(attrs: Partial<number>);
+    setCurrentTarget(value: number);
     setMsgReceived(attrs: Partial<boolean>);
     update(attrs: Partial<ContextDataType>);
     updateUserInfo(attrs: Partial<UserType>);

@@ -221,30 +221,42 @@ const Menu = ({ setHowto }) => {
   };
 
   useEffect(() => {
-    window?.addEventListener("click", () => {
-      let num: number[] = [];
-      for (let i = 1; i < 73; i++) {
-        num.push(i);
+    const handleFirstClick = () => {
+      // Pre-generate avatar indices once on first user interaction
+      if (!imgNums.length) {
+        const num: number[] = [];
+        for (let i = 1; i < 73; i++) {
+          num.push(i);
+        }
+        setImgNums(num);
       }
-      setImgNums(num);
 
+      // Start background music once, if enabled and not already started
       try {
         if (
           localStorage.getItem("aviator-audio") !== "true" &&
           userInfo.isMusicEnable === true
         ) {
-          let mainEle: any = document.getElementById("mainAudio");
-          mainEle.volume = 0.2;
-          mainEle.play();
-          localStorage.setItem("aviator-audio", "true");
+          const mainEle = document.getElementById("mainAudio") as HTMLAudioElement | null;
+          if (mainEle) {
+            mainEle.volume = 0.2;
+            mainEle.play().catch(() => {});
+            localStorage.setItem("aviator-audio", "true");
+          }
         }
       } catch (error) {
-        // handleToggleSound(true);
-        // handleToggleMusic(true);
+        // ignore audio/autoplay issues
       }
-    });
+
+      window.removeEventListener("click", handleFirstClick);
+    };
+
+    window.addEventListener("click", handleFirstClick);
+    return () => {
+      window.removeEventListener("click", handleFirstClick);
+    };
     // eslint-disable-next-line
-  }, []);
+  }, [imgNums.length, userInfo.isMusicEnable]);
 
   return (
     <div

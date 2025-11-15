@@ -31,13 +31,13 @@ function App() {
   return (
     <div className="main-container">
       {/* Audio elements */}
-      <audio id="mainAudio" loop>
+      <audio id="mainAudio" loop preload="none">
         <source src={mainAudio} type="audio/wav" />
       </audio>
-      <audio id="takeOffAudio">
+      <audio id="takeOffAudio" preload="none">
         <source src={takeOffAudio} type="audio/mpeg" />
       </audio>
-      <audio id="flewAwayAudio">
+      <audio id="flewAwayAudio" preload="none">
         <source src={flewAwayAudio} type="audio/mpeg" />
       </audio>
 

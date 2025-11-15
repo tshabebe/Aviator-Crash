@@ -28,4 +28,15 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   </QueryClientProvider>
 );
 
+// Register service worker in production to cache heavy Unity and audio assets
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .catch(() => {
+        // Ignore service worker registration errors; app still works without it
+      });
+  });
+}
+
 
