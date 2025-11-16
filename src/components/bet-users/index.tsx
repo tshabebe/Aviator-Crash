@@ -4,10 +4,14 @@ import React from "react";
 import AllData from "./all-data";
 import MyBets from "./my-bets";
 import TopHistory from "./top-history";
-import Context, { BettedUserType, UserType } from "../../context";
+import { BetContext, BettedUserType, UserType } from "../../context";
 
 export default function BetsUsers() {
-  const { previousHand, bettedUsers, getMyBets } = React.useContext(Context);
+  const betCtx = React.useContext(BetContext);
+  if (!betCtx) {
+    return null;
+  }
+  const { previousHand, bettedUsers, getMyBets } = betCtx;
   // const [state, , , getMyBets] = useCrashContext();
 
   const [headerType, setHeaderType] = React.useState("all");

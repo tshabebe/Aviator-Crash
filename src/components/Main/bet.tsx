@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
-// import { useCrashContext } from "../context";
 import { toast } from 'react-toastify';
-import Context, { callCashOut } from "../../context";
+import { BetContext, GameContext, callCashOut } from "../../context";
 
 interface BetProps {
 	index: 'f' | 's'
@@ -13,18 +12,37 @@ type BetOptType = '20' | '50' | '100' | '1000'
 type GameType = 'manual' | 'auto'
 
 const Bet = ({ index, add, setAdd }: BetProps) => {
-	const context = React.useContext(Context)
-	const { state, userInfo,
-		fbetted, sbetted,
-		fbetState, sbetState,
-		GameState,
-		currentNum,
-		currentSecondNum,
-		minBet, maxBet,
+	const betCtx = React.useContext(BetContext);
+	const gameCtx = React.useContext(GameContext);
+	if (!betCtx || !gameCtx) {
+		return null;
+	}
+	const {
+		state,
+		userInfo,
+		fbetted,
+		sbetted,
+		fbetState,
+		sbetState,
+		minBet,
+		maxBet,
 		currentTarget,
 		update,
-		updateUserBetState
-	} = context;
+		updateUserBetState,
+	} = {
+		state: betCtx.state,
+		userInfo: betCtx.userInfo,
+		fbetted: betCtx.fbetted,
+		sbetted: betCtx.sbetted,
+		fbetState: betCtx.fbetState,
+		sbetState: betCtx.sbetState,
+		minBet: betCtx.minBet,
+		maxBet: betCtx.maxBet,
+		currentTarget: gameCtx.currentTarget,
+		update: betCtx.update,
+		updateUserBetState: betCtx.updateUserBetState,
+	};
+	const { GameState, currentNum, currentSecondNum } = gameCtx;
 	const [cashOut, setCashOut] = React.useState(2);
 
 	// Sync cashOut local state with actual target from state

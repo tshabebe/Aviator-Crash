@@ -1,6 +1,5 @@
-import React from "react"
-import Context, { BettedUserType, UserType } from "../../context";
-// import { useCrashContext } from "../Main/context";
+import React from "react";
+import { BetContext, BettedUserType, UserType } from "../../context";
 
 interface AllDataProps {
     pre: boolean
@@ -9,8 +8,10 @@ interface AllDataProps {
 }
 
 const AllData = ({ pre, setPre, allData }: AllDataProps) => {
-    const state = React.useContext(Context)
-    // const [state] = useCrashContext();
+    const betCtx = React.useContext(BetContext);
+    if (!betCtx) {
+        return null;
+    }
 
     return (
         <>
@@ -18,7 +19,7 @@ const AllData = ({ pre, setPre, allData }: AllDataProps) => {
                 <div className="all-bets-block">
                     <div>
                         <div className="uppercase">ALL BETS</div>
-                        <div>{state.bettedUsers?.length}</div>
+                        <div>{betCtx.bettedUsers?.length}</div>
                     </div>
                     <div className={`previous-hand items-center flex justify-between ${pre ? "click" : ""}`}>
                         <div className="history-i"></div>

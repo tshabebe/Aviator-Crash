@@ -3,14 +3,18 @@ import React from "react";
 // import { useCrashContext } from "../Main/context";
 import "./crash.scss";
 import Unity from "react-unity-webgl";
-import propeller from "../../assets/images/propeller.png"
-import Context from "../../context";
+import propeller from "../../assets/images/propeller.png";
+import { GameContext } from "../../context";
 
 let currentFlag = 0;
 let lastGameState = "";
 
 export default function WebGLStarter() {
-	const { GameState, currentNum, time, unityState, myUnityContext, setCurrentTarget, userInfo } = React.useContext(Context)
+	const gameCtx = React.useContext(GameContext);
+	if (!gameCtx) {
+		return null;
+	}
+	const { GameState, currentNum, time, unityState, myUnityContext, setCurrentTarget, userInfo } = gameCtx;
 	
 	const [target, setTarget] = React.useState(1);
 	const [waiting, setWaiting] = React.useState(0);
@@ -151,4 +155,3 @@ export default function WebGLStarter() {
 		</div>
 	);
 };
-

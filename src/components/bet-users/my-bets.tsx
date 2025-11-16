@@ -1,10 +1,12 @@
 import React from "react";
-// import { useCrashContext } from "../Main/context";
-import Context from "../../context";
+import { BetContext } from "../../context";
 
 const MyBets = () => {
-    const state = React.useContext(Context)
-    // const [state] = useCrashContext();
+    const betCtx = React.useContext(BetContext);
+    if (!betCtx) {
+        return null;
+    }
+    const { state } = betCtx;
 
     return (
         <>
@@ -19,7 +21,7 @@ const MyBets = () => {
             </div>
             <div className="cdk-virtual-scroll-viewport">
                 <div className="cdk-virtual-scroll-content-wrapper">
-                    {state && state.state.myBets.map((user, key) => (
+                    {state && state.myBets.map((user, key) => (
                         <div className={`bet-item pr-2 ${user.cashouted ? "celebrated" : ""}`} key={key}>
                             <div className="user">
                                 <div className="username">{new Date(user.date).getHours() + ":" + new Date(user.date).getMinutes()}</div>

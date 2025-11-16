@@ -182,6 +182,37 @@ interface ChatContextType {
   toggleMsgTab();
 }
 
+interface GameContextType {
+  GameState: string;
+  currentNum: string;
+  currentSecondNum: number;
+  time: number;
+  unityState: boolean;
+  unityLoading: boolean;
+  currentProgress: number;
+  myUnityContext: UnityContext;
+  currentTarget: number;
+  setCurrentTarget(value: number);
+  userInfo: UserType;
+}
+
+interface BetContextType {
+  state: ContextDataType;
+  userInfo: UserType;
+  minBet: number;
+  maxBet: number;
+  fbetted: boolean;
+  sbetted: boolean;
+  fbetState: boolean;
+  sbetState: boolean;
+  bettedUsers: BettedUserType[];
+  previousHand: UserType[];
+  history: number[];
+  update(attrs: Partial<ContextDataType>);
+  updateUserBetState(attrs: Partial<UserStatusType>);
+  getMyBets();
+}
+
 const unityContext = new UnityContext({
   loaderUrl: "unity/AirCrash.loader.js",
   dataUrl: "unity/AirCrash.data.unityweb",
@@ -289,6 +320,8 @@ const init_userInfo: UserType = {
 
 const Context = React.createContext<ContextType>(null!);
 export const ChatContext = React.createContext<ChatContextType | null>(null);
+export const GameContext = React.createContext<GameContextType | null>(null);
+export const BetContext = React.createContext<BetContextType | null>(null);
 
 const socket = io(config.wss, {
   autoConnect: false, // Don't connect until we have a token
@@ -332,12 +365,12 @@ export const Provider = ({ children }: any) => {
 
   const [userInfo, setUserInfo] = React.useState<UserType>(init_userInfo);
   const [bettedUsers, setBettedUsers] = React.useState<BettedUserType[]>([]);
-  const update = (attrs: Partial<ContextDataType>) => {
-    setState({ ...state, ...attrs });
-  };
-  const updateUserInfo = (attrs: Partial<UserType>) => {
-    setUserInfo({ ...userInfo, ...attrs });
-  };
+  const update = React.useCallback((attrs: Partial<ContextDataType>) => {
+    setState((prev) => ({ ...prev, ...attrs }));
+  }, []);
+  const updateUserInfo = React.useCallback((attrs: Partial<UserType>) => {
+    setUserInfo((prev) => ({ ...prev, ...attrs }));
+  }, []);
   const [previousHand, setPreviousHand] = React.useState<UserType[]>([]);
   const [history, setHistory] = React.useState<number[]>([]);
   const [userBetState, setUserBetState] = React.useState<UserStatusType>({
@@ -366,9 +399,9 @@ export const Provider = ({ children }: any) => {
     lastTargetUpdateRef.current = now;
     setCurrentTarget(value);
   }, []);
-  const updateUserBetState = (attrs: Partial<UserStatusType>) => {
-    setUserBetState({ ...userBetState, ...attrs });
-  };
+  const updateUserBetState = React.useCallback((attrs: Partial<UserStatusType>) => {
+    setUserBetState((prev) => ({ ...prev, ...attrs }));
+  }, []);
 
   const [betLimit, setBetLimit] = React.useState<GameBetLimit>({
     maxBet: 1000,
@@ -826,6 +859,54 @@ export const Provider = ({ children }: any) => {
     if (gameState.GameState === "BET") getMyBets();
   }, [gameState.GameState]);
 
+  const gameContextValue = React.useMemo(
+    () => ({
+      GameState: gameState.GameState,
+      currentNum: gameState.currentNum,
+      currentSecondNum: gameState.currentSecondNum,
+      time: gameState.time,
+      unityState: unity.unityState,
+      unityLoading: unity.unityLoading,
+      currentProgress: unity.currentProgress,
+      myUnityContext: unityContext,
+      currentTarget,
+      setCurrentTarget: throttledSetCurrentTarget,
+      userInfo,
+    }),
+    [gameState, unity, currentTarget, throttledSetCurrentTarget, userInfo]
+  );
+
+  const betContextValue = React.useMemo(
+    () => ({
+      state,
+      userInfo,
+      minBet: betLimit.minBet,
+      maxBet: betLimit.maxBet,
+      fbetted: userBetState.fbetted,
+      sbetted: userBetState.sbetted,
+      fbetState: userBetState.fbetState,
+      sbetState: userBetState.sbetState,
+      bettedUsers,
+      previousHand,
+      history,
+      update,
+      updateUserBetState,
+      getMyBets,
+    }),
+    [
+      state,
+      userInfo,
+      betLimit,
+      userBetState,
+      bettedUsers,
+      previousHand,
+      history,
+      update,
+      updateUserBetState,
+      getMyBets,
+    ]
+  );
+
   const chatContextValue = React.useMemo(
     () => ({
       userInfo,
@@ -882,9 +963,13 @@ export const Provider = ({ children }: any) => {
         toggleMsgTab,
       }}
     >
-      <ChatContext.Provider value={chatContextValue}>
-        {children}
-      </ChatContext.Provider>
+      <BetContext.Provider value={betContextValue}>
+        <GameContext.Provider value={gameContextValue}>
+          <ChatContext.Provider value={chatContextValue}>
+            {children}
+          </ChatContext.Provider>
+        </GameContext.Provider>
+      </BetContext.Provider>
     </Context.Provider>
   );
 };
