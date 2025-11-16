@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 
 import SettingsMenu from "./SettingsMenu";
-import Context from "../../context";
+import Context, { ChatContext } from "../../context";
 
 import logo from "../../assets/images/logo.svg";
 import "../../index.scss";
 import "./header.scss";
 
 export default function Header() {
-  const { userInfo, msgTab } = React.useContext(Context);
+  const { userInfo } = React.useContext(Context);
+  const chatCtx = React.useContext(ChatContext);
+  const msgTab = chatCtx?.msgTab || false;
 
   const [howto, setHowto] = React.useState<"howto" | "short" | "more" | "">(
     "howto"

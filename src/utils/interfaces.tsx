@@ -130,9 +130,7 @@ export interface ContextType extends GameBetLimit, UserStatusType, GameStatusTyp
     state: ContextDataType;
     userInfo: UserType;
     socket: Socket;
-    msgData: MsgUserType[];
     platformLoading: boolean;
-    msgTab: boolean;
     errorBackend: boolean;
     unityState: boolean;
     unityLoading: boolean;
@@ -143,7 +141,6 @@ export interface ContextType extends GameBetLimit, UserStatusType, GameStatusTyp
     history: number[];
     rechargeState: boolean;
     secure: boolean;
-    msgReceived: boolean;
     myUnityContext: UnityContext;
     userSeedText: string;
     currentTarget: number;
@@ -152,16 +149,13 @@ export interface ContextType extends GameBetLimit, UserStatusType, GameStatusTyp
     sLoading: Boolean;
     setSLoading(attrs: Boolean);
     setCurrentTarget(value: number);
-    setMsgReceived(attrs: Partial<boolean>);
     update(attrs: Partial<ContextDataType>);
     updateUserInfo(attrs: Partial<UserType>);
     getMyBets();
     updateUserBetState(attrs: Partial<UserStatusType>);
-    setMsgData(attrs: MsgUserType[]);
     handleGetSeed();
     handleGetSeedOfRound(attrs: Number);
     handlePlaceBet();
-    toggleMsgTab();
     handleChangeUserSeed(attrs: Partial<string>);
 }
 

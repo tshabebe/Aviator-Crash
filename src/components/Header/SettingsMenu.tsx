@@ -15,7 +15,7 @@ import { ImCopy } from "react-icons/im";
 import { RxAvatar } from "react-icons/rx";
 import copy from "copy-to-clipboard";
 
-import Context from "../../context";
+import Context, { ChatContext } from "../../context";
 import axios from "axios";
 import { config } from "../../config";
 import ChatImg from "../../assets/images/chat.svg";
@@ -46,10 +46,11 @@ const Menu = ({ setHowto }) => {
     update,
     updateUserInfo,
     handleGetSeed,
-    toggleMsgTab,
-    msgReceived,
-    setMsgReceived,
   } = React.useContext(Context);
+  const chatCtx = React.useContext(ChatContext);
+  const toggleMsgTab = chatCtx?.toggleMsgTab || (() => {});
+  const msgReceived = chatCtx?.msgReceived || false;
+  const setMsgReceived = chatCtx?.setMsgReceived || (() => {});
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<string>("");

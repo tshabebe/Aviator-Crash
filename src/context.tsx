@@ -142,9 +142,6 @@ interface ContextType extends GameBetLimit, UserStatusType, GameStatusType {
   bettedUsers: BettedUserType[];
   previousHand: UserType[];
   history: number[];
-  msgData: MsgUserType[];
-  msgTab: boolean;
-  msgReceived: boolean;
   platformLoading: boolean;
   errorBackend: boolean;
   secure: boolean;
@@ -158,8 +155,6 @@ interface ContextType extends GameBetLimit, UserStatusType, GameStatusType {
   setCurrentTarget(value: number);
   setFLoading(attrs: boolean);
   setSLoading(attrs: boolean);
-  setMsgReceived(attrs: Partial<boolean>);
-  setMsgData(attrs: MsgUserType[]);
   update(attrs: Partial<ContextDataType>);
   updateUserInfo(attrs: Partial<UserType>);
   getMyBets();
@@ -937,9 +932,6 @@ export const Provider = ({ children }: any) => {
         bettedUsers,
         previousHand,
         history,
-        msgData: msgData,
-        msgTab: msgTab,
-        msgReceived: msgReceived,
         platformLoading: platformLoading,
         errorBackend: errorBackend,
         secure: secure,
@@ -950,8 +942,6 @@ export const Provider = ({ children }: any) => {
         setCurrentTarget: throttledSetCurrentTarget,
         setFLoading,
         setSLoading,
-        setMsgReceived,
-        setMsgData,
         update,
         updateUserInfo,
         getMyBets,
@@ -960,7 +950,6 @@ export const Provider = ({ children }: any) => {
         handleGetSeedOfRound,
         handleChangeUserSeed,
         handlePlaceBet,
-        toggleMsgTab,
       }}
     >
       <BetContext.Provider value={betContextValue}>
