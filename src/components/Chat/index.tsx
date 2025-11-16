@@ -1,16 +1,21 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { HiOutlineFaceSmile, HiOutlineGif } from "react-icons/hi2";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import GifPicker, { Theme } from "gif-picker-react";
 import axios from "axios";
 
-import Context from "../../context";
+import { ChatContext } from "../../context";
 import "./chat.scss";
 import { config } from "../../config";
 import { displayName } from "../utils";
 
 export default function PerfectLiveChat() {
+  const chatCtx = useContext(ChatContext);
+  if (!chatCtx) {
+    // Context not available; avoid rendering broken chat
+    return null;
+  }
   const {
     userInfo,
     socket,
@@ -20,7 +25,7 @@ export default function PerfectLiveChat() {
     msgData,
     setMsgData,
     toggleMsgTab,
-  } = useContext(Context);
+  } = chatCtx;
   const [msgContent, setMsgContent] = useState<string>("");
   const [emojiPicker, setEmojiPicker] = useState<boolean>(false);
   const [gifPicker, setGifPicker] = useState<boolean>(false);
@@ -41,14 +46,14 @@ export default function PerfectLiveChat() {
   // Note: Real-time chat listeners are handled in context.tsx
   // No need to duplicate them here
 
-  const handleSendMsg = () => {
+  const handleSendMsg = useCallback(() => {
     if (msgContent.trim() !== '') {
       socket.emit("sendMsg", { msgType: "normal", msgContent, userInfo: userInfo });
       setMsgContent("");
     } else {
     }
     setEmojiPicker(false);
-  };
+  }, [msgContent, socket, userInfo]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -57,7 +62,7 @@ export default function PerfectLiveChat() {
     }
   };
 
-  const handleChooseGif = (item) => {
+  const handleChooseGif = useCallback((item) => {
     let gif: any = { ...item };
     if (item) {
       socket.emit("sendMsg", { msgType: "gif", msgContent: gif.url, userInfo: userInfo });
@@ -65,17 +70,17 @@ export default function PerfectLiveChat() {
     } else {
     }
     setGifPicker(false);
-  };
+  }, [socket, userInfo]);
 
-  const handleEmojiSelect = (emoji) => {
-    setMsgContent(`${msgContent}${emoji.native}`);
-  };
+  const handleEmojiSelect = useCallback((emoji) => {
+    setMsgContent((prev) => `${prev}${emoji.native}`);
+  }, []);
 
-  const getAllChats = async (flag: boolean) => {
+  const getAllChats = useCallback(async (flag: boolean) => {
     try {
       const token = localStorage.getItem("token");
       const tenantId = typeof window !== 'undefined' ? localStorage.getItem('tenantId') : null;
-      let response: any = await axios.get(
+      const response: any = await axios.get(
         `${config.api}/chat/recent?limit=50`,
         {
           headers: {
@@ -86,14 +91,14 @@ export default function PerfectLiveChat() {
       );
       setMsgData(response?.data?.data || []);
       if (flag === false) {
-        setMsgReceived(!msgReceived);
+        setMsgReceived((prev) => !prev);
       }
     } catch (error) {
       console.error('Error fetching chat messages:', error);
     }
-  };
+  }, [setMsgData, setMsgReceived]);
 
-  const handleLikeChat = async (chatItem: any, action: 'like' | 'dislike' = 'like') => {
+  const handleLikeChat = useCallback(async (chatItem: any, action: 'like' | 'dislike' = 'like') => {
     try {
       const token = localStorage.getItem("token");
       const tenantId = typeof window !== 'undefined' ? localStorage.getItem('tenantId') : null;
@@ -116,7 +121,7 @@ export default function PerfectLiveChat() {
     } catch (error) {
       console.error('Error liking message:', error);
     }
-  };
+  }, [getAllChats]);
 
   useEffect(() => {
     // Load chat history when component mounts
@@ -133,6 +138,91 @@ export default function PerfectLiveChat() {
   if (!msgTab) {
     return null;
   }
+
+  const ChatMessageRow = useMemo(
+    () =>
+      React.memo(
+        ({
+          item,
+          currentUserId,
+          onMention,
+          onLike,
+        }: {
+          item: any;
+          currentUserId: string;
+          onMention: (userName: string) => void;
+          onLike: (chatItem: any, action: 'like' | 'dislike') => void;
+        }) => {
+          const active = item?.likesIDs?.some((id: string) => id === currentUserId);
+          const userName = displayName(item.userName);
+          return (
+            <div className="message-wrapper ng-star-inserted">
+              <div className="avatar-block">
+                {item.avatar && (
+                  <img
+                    className="avatar"
+                    src={item.avatar}
+                    alt={item.avatar}
+                  />
+                )}
+              </div>
+              <div className="msg-block">
+                <div className="msg-data">
+                  <span className="text canSelect">
+                    <span
+                      className="name-wrapper"
+                      onClick={() => onMention(userName)}
+                    >
+                      <span className="name canSelect">{userName}</span>
+                    </span>
+                    {item.img !== "" ? (
+                      <div>
+                        <img
+                          src={item.message}
+                          className="gif-preview"
+                          alt="Selected GIF"
+                        />
+                      </div>
+                    ) : (
+                      <span className="ng-star-inserted">{item.message}</span>
+                    )}
+                  </span>
+                </div>
+              </div>
+              <div className="likes-block">
+                <div
+                  className="btn-block"
+                  onClick={() => onLike(item, 'like')}
+                >
+                  {item?.likesIDs?.length > 0 && (
+                    <div className="font-weight-bold likes-number ng-star-inserted">
+                      {` ${item.likesIDs.length} `}
+                    </div>
+                  )}
+                  <div className={`btn-like ${active && "active"}`}></div>
+                </div>
+                <div
+                  className="btn-block"
+                  onClick={() => onLike(item, 'dislike')}
+                >
+                  {item?.disLikesIDs?.length > 0 && (
+                    <div className="font-weight-bold dislikes-number ng-star-inserted">
+                      {` ${item.disLikesIDs.length} `}
+                    </div>
+                  )}
+                  <div className={`btn-dislike ${active && "active"}`}></div>
+                </div>
+              </div>
+            </div>
+          );
+        }
+      ),
+    []
+  );
+
+  const handleMention = useCallback((userName: string) => {
+    setMsgContent((prev) => `${prev}@${userName} `);
+  }, []);
 
   return (
     <div className="chat-info-board">
@@ -160,74 +250,15 @@ export default function PerfectLiveChat() {
               className="cdk-virtual-scroll-content-wrapper"
               ref={msgContentRef}
             >
-              {msgData?.map((item, index) => {
-                let active = item?.likesIDs?.filter(
-                  (item) => item === userInfo.userId
-                ).length;
-                let userName = displayName(item.userName);
-                return (
-                  <div key={index} className="message-wrapper ng-star-inserted">
-                    <div className="avatar-block">
-                      {item.avatar && (
-                        <img
-                          className="avatar"
-                          src={item.avatar}
-                          alt={item.avatar}
-                        />
-                      )}
-                    </div>
-                    <div className="msg-block">
-                      <div className="msg-data">
-                        <span className="text canSelect">
-                          <span
-                            className="name-wrapper"
-                            onClick={() =>
-                              setMsgContent(`${msgContent}@${userName} `)
-                            }
-                          >
-                            <span className="name canSelect">{userName}</span>
-                          </span>
-                          {item.img !== "" ? (
-                            <div>
-                              <img
-                                src={item.message}
-                                className="gif-preview"
-                                alt="Selected GIF"
-                              />
-                            </div>
-                          ) : (
-                            <span className="ng-star-inserted">{item.message}</span>
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="likes-block">
-                      <div
-                        className="btn-block"
-                        onClick={() => handleLikeChat(item, 'like')}
-                      >
-                        {item?.likesIDs?.length > 0 && (
-                          <div className="font-weight-bold likes-number ng-star-inserted">
-                            {` ${item.likesIDs.length} `}
-                          </div>
-                        )}
-                        <div className={`btn-like ${active && "active"}`}></div>
-                      </div>
-                      <div
-                        className="btn-block"
-                        onClick={() => handleLikeChat(item, 'dislike')}
-                      >
-                        {item?.disLikesIDs?.length > 0 && (
-                          <div className="font-weight-bold dislikes-number ng-star-inserted">
-                            {` ${item.disLikesIDs.length} `}
-                          </div>
-                        )}
-                        <div className={`btn-dislike ${active && "active"}`}></div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              {msgData?.map((item, index) => (
+                <ChatMessageRow
+                  key={item._id || index}
+                  item={item}
+                  currentUserId={userInfo.userId}
+                  onMention={handleMention}
+                  onLike={handleLikeChat}
+                />
+              ))}
             </div>
           </div>
           {emojiPicker && (

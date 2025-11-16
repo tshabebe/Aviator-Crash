@@ -171,6 +171,17 @@ interface ContextType extends GameBetLimit, UserStatusType, GameStatusType {
   toggleMsgTab();
 }
 
+interface ChatContextType {
+  userInfo: UserType;
+  socket: any;
+  msgData: MsgUserType[];
+  msgTab: boolean;
+  msgReceived: boolean;
+  setMsgReceived(attrs: Partial<boolean>);
+  setMsgData(attrs: MsgUserType[]);
+  toggleMsgTab();
+}
+
 const unityContext = new UnityContext({
   loaderUrl: "unity/AirCrash.loader.js",
   dataUrl: "unity/AirCrash.data.unityweb",
@@ -277,6 +288,7 @@ const init_userInfo: UserType = {
 };
 
 const Context = React.createContext<ContextType>(null!);
+export const ChatContext = React.createContext<ChatContextType | null>(null);
 
 const socket = io(config.wss, {
   autoConnect: false, // Don't connect until we have a token
@@ -387,9 +399,9 @@ export const Provider = ({ children }: any) => {
   const handlePlaceBet = () => {
   };
   
-  const toggleMsgTab = () => {
-    setMsgTab(!msgTab);
-  };
+  const toggleMsgTab = React.useCallback(() => {
+    setMsgTab((prev) => !prev);
+  }, []);
   React.useEffect(function () {
     // Add error handling for Unity context
     try {
@@ -814,6 +826,20 @@ export const Provider = ({ children }: any) => {
     if (gameState.GameState === "BET") getMyBets();
   }, [gameState.GameState]);
 
+  const chatContextValue = React.useMemo(
+    () => ({
+      userInfo,
+      socket,
+      msgData,
+      msgTab,
+      msgReceived,
+      setMsgReceived,
+      setMsgData,
+      toggleMsgTab,
+    }),
+    [userInfo, socket, msgData, msgTab, msgReceived, toggleMsgTab, setMsgReceived, setMsgData]
+  );
+
   return (
     <Context.Provider
       value={{
@@ -856,7 +882,9 @@ export const Provider = ({ children }: any) => {
         toggleMsgTab,
       }}
     >
-      {children}
+      <ChatContext.Provider value={chatContextValue}>
+        {children}
+      </ChatContext.Provider>
     </Context.Provider>
   );
 };
